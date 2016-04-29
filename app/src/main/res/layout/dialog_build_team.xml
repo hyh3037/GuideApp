@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/skyblue"
+        android:padding="10dp"
+        android:layout_marginBottom="5dp"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/white"
+        android:text="创建团队"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/et_team_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="团队名称"
+            android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/black"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

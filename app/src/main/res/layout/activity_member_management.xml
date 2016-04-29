@@ -20,7 +20,7 @@
             android:layout_margin="20dp"
             android:background="@drawable/shape_skyblue_bg"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_large"
+            android:textSize="@dimen/text_size_medium"
             android:text="组建旅行团"/>
     </RelativeLayout>
 
@@ -43,16 +43,7 @@
             android:text="新增游客"/>
         <ListView
             android:id="@+id/member_listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:cacheColorHint="#ffffff"
-            android:divider="#00000000"
-            android:dividerHeight="10dp"
-            android:listSelector="#00000000"
-            android:padding="5dp"
-            android:scrollbars="none">
+            style="@style/ListviewStyle">
 
         </ListView>
     </LinearLayout>

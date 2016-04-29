@@ -97,4 +97,17 @@
         <item name="android:windowExitAnimation">@anim/push_alpha_out</item>
     </style>
 
+    <style name="ListviewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:cacheColorHint">#fff</item>
+        <item name="android:divider">#00000000</item>
+        <item name="android:dividerHeight">10dp</item>
+        <item name="android:listSelector">#00000000</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
 </resources>

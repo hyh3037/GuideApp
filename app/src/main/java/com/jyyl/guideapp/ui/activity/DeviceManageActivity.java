@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ public class DeviceManageActivity extends BaseActivity {
 
     private ArrayList<DeviceInfo> mDatas = new ArrayList<DeviceInfo>();
     private int number = 1;
+    private String deviceId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,13 +109,29 @@ public class DeviceManageActivity extends BaseActivity {
                 T.showShortToast(mContext,"扫描二维码");
                 break;
             case R.id.btn_binging_device:
-                mDatas.add(new DeviceInfo(number,mDeviceIdEt.getText().toString()));
-                number++;
-                mAdapter.notifyDataSetChanged();
+                deviceId = mDeviceIdEt.getText().toString().trim();
+                if (TextUtils.isEmpty(deviceId)){
+                    T.showShortToast(this,"请输入设备编号");
+                }else if (containsDeciveId(deviceId)){
+                    T.showShortToast(this,"设备已存在");
+                }else {
+                    mDatas.add(new DeviceInfo(number,mDeviceIdEt.getText().toString()));
+                    number++;
+                    mAdapter.notifyDataSetChanged();
+                    T.showShortToast(this,"绑定成功");
+                }
                 break;
             case R.id.toolbar_right_btn:
                 T.showShortToast(mContext, "编辑设备");
                 break;
         }
+    }
+
+    private boolean containsDeciveId(String deviceId){
+        for (DeviceInfo deviceInfo : mDatas){
+            if (deviceId.equals(deviceInfo.getDeviceId()))
+                return true;
+        }
+        return false;
     }
 }

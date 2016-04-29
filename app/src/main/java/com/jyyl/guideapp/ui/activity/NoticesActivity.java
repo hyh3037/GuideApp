@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jyyl.guideapp.R;
@@ -12,6 +13,7 @@ import com.jyyl.guideapp.bean.NoticeInfo;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
+import com.jyyl.guideapp.utils.T;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,13 @@ public class NoticesActivity extends BaseActivity {
             @Override
             public void convert(ViewHolder holder, NoticeInfo noticeInfo) {
                 holder.setText(R.id.notice_msg,noticeInfo.getMessage());
+            }
+        });
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                T.showShortToast(mContext,mDatas.get(position).getMessage());
             }
         });
     }

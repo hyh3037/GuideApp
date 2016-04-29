@@ -33,14 +33,14 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/tv_nav_device"
-        style="@style/textview_nav_item"
-        android:text="@string/device_management"/>
-
-    <TextView
         android:id="@+id/tv_nav_health"
         style="@style/textview_nav_item"
         android:text="@string/member_management"/>
+
+    <TextView
+        android:id="@+id/tv_nav_device"
+        style="@style/textview_nav_item"
+        android:text="@string/device_management"/>
 
     <TextView
         android:id="@+id/tv_nav_setting"

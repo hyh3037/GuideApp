@@ -15,6 +15,7 @@ import com.jyyl.guideapp.bean.MemberInfo;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
+import com.jyyl.guideapp.ui.view.BuildTeamDialog;
 import com.jyyl.guideapp.utils.T;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * @Author: Shang
  * @Date: 2016/4/22  17:17
  */
-public class MemberManageActivity extends BaseActivity {
+public class MemberManageActivity extends BaseActivity implements BuildTeamDialog.OnBuildTeamListener{
     private Toolbar toolbar;
     private TextView mDisbandThem;
     private Context mContext;
@@ -138,10 +139,8 @@ public class MemberManageActivity extends BaseActivity {
                 break;
 
             case R.id.btn_build_team:
-                initDatas();
-                mAdapter.notifyDataSetChanged();
-                showMemberView();
-                T.showShortToast(this,"创建团队");
+                BuildTeamDialog buildTeamDialog = new BuildTeamDialog();
+                buildTeamDialog.show(getFragmentManager(), "BuildTeam");
                 break;
         }
     }
@@ -156,5 +155,13 @@ public class MemberManageActivity extends BaseActivity {
             mDatas.add(msg);
         }
 
+    }
+
+    @Override
+    public void setTeamInfo(String teamName) {
+        initDatas();
+        mAdapter.notifyDataSetChanged();
+        showMemberView();
+        T.showShortToast(this,"团队创建成功");
     }
 }
