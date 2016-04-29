@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/shape_wihte_bg"
+              android:orientation="horizontal"
+              android:gravity="center_vertical"
+              android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:textSize="@dimen/text_size_micro"
+        android:background="@drawable/shape_circle_number_bg"
+        android:gravity="center"
+        tools:text="16"/>
+
+    <TextView
+        android:id="@+id/tv_device_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textSize="@dimen/text_size_medium"
+        tools:text="设备ID"/>
+
+</LinearLayout>

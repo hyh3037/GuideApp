@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
+
+    <include layout="@layout/toolbar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/et_device_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/btn_binging_device"
+            android:background="@drawable/shape_wihte_bg"
+            android:inputType="number"
+            android:hint="输入设备ID"
+            android:padding="10dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/et_device_id"
+            android:layout_alignRight="@+id/et_device_id"
+            android:background="@color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/notification_tool_deep_barcode"/>
+
+        <Button
+            android:id="@+id/btn_binging_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/et_device_id"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_btn_bg_white"
+            android:text="绑定设备"/>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/device_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:cacheColorHint="#ffffff"
+        android:divider="#00000000"
+        android:dividerHeight="10dp"
+        android:listSelector="#00000000"
+        android:padding="5dp"
+        android:scrollbars="none">
+
+    </ListView>
+
+</LinearLayout>

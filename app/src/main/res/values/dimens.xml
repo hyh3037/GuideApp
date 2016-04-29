@@ -1,0 +1,27 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="status_bar_height">25dp</dimen>
+
+    <dimen name="ui_standard_size">48dp</dimen>
+    <dimen name="ui_small_size">40dp</dimen>
+
+    <dimen name="fab_margin">0dp</dimen>
+
+    <dimen name="text_padding">10dp</dimen>
+
+    <!-- 字体大小 -->
+    <dimen name="text_size_micro">12sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_small_middle">16sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">22sp</dimen>
+    <dimen name="text_size_large_more">26sp</dimen>
+
+    <dimen name="login_edit_hight">46dp</dimen>
+
+
+
+</resources>

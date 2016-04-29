@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/id_drawerLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/topbar_view_list"
+            android:onClick="OpenLeftMenu"/>
+
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true">
+
+        </com.baidu.mapapi.map.MapView>
+
+        <ImageButton
+            android:id="@+id/ib_loc_normal"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignLeft="@+id/button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/button"
+            android:layout_marginBottom="30dp"
+            android:background="@color/transparent"
+            android:src="@drawable/main_icon_location"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_now_muster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/selector_btn_muster_bg"
+                android:padding="@dimen/text_padding"
+                android:visibility="invisible"
+                android:text="@string/now_muster"/>
+
+            <Button
+                android:id="@+id/btn_time_muster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_btn_muster_bg"
+                android:padding="@dimen/text_padding"
+                android:visibility="invisible"
+                android:text="@string/time_muster"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_remind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@drawable/fab"
+                app:borderWidth="0dp"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <!-- The left navigation drawer -->
+    <fragment
+        android:id="@+id/navigation_left"
+        android:name="com.jyyl.guideapp.ui.fragment.NavLeftFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:layout_marginRight="50dp"
+        android:tag="LEFT"
+        tools:layout="@layout/navigation_left"/>
+
+
+</android.support.v4.widget.DrawerLayout>

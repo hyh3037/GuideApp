@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorBg"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
+
+    <include
+        layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <com.jyyl.guideapp.widget.CleanEditText
+            android:id="@+id/et_acc"
+            style="@style/edittext_login_style"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edit_hight"
+            android:hint="@string/phone_no"
+            android:inputType="phone"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edit_hight"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_transparent_bg"
+            android:orientation="horizontal">
+
+            <com.jyyl.guideapp.widget.CleanEditText
+                android:id="@+id/et_security_code"
+                style="@style/edittext_login_style"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@null"
+                android:hint="@string/security_code"
+                android:inputType="number"/>
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@color/white"/>
+
+            <TextView
+                android:id="@+id/send_code"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/send_code"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_small_middle"/>
+        </LinearLayout>
+
+        <com.jyyl.guideapp.widget.CleanEditText
+            android:id="@+id/et_pwd"
+            style="@style/edittext_login_style"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edit_hight"
+            android:layout_marginTop="20dp"
+            android:hint="@string/password"
+            android:inputType="textPassword"/>
+
+        <com.jyyl.guideapp.widget.CleanEditText
+            android:id="@+id/et_repwd"
+            style="@style/edittext_login_style"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edit_hight"
+            android:layout_marginTop="20dp"
+            android:hint="@string/re_pwd"
+            android:inputType="textPassword"/>
+
+        <Button
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/register"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium"/>
+    </LinearLayout>
+
+</LinearLayout>

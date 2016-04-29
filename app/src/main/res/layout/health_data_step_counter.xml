@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="10dp"
+              android:layout_marginLeft="10dp"
+              android:layout_marginRight="10dp"
+              android:background="@drawable/shape_skyblue_bg"
+              android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_sc"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@mipmap/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_sc"
+                style="@style/textview_health_data_l"
+                android:text="@string/step_counter"/>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_sct"
+                style="@style/textview_health_data_m"
+                android:layout_alignParentTop="true"
+                android:text="@string/step_counter_today"/>
+
+            <TextView
+                android:id="@+id/tv_sct_data"
+                style="@style/textview_health_data_s"
+                android:layout_alignTop="@+id/tv_sct"
+                android:layout_alignBottom="@+id/tv_sct"
+                android:layout_toRightOf="@+id/tv_sct"
+                android:layout_toEndOf="@+id/tv_sct"/>
+
+            <TextView
+                android:id="@+id/tv_scm"
+                style="@style/textview_health_data_m"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tv_sct"
+                android:text="@string/step_counter_max"/>
+
+            <TextView
+                android:id="@+id/tv_step_counter_data"
+                style="@style/textview_health_data_s"
+                android:layout_alignTop="@+id/tv_scm"
+                android:layout_alignBottom="@+id/tv_scm"
+                android:layout_toRightOf="@+id/tv_scm"
+                android:layout_toEndOf="@+id/tv_scm"/>
+        </RelativeLayout>
+
+</LinearLayout>
