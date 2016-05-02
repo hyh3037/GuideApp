@@ -31,7 +31,7 @@ public class BuildTeamDialog extends DialogFragment{
         View view = inflater.inflate(R.layout.dialog_build_team, null);
         mTeamName = (EditText) view.findViewById(R.id.et_team_name);
         builder.setView(view)
-                .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         OnBuildTeamListener listener = (OnBuildTeamListener) getActivity();

@@ -8,10 +8,12 @@ package com.jyyl.guideapp.bean;
 public class DeviceInfo {
     private int number;
     private String deviceId;
+    private boolean state;
 
     public DeviceInfo(int number, String deviceId) {
         this.number = number;
         this.deviceId = deviceId;
+        this.state = false;
     }
 
     public int getNumber() {
@@ -28,5 +30,13 @@ public class DeviceInfo {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public boolean getState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
     }
 }

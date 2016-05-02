@@ -135,7 +135,7 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
                 break;
 
             case R.id.btn_add_member:
-                T.showShortToast(this,"添加游客");
+                openActivity(mContext,BindingMemberActivity.class);
                 break;
 
             case R.id.btn_build_team:

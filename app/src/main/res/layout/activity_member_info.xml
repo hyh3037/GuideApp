@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:orientation="vertical">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/toolbar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btn_binding_member"
+        android:layout_below="@+id/include"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginBottom="10dp">
+
+                <com.jyyl.guideapp.widget.CircleImageView
+                    android:id="@+id/iv_member_photoview"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/ic_launcher"
+                    app:civ_border_color="@color/lightgray"
+                    app:civ_border_width="1dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_member_photoview"
+                    android:gravity="center"
+                    android:text="@string/click_take_photos"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/text_size_medium"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.jyyl.guideapp.widget.CleanEditText
+                        android:id="@+id/et_member_name"
+                        style="@style/edittext_member_info_style"
+                        android:hint="@string/member_name"
+                        android:inputType="text"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.jyyl.guideapp.widget.CleanEditText
+                        android:id="@+id/et_member_id_card"
+                        style="@style/edittext_member_info_style"
+                        android:hint="@string/member_id_card"
+                        android:inputType="number"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.jyyl.guideapp.widget.CleanEditText
+                        android:id="@+id/et_children_name"
+                        style="@style/edittext_member_info_style"
+                        android:hint="@string/member_children_name"
+                        android:inputType="number"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.jyyl.guideapp.widget.CleanEditText
+                        android:id="@+id/et_children_tel"
+                        style="@style/edittext_member_info_style"
+                        android:hint="@string/member_children_tel"
+                        android:inputType="number"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_binding_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/selector_btn_bg_blue"
+        android:text="@string/btn_binding_member"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium"/>
+
+</RelativeLayout>

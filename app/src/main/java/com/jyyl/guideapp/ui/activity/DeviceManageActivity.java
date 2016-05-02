@@ -94,7 +94,7 @@ public class DeviceManageActivity extends BaseActivity {
         mEditBtn.setVisibility(View.VISIBLE);
         mDeviceIdEt = (EditText) findViewById(R.id.et_device_id);
         mScanBtn = (ImageButton) findViewById(R.id.btn_scan);
-        mBinddingBtn = (Button) findViewById(R.id.btn_binging_device);
+        mBinddingBtn = (Button) findViewById(R.id.btn_binding_device);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class DeviceManageActivity extends BaseActivity {
                 Intent intent = new Intent(this, CaptureActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
                 break;
-            case R.id.btn_binging_device:
+            case R.id.btn_binding_device:
                 deviceId = mDeviceIdEt.getText().toString().trim();
                 addDevice(deviceId);
                 break;

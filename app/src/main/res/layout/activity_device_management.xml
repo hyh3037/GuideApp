@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/btn_binging_device"
+            android:layout_toLeftOf="@+id/btn_binding_device"
             android:background="@drawable/shape_wihte_bg"
             android:inputType="number"
             android:hint="输入设备ID"
@@ -38,7 +38,7 @@
             android:src="@drawable/notification_tool_deep_barcode"/>
 
         <Button
-            android:id="@+id/btn_binging_device"
+            android:id="@+id/btn_binding_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/et_device_id"

@@ -47,4 +47,12 @@
 
     <string name="scan_info">将二维码放入框内，即可自动扫描</string>
 
+    <string name="member_name">游客姓名</string>
+    <string name="member_id_card">身份证</string>
+    <string name="member_children_name">子女姓名</string>
+    <string name="member_children_tel">子女电话</string>
+    <string name="click_take_photos">点击头像拍照</string>
+    <string name="btn_binding_member">确认绑定</string>
+    <string name="btn_binding_end">绑定完成</string>
+
 </resources>
