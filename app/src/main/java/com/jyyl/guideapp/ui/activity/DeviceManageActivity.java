@@ -1,6 +1,7 @@
 package com.jyyl.guideapp.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,11 +13,13 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.bean.DeviceInfo;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
+import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.T;
 
 import java.util.ArrayList;
@@ -41,6 +44,8 @@ public class DeviceManageActivity extends BaseActivity {
     private ArrayList<DeviceInfo> mDatas = new ArrayList<DeviceInfo>();
     private int number = 1;
     private String deviceId = null;
+
+    public static final int REQUEST_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,20 +111,12 @@ public class DeviceManageActivity extends BaseActivity {
         super.onViewClick(v);
         switch (v.getId()){
             case R.id.btn_scan:
-                T.showShortToast(mContext,"扫描二维码");
+                Intent intent = new Intent(this, CaptureActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
                 break;
             case R.id.btn_binging_device:
                 deviceId = mDeviceIdEt.getText().toString().trim();
-                if (TextUtils.isEmpty(deviceId)){
-                    T.showShortToast(this,"请输入设备编号");
-                }else if (containsDeciveId(deviceId)){
-                    T.showShortToast(this,"设备已存在");
-                }else {
-                    mDatas.add(new DeviceInfo(number,mDeviceIdEt.getText().toString()));
-                    number++;
-                    mAdapter.notifyDataSetChanged();
-                    T.showShortToast(this,"绑定成功");
-                }
+                addDevice(deviceId);
                 break;
             case R.id.toolbar_right_btn:
                 T.showShortToast(mContext, "编辑设备");
@@ -127,6 +124,39 @@ public class DeviceManageActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){ //RESULT_OK = -1
+            Bundle bundle = data.getExtras();
+            deviceId = bundle.getString("result");
+            LogUtils.d(deviceId);
+            addDevice(deviceId);
+        }
+    }
+
+    /**
+     * 添加设备
+     * @param deviceId id
+     */
+    private void addDevice(String deviceId) {
+        if (TextUtils.isEmpty(deviceId)){
+            T.showShortToast(this, "请输入设备编号");
+        }else if (containsDeciveId(deviceId)){
+            T.showShortToast(this,"设备已存在");
+        }else {
+            mDatas.add(new DeviceInfo(number,deviceId));
+            number++;
+            mAdapter.notifyDataSetChanged();
+            T.showShortToast(this,"绑定成功");
+        }
+    }
+
+    /**
+     * 检查设备是否已存在
+     * @param deviceId
+     * @return
+     */
     private boolean containsDeciveId(String deviceId){
         for (DeviceInfo deviceInfo : mDatas){
             if (deviceId.equals(deviceInfo.getDeviceId()))

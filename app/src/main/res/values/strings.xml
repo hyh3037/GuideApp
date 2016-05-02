@@ -44,5 +44,7 @@
     <string name="personal_guide_card">证件：</string>
     <string name="personal_company">公司：</string>
     <string name="personal_notice">消息：</string>
-    
+
+    <string name="scan_info">将二维码放入框内，即可自动扫描</string>
+
 </resources>

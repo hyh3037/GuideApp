@@ -28,11 +28,10 @@ buildscript {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:design:22.2.1'
-    compile 'com.bigkoo:pickerview:2.0.8'
+    compile 'com.google.zxing:core:3.2.1'
 
     //滑动退出activity
     compile 'me.imid.swipebacklayout.lib:library:1.0.0'
