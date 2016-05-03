@@ -39,4 +39,9 @@ public class DeviceInfo {
     public void setState(boolean state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        return number+deviceId;
+    }
 }

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.ui.base.BaseActivity;
-import com.jyyl.guideapp.ui.view.SelectPhotoDialog;
+import com.jyyl.guideapp.ui.dialog.SelectPhotoDialog;
 import com.jyyl.guideapp.utils.BitmapUtils;
 import com.jyyl.guideapp.utils.FileUtils;
 import com.jyyl.guideapp.utils.SelectPictureUtils;

@@ -8,11 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.bean.DeviceInfo;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.ui.base.BaseActivity;
+import com.jyyl.guideapp.ui.dialog.SelectDeviceDialog;
 import com.jyyl.guideapp.utils.BitmapUtils;
 import com.jyyl.guideapp.utils.FileUtils;
 import com.jyyl.guideapp.utils.SelectPictureUtils;
@@ -26,14 +28,17 @@ import java.io.IOException;
  * @Author: Shang
  * @Date: 2016/4/22  17:17
  */
-public class MemberInfoActivity extends BaseActivity {
+public class MemberInfoActivity extends BaseActivity implements SelectDeviceDialog
+                                                                        .OnSelectDeviceListener {
     private Toolbar toolbar;
     private Context mContext;
 
     private CircleImageView mPhotoView;
-    private Button mBindingBtn;
+    private TextView mDeviceNumberTv;
+    private TextView mDeviceIdTv;
+    private TextView mBindingBtn;
 
-    private String mDeviceId;
+    private String mMemberId;
     private Uri photoUri = null;
     private Bitmap cropBitmap = null;
 
@@ -65,9 +70,12 @@ public class MemberInfoActivity extends BaseActivity {
     protected void initViews() {
         super.initViews();
 
-        mDeviceId = getIntent().getStringExtra("deviceId");
+        mMemberId = getIntent().getStringExtra("memberId");
         mPhotoView = (CircleImageView) findViewById(R.id.iv_member_photoview);
-        mBindingBtn = (Button) findViewById(R.id.btn_binding_member);
+        mDeviceNumberTv = (TextView) findViewById(R.id.tv_member_device_number);
+        mDeviceNumberTv.setVisibility(View.GONE);
+        mDeviceIdTv = (TextView) findViewById(R.id.tv_member_device_id);
+        mBindingBtn = (TextView) findViewById(R.id.btn_binding_member);
     }
 
     @Override
@@ -75,19 +83,25 @@ public class MemberInfoActivity extends BaseActivity {
         super.initListener();
 
         mPhotoView.setOnClickListener(this);
+        mDeviceIdTv.setOnClickListener(this);
         mBindingBtn.setOnClickListener(this);
     }
 
     @Override
     protected void onViewClick(View v) {
         super.onViewClick(v);
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_member_photoview:
                 SelectPictureUtils.startCamearPicCut(this, photoUri);
                 break;
+            case R.id.tv_member_device_id:
+                SelectDeviceDialog selectDeviceDialog = new SelectDeviceDialog();
+                selectDeviceDialog.show(getFragmentManager(), "SelectDevice");
+                break;
             case R.id.btn_binding_member:
-                T.showShortToast(mContext,"游客与设备绑定成功");
-                openActivity(mContext,BindingMemberActivity.class);
+                T.showShortToast(mContext, "游客与设备绑定成功");
+                openActivity(mContext, MemberManageActivity.class);
+                finish();
                 break;
         }
     }
@@ -99,7 +113,7 @@ public class MemberInfoActivity extends BaseActivity {
         }
         try {
             photoUri = FileUtils.getUriByFileDirAndFileName(BaseConstans.SystemPicture
-                    .SAVE_DIRECTORY, mDeviceId+".jpg");
+                    .SAVE_DIRECTORY, "member_" + mMemberId + ".jpg");
         } catch (IOException e) {
             T.showShortToast(mContext, "创建文件失败");
         }
@@ -109,7 +123,7 @@ public class MemberInfoActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // 点击取消按钮
-        if(resultCode == RESULT_CANCELED){
+        if (resultCode == RESULT_CANCELED) {
             return;
         }
 
@@ -129,15 +143,25 @@ public class MemberInfoActivity extends BaseActivity {
      */
     private void setPhotoView() {
         try {
-            cropBitmap = BitmapUtils.getBitmapFromUri(photoUri, this); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
+            cropBitmap = BitmapUtils.getBitmapFromUri(photoUri, this);
+            //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
 
             if (cropBitmap != null) {
                 mPhotoView.setImageBitmap(cropBitmap);
-            }else {
+            } else {
                 mPhotoView.setImageResource(R.mipmap.ic_launcher);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDeviceInfo(DeviceInfo deviceInfo) {
+        if (deviceInfo != null) {
+            mDeviceNumberTv.setVisibility(View.VISIBLE);
+            mDeviceNumberTv.setText(String.valueOf(deviceInfo.getNumber()));
+            mDeviceIdTv.setText(deviceInfo.getDeviceId());
         }
     }
 }

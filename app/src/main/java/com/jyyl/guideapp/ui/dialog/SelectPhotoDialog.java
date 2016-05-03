@@ -1,4 +1,4 @@
-package com.jyyl.guideapp.ui.view;
+package com.jyyl.guideapp.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;

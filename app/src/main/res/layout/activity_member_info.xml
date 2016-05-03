@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -13,13 +14,15 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btn_binding_member"
         android:layout_below="@+id/include"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/scrollView">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -48,14 +51,55 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:background="@drawable/shape_wihte_bg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/binding_device"
+                    android:textSize="@dimen/text_size_small_middle"/>
+
+                <TextView
+                    android:id="@+id/tv_member_device_number"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/shape_circle_number_bg"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_size_micro"
+                    android:visibility="gone"
+                    tools:text="16"/>
+
+                <TextView
+                    android:id="@+id/tv_member_device_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/select_down"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="@dimen/text_size_small_middle"
+                    tools:text="选择绑定设备"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
 
                     <com.jyyl.guideapp.widget.CleanEditText
                         android:id="@+id/et_member_name"
@@ -66,7 +110,8 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
 
                     <com.jyyl.guideapp.widget.CleanEditText
                         android:id="@+id/et_member_id_card"
@@ -77,18 +122,20 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
 
                     <com.jyyl.guideapp.widget.CleanEditText
                         android:id="@+id/et_children_name"
                         style="@style/edittext_member_info_style"
                         android:hint="@string/member_children_name"
-                        android:inputType="number"/>
+                        android:inputType="text"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
 
                     <com.jyyl.guideapp.widget.CleanEditText
                         android:id="@+id/et_children_tel"
@@ -100,14 +147,19 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <TextView
         android:id="@+id/btn_binding_member"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_btn_bg_blue"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@color/transparent"
         android:text="@string/btn_binding_member"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_medium"/>
+        android:textSize="@dimen/text_size_medium"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/include"
+        android:layout_alignParentTop="true"/>
 
 </RelativeLayout>

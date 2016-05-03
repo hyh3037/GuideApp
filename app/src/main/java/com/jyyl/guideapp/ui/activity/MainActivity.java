@@ -33,7 +33,7 @@ import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.ui.base.BaseActivity;
-import com.jyyl.guideapp.ui.view.NowMusterDialog;
+import com.jyyl.guideapp.ui.dialog.NowMusterDialog;
 import com.jyyl.guideapp.utils.T;
 
 import java.util.LinkedList;
@@ -71,7 +71,6 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
         mContext = this;
 
         initBaiduMap();
-        initNavigationLeft();
     }
 
     @Override
@@ -81,6 +80,8 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
         mFab = (FloatingActionButton) findViewById(R.id.fab_remind);
         mNowMuster = (Button) findViewById(R.id.btn_now_muster);
         mTimeMuster = (Button) findViewById(R.id.btn_time_muster);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
     }
 
     @Override
@@ -284,7 +285,7 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
                     // 构建Marker图标
                     BitmapDescriptor bitmap;
                     if (iscal == 0) {
-                        bitmap = BitmapDescriptorFactory.fromResource(R.drawable.huaji); // 非推算结果
+                        bitmap = BitmapDescriptorFactory.fromResource(R.drawable.main_icon_compass); // 非推算结果
                     } else {
                         bitmap = BitmapDescriptorFactory.fromResource(R.drawable
                                 .icon_openmap_focuse_mark); // 推算结果
@@ -307,41 +308,10 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
 
     };
 
-    /**
-     * 初始化抽屉菜单
-     */
-    private void initNavigationLeft() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
-        //侧边导航不能滑动，只能通过点击按钮打开
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                Gravity.LEFT);
-        mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerStateChanged(int newState) {
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                mDrawerLayout.setDrawerLockMode(
-                        DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
-            }
-        });
-    }
 
     //打开导航菜单的按钮 点击事件
     public void OpenLeftMenu(View view) {
         mDrawerLayout.openDrawer(Gravity.LEFT);
-        //侧边导航可以滑动，可以通过滑动关闭
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
-                Gravity.LEFT);
     }
 
     /**

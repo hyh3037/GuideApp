@@ -95,11 +95,9 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.BindingMemberActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".ui.activity.MemberInfoActivity"/>
+            android:name=".ui.activity.MemberInfoActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
         <activity
             android:name=".ui.activity.HealthDataActivity"

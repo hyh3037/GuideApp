@@ -15,7 +15,7 @@ import com.jyyl.guideapp.bean.MemberInfo;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
-import com.jyyl.guideapp.ui.view.BuildTeamDialog;
+import com.jyyl.guideapp.ui.dialog.BuildTeamDialog;
 import com.jyyl.guideapp.utils.T;
 
 import java.util.ArrayList;
@@ -131,11 +131,14 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
             case R.id.toolbar_right_btn:
                 mDatas.clear();
                 mAdapter.notifyDataSetChanged();
+                toolbar.setTitle("游客管理");
                 showEmptyView();
                 break;
 
             case R.id.btn_add_member:
-                openActivity(mContext,BindingMemberActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("memberId", String.valueOf(mDatas.size()));
+                openActivity(mContext,MemberInfoActivity.class);
                 break;
 
             case R.id.btn_build_team:
@@ -159,6 +162,7 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
 
     @Override
     public void setTeamInfo(String teamName) {
+        toolbar.setTitle(teamName);
         initDatas();
         mAdapter.notifyDataSetChanged();
         showMemberView();
