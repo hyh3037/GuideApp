@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.service.UpdateService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,7 +40,7 @@ public class UpdateManager {
     /* 下载结束 */
     private static final int DOWNLOAD_FINISH = 2;
     /* 保存解析的XML信息 */
-    HashMap<String, String> mHashMap;
+    public static HashMap<String, String> mHashMap;
     /* 下载保存路径 */
     private String mSavePath;
     /* 记录进度条数量 */
@@ -139,8 +140,10 @@ public class UpdateManager {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+
+                        mContext.startService(new Intent(mContext, UpdateService.class));
                         // 显示下载对话框
-                        showDownloadDialog();
+                        //showDownloadDialog();
                     }
                 });
         // 稍后更新

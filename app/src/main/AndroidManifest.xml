@@ -118,6 +118,8 @@
 
         <activity android:name="com.google.zxing.activity.CaptureActivity"/>
 
+        <service android:name=".service.UpdateService"/>
+
     </application>
 
 </manifest>
