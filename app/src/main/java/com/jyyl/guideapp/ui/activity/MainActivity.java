@@ -32,6 +32,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.http.update.UpdateManager;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.NowMusterDialog;
 import com.jyyl.guideapp.utils.T;
@@ -71,6 +72,9 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
         mContext = this;
 
         initBaiduMap();
+
+        //检查版本更新
+        new UpdateManager(this);
     }
 
     @Override

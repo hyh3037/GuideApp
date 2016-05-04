@@ -92,11 +92,12 @@
 
         <activity
             android:name=".ui.activity.MemberManageActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.activity.MemberInfoActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
         <activity
