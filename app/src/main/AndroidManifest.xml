@@ -118,7 +118,7 @@
 
         <activity android:name="com.google.zxing.activity.CaptureActivity"/>
 
-        <service android:name=".service.UpdateService"/>
+        <service android:name=".service.update.UpdateService"/>
 
     </application>
 

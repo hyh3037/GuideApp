@@ -1,4 +1,4 @@
-package com.jyyl.guideapp.http.update;
+package com.jyyl.guideapp.service.update;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.service.UpdateService;
 
 import java.io.File;
 import java.io.FileOutputStream;

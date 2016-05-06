@@ -9,6 +9,7 @@ public class DeviceInfo {
     private int number;
     private String deviceId;
     private boolean state;
+    private boolean isCheck;
 
     public DeviceInfo(int number, String deviceId) {
         this.number = number;
@@ -32,13 +33,23 @@ public class DeviceInfo {
         this.deviceId = deviceId;
     }
 
-    public boolean getState() {
+    public boolean isState() {
         return state;
     }
 
     public void setState(boolean state) {
         this.state = state;
     }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setIsCheck(boolean isCheck) {
+        this.isCheck = isCheck;
+    }
+
+
 
     @Override
     public String toString() {

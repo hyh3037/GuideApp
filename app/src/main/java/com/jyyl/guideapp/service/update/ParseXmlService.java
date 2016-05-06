@@ -1,4 +1,4 @@
-package com.jyyl.guideapp.http.update;
+package com.jyyl.guideapp.service.update;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

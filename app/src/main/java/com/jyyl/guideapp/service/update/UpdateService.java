@@ -1,4 +1,4 @@
-package com.jyyl.guideapp.service;
+package com.jyyl.guideapp.service.update;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -18,7 +18,6 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.http.update.UpdateManager;
 import com.jyyl.guideapp.ui.activity.MainActivity;
 
 import java.io.File;

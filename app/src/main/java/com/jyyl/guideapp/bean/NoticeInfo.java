@@ -7,11 +7,12 @@ package com.jyyl.guideapp.bean;
  */
 public class NoticeInfo {
 
+    private String message;
+    private boolean isCheck;
+
     public NoticeInfo(String message) {
         this.message = message;
     }
-
-    private String message;
 
     public String getMessage() {
         return message;
@@ -19,5 +20,13 @@ public class NoticeInfo {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setIsCheck(boolean isCheck) {
+        this.isCheck = isCheck;
     }
 }

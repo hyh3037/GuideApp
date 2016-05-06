@@ -92,7 +92,7 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
         mAddMemberBtn = (Button) findViewById(R.id.btn_add_member);
         mBuildTeambtn = (Button) findViewById(R.id.btn_build_team);
 
-        mDisbandThem = (TextView) findViewById(R.id.toolbar_right_btn);
+        mDisbandThem = (TextView) findViewById(R.id.toolbar_right_tv);
         mDisbandThem.setText("解散团队");
 
         if (!mDatas.isEmpty()){
@@ -128,7 +128,7 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
     protected void onViewClick(View v) {
         super.onViewClick(v);
         switch (v.getId()){
-            case R.id.toolbar_right_btn:
+            case R.id.toolbar_right_tv:
                 mDatas.clear();
                 mAdapter.notifyDataSetChanged();
                 toolbar.setTitle("游客管理");

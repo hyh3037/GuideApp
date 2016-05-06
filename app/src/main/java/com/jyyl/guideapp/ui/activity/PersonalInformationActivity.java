@@ -77,7 +77,7 @@ public class PersonalInformationActivity extends BaseActivity
     @Override
     protected void initViews() {
         super.initViews();
-        mEditBtn = (TextView) findViewById(R.id.toolbar_right_btn);
+        mEditBtn = (TextView) findViewById(R.id.toolbar_right_tv);
         mEditBtn.setVisibility(View.VISIBLE);
         mPhotoView = (CircleImageView) findViewById(R.id.iv_personal_photoview);
         dialog = new SelectPhotoDialog(this);
@@ -96,7 +96,7 @@ public class PersonalInformationActivity extends BaseActivity
     protected void onViewClick(View v) {
         super.onViewClick(v);
         switch (v.getId()) {
-            case R.id.toolbar_right_btn:
+            case R.id.toolbar_right_tv:
                 T.showShortToast(mContext, "编辑个人信息");
                 break;
             case R.id.iv_personal_photoview:
