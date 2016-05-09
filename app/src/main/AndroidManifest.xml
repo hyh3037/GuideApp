@@ -120,6 +120,10 @@
 
         <service android:name=".service.update.UpdateService"/>
 
+        <receiver
+            android:name=".receive.AlarmReceiver">
+        </receiver>
+
     </application>
 
 </manifest>

@@ -52,7 +52,16 @@
     <ListView
         android:id="@+id/device_listview"
         style="@style/ListviewStyle">
-
     </ListView>
 
+    <TextView
+        android:id="@+id/device_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="15dip"
+        android:text="无可用绑定设备"
+        android:textSize="@dimen/text_size_large"
+        android:visibility="gone" />
 </LinearLayout>

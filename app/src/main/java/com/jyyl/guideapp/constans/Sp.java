@@ -30,4 +30,9 @@ public class Sp {
     public static final String SP_KEY_LAST_LOGIN_ACCOUNT = "last_login_account";
     public static final String SP_KEY_LAST_LOGIN_PASSWORD = "last_login_password";
 
+    /**
+     * 定时集合时间
+     */
+    public static final String SP_KEY_MUSTER_TIME = "muster_time";
+
 }

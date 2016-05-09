@@ -99,11 +99,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         beepManager = new BeepManager(this);
 
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation
-                .RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT,
-                0.9f);
+                .RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, -0.99f, Animation.RELATIVE_TO_PARENT,
+                0.01f);
         animation.setDuration(3000);
-        animation.setRepeatCount(-1);
-        animation.setRepeatMode(Animation.RESTART);
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatMode(Animation.REVERSE);
         scanLine.startAnimation(animation);
     }
 

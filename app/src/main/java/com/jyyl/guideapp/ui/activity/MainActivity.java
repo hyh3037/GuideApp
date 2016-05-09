@@ -1,12 +1,14 @@
 package com.jyyl.guideapp.ui.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,11 +34,16 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.service.update.UpdateManager;
+import com.jyyl.guideapp.constans.Sp;
+import com.jyyl.guideapp.receive.AlarmReceiver;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.NowMusterDialog;
+import com.jyyl.guideapp.ui.dialog.TimeMusterDialog;
+import com.jyyl.guideapp.utils.LogUtils;
+import com.jyyl.guideapp.utils.SPUtils;
 import com.jyyl.guideapp.utils.T;
 
+import java.util.Calendar;
 import java.util.LinkedList;
 
 
@@ -45,7 +52,8 @@ import java.util.LinkedList;
  * @Author: Shang
  * @Date: 2016/4/13  14:55
  */
-public class MainActivity extends BaseActivity implements NowMusterDialog.SendMusterMsgListener{
+public class MainActivity extends BaseActivity
+        implements NowMusterDialog.SendMusterMsgListener, TimeMusterDialog.TimeMusterListener {
 
     private Context mContext;
     private DrawerLayout mDrawerLayout;
@@ -55,6 +63,7 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
     private boolean isMusterShow = false;
     private Button mNowMuster;
     private Button mTimeMuster;
+    private PendingIntent pendingIntent;
 
     private LocationService locService;
     private BaiduMap mBaiduMap;
@@ -73,8 +82,6 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
 
         initBaiduMap();
 
-        //检查版本更新
-        new UpdateManager(this);
     }
 
     @Override
@@ -84,7 +91,6 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
         mFab = (FloatingActionButton) findViewById(R.id.fab_remind);
         mNowMuster = (Button) findViewById(R.id.btn_now_muster);
         mTimeMuster = (Button) findViewById(R.id.btn_time_muster);
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
     }
 
@@ -105,10 +111,9 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
                 locService.start();
                 break;
             case R.id.fab_remind:
-                Log.d("==================", String.valueOf(isMusterShow));
                 if (!isMusterShow) {
                     setMusterVisibility(true);
-                }else {
+                } else {
                     setMusterVisibility(false);
                 }
                 break;
@@ -118,7 +123,8 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
                 setMusterVisibility(false);
                 break;
             case R.id.btn_time_muster:
-                T.showShortToast(mContext, "定时集合");
+                TimeMusterDialog timeMusterDialog = new TimeMusterDialog();
+                timeMusterDialog.show(getFragmentManager(), "TimeMuster");
                 setMusterVisibility(false);
                 break;
         }
@@ -134,6 +140,8 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
         if (isVisibility) {
             mNowMuster.setVisibility(View.VISIBLE);
             mTimeMuster.setVisibility(View.VISIBLE);
+            LogUtils.d("main+++++++",String.valueOf(SPUtils.get(this, Sp.SP_KEY_MUSTER_TIME,"定时集合")));
+            mTimeMuster.setText((String) SPUtils.get(this,Sp.SP_KEY_MUSTER_TIME,"定时集合"));
             isMusterShow = true;
         } else {
             mNowMuster.setVisibility(View.INVISIBLE);
@@ -289,7 +297,8 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
                     // 构建Marker图标
                     BitmapDescriptor bitmap;
                     if (iscal == 0) {
-                        bitmap = BitmapDescriptorFactory.fromResource(R.drawable.main_icon_compass); // 非推算结果
+                        bitmap = BitmapDescriptorFactory.fromResource(R.drawable
+                                .main_icon_compass); // 非推算结果
                     } else {
                         bitmap = BitmapDescriptorFactory.fromResource(R.drawable
                                 .icon_openmap_focuse_mark); // 推算结果
@@ -350,6 +359,28 @@ public class MainActivity extends BaseActivity implements NowMusterDialog.SendMu
     public void sendMsg(String msg) {
         T.showShortToast(this, "集合信息已发送");
     }
+
+    @Override
+    public void saveMessage(String msg, int hour, int minute) {
+        T.showShortToast(this, "定时集合设置成功");
+
+        String musterTime = (hour < 10 ? "0" + hour : hour) + ":"
+                + (minute < 10 ? "0" + minute : minute) + "集合";
+        SPUtils.put(this , Sp.SP_KEY_MUSTER_TIME , musterTime);
+        /* Retrieve a PendingIntent that will perform a broadcast */
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
 
     /**
      * 封装定位结果和时间的实体类

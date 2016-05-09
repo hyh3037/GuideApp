@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.service.update.UpdateManager;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 
 /**
@@ -38,5 +39,16 @@ public class SettingsActivity extends BaseActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onViewClick(View v) {
+        super.onViewClick(v);
+        switch (v.getId()){
+            case R.id.tv_check_updates:
+                //检查版本更新
+                new UpdateManager(this);
+                break;
+        }
     }
 }

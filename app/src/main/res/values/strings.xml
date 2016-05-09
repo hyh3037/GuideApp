@@ -48,6 +48,7 @@
 
     <string name="now_muster">紧急集合</string>
     <string name="time_muster">定时集合</string>
+    <string name="hint_muster_msg">集合！集合了！</string>
 
     <string name="personal_nickname">昵称：</string>
     <string name="personal_guide_card">证件：</string>
@@ -64,5 +65,7 @@
     <string name="click_take_photos">点击头像拍照</string>
     <string name="btn_binding_member">确认绑定</string>
     <string name="binding_device">绑定设备：</string>
+
+    <string name="ckeck_updates">检查更新</string>
 
 </resources>

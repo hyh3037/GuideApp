@@ -70,6 +70,7 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         mAdapter = new DeviceManageAdapter(mContext,mDatas,R.layout.item_device_listview);
         mAdapter.setFlag(flage);
         mListView.setAdapter(mAdapter);
+        mListView.setEmptyView(findViewById(R.id.device_empty_view));
     }
 
     private void initToolBar() {

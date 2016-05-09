@@ -8,5 +8,17 @@
 
     <include layout="@layout/toolbar"/>
 
+    <TextView
+        android:id="@+id/tv_check_updates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_btn_bg_white"
+        android:padding="10dp"
+        android:onClick="onClick"
+        android:layout_margin="20dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_medium"
+        android:text="@string/ckeck_updates"/>
+
 
 </LinearLayout>
