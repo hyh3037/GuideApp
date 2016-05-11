@@ -59,15 +59,15 @@ public class DeviceManageAdapter extends BaseAdapterHelper<DeviceInfo> {
             }
         });
 
-        holder.setOnLongClickListener(R.id.item_device_manage, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (!flage){
-                    T.showShortToast(mContext, "删除");
-                    return true;
-                }
-                return false;
-            }
-        });
+//        holder.setOnLongClickListener(R.id.item_device_manage, new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                if (!flage){
+//                    T.showShortToast(mContext, "删除");
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
     }
 }

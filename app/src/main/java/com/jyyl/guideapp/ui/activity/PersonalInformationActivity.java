@@ -78,6 +78,7 @@ public class PersonalInformationActivity extends BaseActivity
     protected void initViews() {
         super.initViews();
         mEditBtn = (TextView) findViewById(R.id.toolbar_right_tv);
+        mEditBtn.setText("编辑");
         mEditBtn.setVisibility(View.VISIBLE);
         mPhotoView = (CircleImageView) findViewById(R.id.iv_personal_photoview);
         dialog = new SelectPhotoDialog(this);

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/splash_bg">
+        android:background="@color/skyblue">
 
         <com.jyyl.guideapp.widget.CircleImageView
             android:id="@+id/iv_nav_photoview"
@@ -23,24 +23,25 @@
 
         <ImageView
             android:id="@+id/iv_nav_notice"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_margin="20dp"
-            android:elevation="4dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:scaleType="fitXY"
+            android:elevation="2dp"
+            android:src="@drawable/icon_notice_w"/>
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_nav_health"
-        style="@style/textview_nav_item"
-        android:text="@string/member_management"/>
 
     <TextView
         android:id="@+id/tv_nav_device"
         style="@style/textview_nav_item"
         android:text="@string/device_management"/>
+
+    <TextView
+        android:id="@+id/tv_nav_health"
+        style="@style/textview_nav_item"
+        android:text="@string/member_management"/>
 
     <TextView
         android:id="@+id/tv_nav_setting"

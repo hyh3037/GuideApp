@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:background="@drawable/shape_wihte_bg"
+              android:orientation="vertical"
+              android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_info_photo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/tv_info_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:text="姓名"
+            android:textSize="@dimen/text_size_medium"/>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btn_info_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_btn_bg_bw"
+        android:text="@string/info_notice"
+        android:textSize="@dimen/text_size_medium"/>
+
+</LinearLayout>

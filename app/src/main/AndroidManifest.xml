@@ -96,9 +96,14 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.MemberInfoActivity"
+            android:name=".ui.activity.MemberBindingActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+
+        <activity
+            android:name=".ui.activity.MemberInfoActivity"
+            android:screenOrientation="portrait"/>
+
 
         <activity
             android:name=".ui.activity.HealthDataActivity"
@@ -110,6 +115,10 @@
 
         <activity
             android:name=".ui.activity.PersonalInformationActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".ui.activity.PersonalInfoEditActivity"
             android:screenOrientation="portrait"/>
 
         <activity

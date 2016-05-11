@@ -4,6 +4,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,9 +14,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -25,6 +32,7 @@ import com.baidu.location.service.WriteLog;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
@@ -34,15 +42,22 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.bean.InfoWindowHolder;
+import com.jyyl.guideapp.bean.MemberInfo;
+import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.receive.AlarmReceiver;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.NowMusterDialog;
 import com.jyyl.guideapp.ui.dialog.TimeMusterDialog;
+import com.jyyl.guideapp.utils.BitmapUtils;
+import com.jyyl.guideapp.utils.FileUtils;
 import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.SPUtils;
+import com.jyyl.guideapp.utils.ScreenUtils;
 import com.jyyl.guideapp.utils.T;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
 
@@ -53,7 +68,10 @@ import java.util.LinkedList;
  * @Date: 2016/4/13  14:55
  */
 public class MainActivity extends BaseActivity
-        implements NowMusterDialog.SendMusterMsgListener, TimeMusterDialog.TimeMusterListener {
+        implements NowMusterDialog.SendMusterMsgListener, TimeMusterDialog.TimeMusterListener,
+                   BaiduMap.OnMarkerClickListener {
+
+    private static String TAG = "MainActivity";
 
     private Context mContext;
     private DrawerLayout mDrawerLayout;
@@ -63,14 +81,18 @@ public class MainActivity extends BaseActivity
     private boolean isMusterShow = false;
     private Button mNowMuster;
     private Button mTimeMuster;
-    private PendingIntent pendingIntent;
 
     private LocationService locService;
     private BaiduMap mBaiduMap;
+    private BDLocation location; //当前位置
     private LinkedList<LocationEntity> locationList = new LinkedList<>();
     // 存放历史定位结果的链表，最大存放当前结果的前5次定位结果
 
-    private Marker mMarkerSelf = null;
+    private Marker mMarkerSelf = null;  //导游位置marker
+    private BitmapDescriptor markerBitmap;
+    private LinkedList<MemberInfo> mMemberList = new LinkedList<>();//游客信息集合
+    private LinearLayout infowindow;
+    private InfoWindow mInfoWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +103,15 @@ public class MainActivity extends BaseActivity
         mContext = this;
 
         initBaiduMap();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //测试数据
+        for (int i = 0; i < 5; i++) {
+            mMemberList.add(new MemberInfo("游客" + i));
+        }
     }
 
     @Override
@@ -103,12 +133,17 @@ public class MainActivity extends BaseActivity
         mTimeMuster.setOnClickListener(this);
     }
 
+    /**
+     * @param v
+     *         被点击的view
+     */
     @Override
     protected void onViewClick(View v) {
         super.onViewClick(v);
         switch (v.getId()) {
-            case R.id.ib_loc_normal: //重新定位
-                locService.start();
+            case R.id.ib_loc_normal: //回到当前位置
+                resetMarker();
+                locService.request();//重新请求定位
                 break;
             case R.id.fab_remind:
                 if (!isMusterShow) {
@@ -131,6 +166,15 @@ public class MainActivity extends BaseActivity
     }
 
     /**
+     * 重置marker
+     */
+    private void resetMarker() {
+        mBaiduMap.clear();
+        mMarkerSelf = null;
+        addMarkers();
+    }
+
+    /**
      * 是否显示集合按钮
      * @param isVisibility
      *         true：显示
@@ -140,8 +184,7 @@ public class MainActivity extends BaseActivity
         if (isVisibility) {
             mNowMuster.setVisibility(View.VISIBLE);
             mTimeMuster.setVisibility(View.VISIBLE);
-            LogUtils.d("main+++++++",String.valueOf(SPUtils.get(this, Sp.SP_KEY_MUSTER_TIME,"定时集合")));
-            mTimeMuster.setText((String) SPUtils.get(this,Sp.SP_KEY_MUSTER_TIME,"定时集合"));
+            mTimeMuster.setText((String) SPUtils.get(this, Sp.SP_KEY_MUSTER_TIME, "定时集合"));
             isMusterShow = true;
         } else {
             mNowMuster.setVisibility(View.INVISIBLE);
@@ -151,60 +194,31 @@ public class MainActivity extends BaseActivity
 
     }
 
-
+    /**
+     * ==================================地图START================================================
+     */
     private void initBaiduMap() {
         mMapView = (MapView) findViewById(R.id.mapview);
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         //设置地图类型 MAP_TYPE_NORMAL 普通图； MAP_TYPE_SATELLITE 卫星图；MAP_TYPE_NONE 空白地图
+        mBaiduMap.setCompassPosition(new Point(ScreenUtils.getScreenWidth(this) - 100, 120));
+        //指南针坐标
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(15)); //改变地图状态
+        mBaiduMap.setOnMarkerClickListener(this);
         mMapView.showZoomControls(false); //隐藏缩放按钮
         mMapView.removeViewAt(1); //隐藏百度logo
 
+        markerBitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark);
+        infowindow = (LinearLayout) getLayoutInflater().inflate(R.layout.item_info_window, null);
+
         locService = ((MyApplication) getApplication()).locationService;
         LocationClientOption mOption = locService.getDefaultLocationClientOption();
-        mOption.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
+        mOption.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);//低功耗
         locService.setLocationOption(mOption);
+
         locService.registerListener(mListener);
         locService.start();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
-        mMapView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
-        mMapView.onPause();
-
-        //关闭抽屉菜单
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerLayout.closeDrawers();
-            }
-        }, 350);
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // 在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
-        WriteLog.getInstance().close();
-        locService.unregisterListener(mListener);
-        locService.stop();
-        mMapView.onDestroy();
     }
 
     /*****
@@ -243,7 +257,6 @@ public class MainActivity extends BaseActivity
             LocationEntity temp = new LocationEntity();
             temp.location = location;
             temp.time = System.currentTimeMillis();
-            locData.putInt("iscalculate", 0);
             locationList.add(temp);
         } else {
             if (locationList.size() > 5)
@@ -267,9 +280,6 @@ public class MainActivity extends BaseActivity
                         (locationList.get(locationList.size() - 1).location.getLatitude() +
                                 location.getLatitude())
                                 / 2);
-                locData.putInt("iscalculate", 1);
-            } else {
-                locData.putInt("iscalculate", 0);
             }
             LocationEntity newLocation = new LocationEntity();
             newLocation.location = location;
@@ -289,38 +299,164 @@ public class MainActivity extends BaseActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             try {
-                locService.stop();
-                BDLocation location = msg.getData().getParcelable("loc");
-                int iscal = msg.getData().getInt("iscalculate");
+                location = msg.getData().getParcelable("loc");
                 if (location != null) {
-                    LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-                    // 构建Marker图标
-                    BitmapDescriptor bitmap;
-                    if (iscal == 0) {
-                        bitmap = BitmapDescriptorFactory.fromResource(R.drawable
-                                .main_icon_compass); // 非推算结果
-                    } else {
-                        bitmap = BitmapDescriptorFactory.fromResource(R.drawable
-                                .icon_openmap_focuse_mark); // 推算结果
-                    }
-
-                    // 构建MarkerOption，用于在地图上添加Marker
-                    OverlayOptions option = new MarkerOptions().position(point).icon(bitmap);
-                    // 在地图上添加Marker，并显示
-                    if (mMarkerSelf == null) {
-                        mMarkerSelf = (Marker) mBaiduMap.addOverlay(option);
-                    } else {
-                        mMarkerSelf.setPosition(point);
-                    }
-                    mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(point));
+                    addMarkers();
                 }
             } catch (Exception e) {
-                // TODO: handle exception
+                LogUtils.d(TAG,"定位失败");
+                e.printStackTrace();
             }
         }
 
     };
 
+    private void addMarkers() {
+        //模拟位置
+        mMemberList.get(0).setLatLng(new LatLng((location.getLatitude() + 0.05),
+                (location.getLongitude()) + 0.003));
+        mMemberList.get(1).setLatLng(new LatLng((location.getLatitude() - 0.01),
+                (location.getLongitude()) - 0.006));
+        mMemberList.get(2).setLatLng(new LatLng((location.getLatitude() + 0.05),
+                (location.getLongitude()) - 0.003));
+        mMemberList.get(3).setLatLng(new LatLng((location.getLatitude() - 0.04),
+                (location.getLongitude()) + 0.005));
+        mMemberList.get(4).setLatLng(new LatLng((location.getLatitude() + 0.02),
+                (location.getLongitude()) - 0.004));
+        // 构建Marker图标
+        BitmapDescriptor bitmap;
+        bitmap = BitmapDescriptorFactory.fromResource(R.drawable
+                .main_icon_compass);
+        LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
+        // 构建MarkerOption，用于在地图上添加Marker
+        OverlayOptions option = new MarkerOptions().position(point).icon(bitmap);
+        // 在地图上添加Marker，并显示
+        if (mMarkerSelf == null) {
+            mMarkerSelf = (Marker) mBaiduMap.addOverlay(option);
+            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(point));
+            addMarkerMember(mMemberList);
+        } else {
+            mMarkerSelf.setPosition(point);
+        }
+    }
+
+    /**
+     * 添加游客marker
+     */
+    private void addMarkerMember(LinkedList<MemberInfo> memberList) {
+        LogUtils.d(TAG, "添加游客的marker");
+        for (int i = 0; i < memberList.size(); i++) {
+            MemberInfo memberInfo = memberList.get(i);
+            LatLng point = memberInfo.getLatLng();
+            if (point != null){
+                // 构建MarkerOption，用于在地图上添加Marker
+                OverlayOptions option = new MarkerOptions().position(point).icon(markerBitmap);
+                // 在地图上添加Marker，并显示
+                Marker marker = (Marker) mBaiduMap.addOverlay(option);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("marker", memberInfo);
+                marker.setExtraInfo(bundle);
+            }
+        }
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        //获得marker中的数据
+        MemberInfo memberInfo = (MemberInfo) marker.getExtraInfo().get("marker");
+        createInfoWindow(infowindow, memberInfo);
+        mInfoWindow = new InfoWindow(infowindow, marker.getPosition(), -70);
+        mBaiduMap.showInfoWindow(mInfoWindow);
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mBaiduMap.hideInfoWindow();
+        return super.onTouchEvent(event);
+    }
+
+    /**
+     * 创建 弹出窗口
+     */
+    private void createInfoWindow(LinearLayout infowindow, MemberInfo memberInfo) {
+
+        InfoWindowHolder holder = null;
+        if (infowindow.getTag() == null) {
+            holder = new InfoWindowHolder();
+
+            holder.mPhotoIv = (ImageView) infowindow.findViewById(R.id.iv_info_photo);
+            holder.mNameTv = (TextView) infowindow.findViewById(R.id.tv_info_name);
+            holder.mNoticeBtn = (Button) infowindow.findViewById(R.id.btn_info_notice);
+            infowindow.setTag(holder);
+        }
+
+        holder = (InfoWindowHolder) infowindow.getTag();
+
+        Bitmap cropBitmap = null;
+        Uri cutUri = null;
+        try {
+            cutUri = FileUtils.getUriByFileDirAndFileName(BaseConstans.SystemPicture
+                    .SAVE_DIRECTORY, BaseConstans.SystemPicture.SAVE_CUT_PIC_NAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cropBitmap = BitmapUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
+        if (cropBitmap != null) {
+            holder.mPhotoIv.setImageBitmap(cropBitmap);
+        }else {
+            holder.mPhotoIv.setImageResource(R.drawable.default_photo);
+        }
+
+        holder.mNameTv.setText(memberInfo.getName());
+
+        holder.mNoticeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                T.showShortToast(mContext,"提醒");
+                //隐藏InfoWindow
+                mBaiduMap.hideInfoWindow();
+            }
+        });
+    }
+
+    /**
+     * ==================================地图END================================================
+     */
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
+        mMapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
+        mMapView.onPause();
+
+        //关闭抽屉菜单
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerLayout.closeDrawers();
+            }
+        }, 350);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
+        WriteLog.getInstance().close();
+        locService.unregisterListener(mListener);
+        locService.stop();
+        mMapView.onDestroy();
+    }
 
     //打开导航菜单的按钮 点击事件
     public void OpenLeftMenu(View view) {
@@ -366,10 +502,10 @@ public class MainActivity extends BaseActivity
 
         String musterTime = (hour < 10 ? "0" + hour : hour) + ":"
                 + (minute < 10 ? "0" + minute : minute) + "集合";
-        SPUtils.put(this , Sp.SP_KEY_MUSTER_TIME , musterTime);
+        SPUtils.put(this, Sp.SP_KEY_MUSTER_TIME, musterTime);
         /* Retrieve a PendingIntent that will perform a broadcast */
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
@@ -380,7 +516,6 @@ public class MainActivity extends BaseActivity
         calendar.set(Calendar.MILLISECOND, 0);
         manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
-
 
     /**
      * 封装定位结果和时间的实体类

@@ -16,6 +16,7 @@ import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
 import com.jyyl.guideapp.ui.dialog.BuildTeamDialog;
+import com.jyyl.guideapp.ui.dialog.MemberLongClickDialog;
 import com.jyyl.guideapp.utils.T;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ import java.util.ArrayList;
  * @Author: Shang
  * @Date: 2016/4/22  17:17
  */
-public class MemberManageActivity extends BaseActivity implements BuildTeamDialog.OnBuildTeamListener{
+public class MemberManageActivity extends BaseActivity
+        implements BuildTeamDialog.OnBuildTeamListener, MemberLongClickDialog.OnMemberLongClickListener{
     private Toolbar toolbar;
     private TextView mDisbandThem;
     private Context mContext;
@@ -38,6 +40,8 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
     private ListView mListView;
     private BaseAdapterHelper mAdapter;
     private ArrayList<MemberInfo> mDatas = new ArrayList<>();
+    private MemberLongClickDialog longClickDialog;
+    private int longClickIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +71,20 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
                 openActivity(mContext, HealthDataActivity.class, bundle);
             }
         });
+
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent,
+                                           View view, final int position, long id) {
+
+                longClickDialog = new MemberLongClickDialog();
+                longClickDialog.show(getFragmentManager(), "MemberLongClick");
+                longClickIndex = position;
+                return true;
+            }
+        });
+
+
     }
 
     private void initToolBar() {
@@ -138,7 +156,7 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
             case R.id.btn_add_member:
                 Bundle bundle = new Bundle();
                 bundle.putString("memberId", String.valueOf(mDatas.size()));
-                openActivity(mContext,MemberInfoActivity.class);
+                openActivity(mContext,MemberBindingActivity.class);
                 break;
 
             case R.id.btn_build_team:
@@ -167,5 +185,18 @@ public class MemberManageActivity extends BaseActivity implements BuildTeamDialo
         mAdapter.notifyDataSetChanged();
         showMemberView();
         T.showShortToast(this,"团队创建成功");
+    }
+
+    @Override
+    public void onMemberInfo() {
+        openActivity(mContext, MemberInfoActivity.class);
+        longClickDialog.dismiss();
+    }
+
+    @Override
+    public void onDeleteBinding() {
+        mDatas.remove(longClickIndex);
+        mAdapter.notifyDataSetChanged();
+        longClickDialog.dismiss();
     }
 }

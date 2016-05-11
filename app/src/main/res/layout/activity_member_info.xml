@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -22,7 +21,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
+            android:paddingBottom="20dp"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -38,128 +37,42 @@
                     android:src="@mipmap/ic_launcher"
                     app:civ_border_color="@color/lightgray"
                     app:civ_border_width="1dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/iv_member_photoview"
-                    android:gravity="center"
-                    android:text="@string/click_take_photos"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size_medium"/>
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:background="@drawable/shape_wihte_bg"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/binding_device"
-                    android:textSize="@dimen/text_size_small_middle"/>
-
-                <TextView
-                    android:id="@+id/tv_member_device_number"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/shape_circle_number_bg"
-                    android:gravity="center"
-                    android:textSize="@dimen/text_size_micro"
-                    android:visibility="gone"
-                    tools:text="16"/>
-
-                <TextView
-                    android:id="@+id/tv_member_device_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawableRight="@drawable/select_down"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textSize="@dimen/text_size_small_middle"
-                    tools:text="选择绑定设备"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                <TextView
+                    android:id="@+id/tv_member_name"
+                    style="@style/textview_info"
+                    android:text="姓名：唐僧"/>
 
-                    <com.jyyl.guideapp.widget.CleanEditText
-                        android:id="@+id/et_member_name"
-                        style="@style/edittext_member_info_style"
-                        android:hint="@string/member_name"
-                        android:inputType="text"/>
-                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/tv_member_card_id"
+                    style="@style/textview_info"
+                    android:text="身份证：666666666666666666"/>
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                <TextView
+                    android:id="@+id/tv_linkman_name"
+                    style="@style/textview_info"
+                    android:text="联系人：孙猴子"/>
 
-                    <com.jyyl.guideapp.widget.CleanEditText
-                        android:id="@+id/et_member_id_card"
-                        style="@style/edittext_member_info_style"
-                        android:hint="@string/member_id_card"
-                        android:inputType="number"/>
-                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/tv_linkman_phone"
+                    style="@style/textview_info"
+                    android:text="联系人电话：88888888888"/>
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                <TextView
+                    android:id="@+id/tv_binding_deviceid"
+                    style="@style/textview_info"
+                    android:text="绑定设备编号：1"/>
 
-                    <com.jyyl.guideapp.widget.CleanEditText
-                        android:id="@+id/et_children_name"
-                        style="@style/edittext_member_info_style"
-                        android:hint="@string/member_children_name"
-                        android:inputType="text"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <com.jyyl.guideapp.widget.CleanEditText
-                        android:id="@+id/et_children_tel"
-                        style="@style/edittext_member_info_style"
-                        android:hint="@string/member_children_tel"
-                        android:inputType="number"/>
-                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:id="@+id/btn_binding_member"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:background="@color/transparent"
-        android:text="@string/btn_binding_member"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_medium"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/include"
-        android:layout_alignParentTop="true"/>
 
 </RelativeLayout>

@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class UpdateManager {
     /* 更新进度条 */
     private ProgressBar mProgress;
     private Dialog mDownloadDialog;
+    private Dialog mloadingDialog;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -75,7 +77,8 @@ public class UpdateManager {
 
     public UpdateManager(Context context) {
         this.mContext = context;
-
+        mloadingDialog = createLoadingDialog(context);
+        mloadingDialog.show();
         // 把version.xml放到网络上，然后获取文件信息
         new downloadXmlThread().start();
     }
@@ -94,6 +97,7 @@ public class UpdateManager {
             e.printStackTrace();
         }
 
+        mloadingDialog.dismiss();
         if (null != mHashMap) {
             //服务器版本
             int serviceCode = Integer.valueOf(mHashMap.get("version"));
@@ -101,10 +105,10 @@ public class UpdateManager {
             if (serviceCode > versionCode) {
                 // 显示提示对话框
                 showNoticeDialog();
+            }else {
+                Toast.makeText(mContext, R.string.soft_update_no, Toast.LENGTH_LONG)
+                        .show();
             }
-        }else {
-            Toast.makeText(mContext, R.string.soft_update_no, Toast.LENGTH_LONG)
-                    .show();
         }
     }
 
@@ -297,5 +301,18 @@ public class UpdateManager {
         i.setDataAndType(Uri.parse("file://" + apkfile.toString()),
                 "application/vnd.android.package-archive");
         mContext.startActivity(i);
+    }
+
+    public static Dialog createLoadingDialog(Context context) {
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View v = inflater.inflate(R.layout.layout_loading_dialog, null); // 得到加载view
+        LinearLayout layout = (LinearLayout) v.findViewById(R.id.dialog_view); // 加载布局
+        Dialog loadingDialog = new Dialog(context, R.style.loading_dialog); // 创建自定义样式dialog
+        loadingDialog.setCancelable(false); // 不可以用"返回键"取消
+        loadingDialog.setContentView(layout, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        return loadingDialog;
     }
 }

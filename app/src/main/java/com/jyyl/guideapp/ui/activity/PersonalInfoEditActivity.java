@@ -1,9 +1,7 @@
 package com.jyyl.guideapp.ui.activity;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,39 +9,31 @@ import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.ui.base.BaseActivity;
-import com.jyyl.guideapp.widget.CircleImageView;
+import com.jyyl.guideapp.utils.T;
 
 /**
- * @Fuction: 游客详情
+ * @Fuction: 个人信息编辑
  * @Author: Shang
- * @Date: 2016/5/10  16:53
+ * @Date: 2016/5/10  15:31
  */
-public class MemberInfoActivity extends BaseActivity{
-
+public class PersonalInfoEditActivity extends BaseActivity{
     private Toolbar toolbar;
+    private TextView mSaveBtn;
     private Context mContext;
 
-    private CircleImageView mPhotoView;
-    private TextView mDeviceNumberTv;
-    private TextView mDeviceIdTv;
-    private TextView mBindingBtn;
-
-    private String mMemberId;
-    private Uri photoUri = null;
-    private Bitmap cropBitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_personal_information);
         mContext = this;
-        setContentView(R.layout.activity_member_info);
         initToolBar();
     }
 
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //        toolbar.setBackgroundColor(Color.TRANSPARENT);
-        toolbar.setTitle("游客信息");
+        toolbar.setTitle("个人信息编辑");
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -58,5 +48,24 @@ public class MemberInfoActivity extends BaseActivity{
     @Override
     protected void initViews() {
         super.initViews();
+        mSaveBtn = (TextView) findViewById(R.id.toolbar_right_tv);
+        mSaveBtn.setText("保存");
+        mSaveBtn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void initListener() {
+        super.initListener();
+        mSaveBtn.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onViewClick(View v) {
+        super.onViewClick(v);
+        switch (v.getId()) {
+            case R.id.toolbar_right_tv:
+                T.showShortToast(mContext, "保存成功");
+                break;
+        }
     }
 }

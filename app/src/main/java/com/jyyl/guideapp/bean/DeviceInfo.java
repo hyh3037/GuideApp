@@ -1,5 +1,7 @@
 package com.jyyl.guideapp.bean;
 
+import com.baidu.mapapi.model.LatLng;
+
 /**
  * @Fuction: 绑定设备信息
  * @Author: Shang
@@ -8,6 +10,7 @@ package com.jyyl.guideapp.bean;
 public class DeviceInfo {
     private int number;
     private String deviceId;
+    private LatLng mLatLng; //设备地理位置
     private boolean state;
     private boolean isCheck;
 
@@ -15,6 +18,11 @@ public class DeviceInfo {
         this.number = number;
         this.deviceId = deviceId;
         this.state = false;
+    }
+
+    public DeviceInfo(String deviceId, LatLng latLng) {
+        this.deviceId = deviceId;
+        mLatLng = latLng;
     }
 
     public int getNumber() {
@@ -33,6 +41,14 @@ public class DeviceInfo {
         this.deviceId = deviceId;
     }
 
+    public LatLng getLatLng() {
+        return mLatLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        mLatLng = latLng;
+    }
+
     public boolean isState() {
         return state;
     }
@@ -47,12 +63,5 @@ public class DeviceInfo {
 
     public void setIsCheck(boolean isCheck) {
         this.isCheck = isCheck;
-    }
-
-
-
-    @Override
-    public String toString() {
-        return number+deviceId;
     }
 }

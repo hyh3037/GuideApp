@@ -42,16 +42,14 @@ public class MyApplication extends Application {
 
     @Override
     public void onCreate() {
+        SDKInitializer.initialize(getApplicationContext());
         super.onCreate();
-        instance = this;
 
-        /***
-         * 初始化定位sdk，建议在Application中创建
-         */
+        WriteLog.getInstance().init(); // 初始化日志
+        instance = this;
         locationService = new LocationService(getApplicationContext());
         mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
-        WriteLog.getInstance().init(); // 初始化日志
-        SDKInitializer.initialize(getApplicationContext());
+
     }
 
     // add Activity

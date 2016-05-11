@@ -4,7 +4,6 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/colorBg"
               android:gravity="center_horizontal"
               android:fitsSystemWindows="true">
 
@@ -13,7 +12,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:layout_marginBottom="10dp"
         android:gravity="center">
         <com.jyyl.guideapp.widget.CircleImageView
             android:id="@+id/iv_personal_photoview"
@@ -28,8 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:background="@drawable/selector_btn_bg_white">
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_wihte_bg">
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:textSize="@dimen/text_size_medium"
-            android:text="@string/personal_nickname"/>
+            android:text="@string/personal_name"/>
 
         <TextView
             android:id="@+id/personal_nickname"
@@ -53,8 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:background="@drawable/selector_btn_bg_white">
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_wihte_bg">
 
         <TextView
             android:layout_width="wrap_content"
@@ -78,8 +80,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:background="@drawable/selector_btn_bg_white">
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_wihte_bg">
 
         <TextView
             android:layout_width="wrap_content"
@@ -103,8 +107,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:background="@drawable/selector_btn_bg_white">
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_wihte_bg">
 
         <TextView
             android:layout_width="wrap_content"
