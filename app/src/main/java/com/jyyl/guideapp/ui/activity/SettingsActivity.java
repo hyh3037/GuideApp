@@ -7,8 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.service.update.UpdateManager;
 import com.jyyl.guideapp.ui.base.BaseActivity;
+import com.jyyl.guideapp.utils.SPUtils;
 
 /**
  * @Fuction: 设置界面
@@ -48,6 +50,12 @@ public class SettingsActivity extends BaseActivity {
             case R.id.tv_check_updates:
                 //检查版本更新
                 new UpdateManager(this);
+                break;
+
+            case R.id.tv_exit_login:
+                openActivity(mContext, LoginActivity.class);
+                SPUtils.put(mContext, Sp.SP_KEY_LOGIN_STATE, false);
+                finish();
                 break;
         }
     }

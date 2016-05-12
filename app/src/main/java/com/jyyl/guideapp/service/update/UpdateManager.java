@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.utils.NetUtils;
+import com.jyyl.guideapp.utils.T;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -78,9 +80,13 @@ public class UpdateManager {
     public UpdateManager(Context context) {
         this.mContext = context;
         mloadingDialog = createLoadingDialog(context);
-        mloadingDialog.show();
-        // 把version.xml放到网络上，然后获取文件信息
-        new downloadXmlThread().start();
+        if (NetUtils.isConnected(context)) {
+            mloadingDialog.show();
+            // 把version.xml放到网络上，然后获取文件信息
+            new downloadXmlThread().start();
+        } else {
+            T.showShortToast(context, "网络异常");
+        }
     }
 
     /**
@@ -97,7 +103,9 @@ public class UpdateManager {
             e.printStackTrace();
         }
 
-        mloadingDialog.dismiss();
+        if (mloadingDialog.isShowing()) {
+            mloadingDialog.dismiss();
+        }
         if (null != mHashMap) {
             //服务器版本
             int serviceCode = Integer.valueOf(mHashMap.get("version"));
@@ -105,7 +113,7 @@ public class UpdateManager {
             if (serviceCode > versionCode) {
                 // 显示提示对话框
                 showNoticeDialog();
-            }else {
+            } else {
                 Toast.makeText(mContext, R.string.soft_update_no, Toast.LENGTH_LONG)
                         .show();
             }
@@ -193,7 +201,8 @@ public class UpdateManager {
      * 获取xml文件信息
      */
     private InputStream inStream;
-    private class downloadXmlThread extends Thread{
+
+    private class downloadXmlThread extends Thread {
         @Override
         public void run() {
             try {

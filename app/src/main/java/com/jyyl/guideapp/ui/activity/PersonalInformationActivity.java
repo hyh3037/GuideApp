@@ -98,7 +98,7 @@ public class PersonalInformationActivity extends BaseActivity
         super.onViewClick(v);
         switch (v.getId()) {
             case R.id.toolbar_right_tv:
-                T.showShortToast(mContext, "编辑个人信息");
+                openActivity(mContext, PersonalInfoEditActivity.class);
                 break;
             case R.id.iv_personal_photoview:
                 dialog.show();

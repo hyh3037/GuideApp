@@ -10,7 +10,7 @@
         android:padding="10dp"
         android:background="@color/skyblue"
         android:textColor="@color/white"
-        android:text="@string/now_muster"
+        android:text="@string/send_muster_msg"
         android:textSize="@dimen/text_size_medium"/>
 
     <EditText

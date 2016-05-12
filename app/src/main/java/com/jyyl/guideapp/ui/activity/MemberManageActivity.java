@@ -12,11 +12,15 @@ import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.bean.MemberInfo;
+import com.jyyl.guideapp.constans.BaseConstans;
+import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
 import com.jyyl.guideapp.ui.dialog.BuildTeamDialog;
 import com.jyyl.guideapp.ui.dialog.MemberLongClickDialog;
+import com.jyyl.guideapp.utils.LogUtils;
+import com.jyyl.guideapp.utils.SPUtils;
 import com.jyyl.guideapp.utils.T;
 
 import java.util.ArrayList;
@@ -36,6 +40,7 @@ public class MemberManageActivity extends BaseActivity
     private View mEmptyView;
     private Button mAddMemberBtn;
     private Button mBuildTeambtn;
+    private String mTeamName;
 
     private ListView mListView;
     private BaseAdapterHelper mAdapter;
@@ -46,10 +51,93 @@ public class MemberManageActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member_management);
         mContext = this;
+        setContentView(R.layout.activity_member_management);
         initToolBar();
         initListview();
+    }
+
+    @Override
+    protected void initViews() {
+        super.initViews();
+        mMemberView = findViewById(R.id.member_view);
+        mEmptyView = findViewById(R.id.empty_view);
+        mAddMemberBtn = (Button) findViewById(R.id.btn_add_member);
+        mBuildTeambtn = (Button) findViewById(R.id.btn_build_team);
+        mDisbandThem = (TextView) findViewById(R.id.toolbar_right_tv);
+        mDisbandThem.setText("解散团队");
+    }
+
+    @Override
+    protected void initListener() {
+        super.initListener();
+        mAddMemberBtn.setOnClickListener(this);
+        mBuildTeambtn.setOnClickListener(this);
+        mDisbandThem.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onViewClick(View v) {
+        super.onViewClick(v);
+        switch (v.getId()){
+            case R.id.toolbar_right_tv: //解散团队
+                SPUtils.put(mContext, Sp.SP_KEY_TEAM_NAME, BaseConstans.TEAM_NAME);
+                mDatas.clear();
+                mAdapter.notifyDataSetChanged();
+                toolbar.setTitle("游客管理");
+                showEmptyView();
+                break;
+
+            case R.id.btn_add_member:
+                Bundle bundle = new Bundle();
+                bundle.putString("memberId", String.valueOf(mDatas.size()));
+                openActivity(mContext,MemberBindingActivity.class);
+                break;
+
+            case R.id.btn_build_team:
+                BuildTeamDialog buildTeamDialog = new BuildTeamDialog();
+                buildTeamDialog.show(getFragmentManager(), "BuildTeam");
+                break;
+        }
+    }
+
+    private void initToolBar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //        toolbar.setBackgroundColor(Color.TRANSPARENT);
+        toolbar.setTitleTextColor(Color.WHITE);
+        mTeamName = (String) SPUtils.get(mContext, Sp.SP_KEY_TEAM_NAME, BaseConstans.TEAM_NAME);
+        if (mTeamName != null) {
+            if (mTeamName.equals(BaseConstans.TEAM_NAME)){
+                toolbar.setTitle("游客管理");
+                showEmptyView();
+            }else {
+                toolbar.setTitle(mTeamName);
+                initDatas();
+                showMemberView();
+            }
+        }
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    //无旅行团
+    private void showEmptyView() {
+        mMemberView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
+        mDisbandThem.setVisibility(View.GONE);
+    }
+
+    //有旅行团
+    private void showMemberView() {
+        mMemberView.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
+        mDisbandThem.setVisibility(View.VISIBLE);
     }
 
     private void initListview() {
@@ -83,87 +171,6 @@ public class MemberManageActivity extends BaseActivity
                 return true;
             }
         });
-
-
-    }
-
-    private void initToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //        toolbar.setBackgroundColor(Color.TRANSPARENT);
-        toolbar.setTitle("游客管理");
-        toolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_back);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
-
-    @Override
-    protected void initViews() {
-        super.initViews();
-        mMemberView = findViewById(R.id.member_view);
-        mEmptyView = findViewById(R.id.empty_view);
-        mAddMemberBtn = (Button) findViewById(R.id.btn_add_member);
-        mBuildTeambtn = (Button) findViewById(R.id.btn_build_team);
-
-        mDisbandThem = (TextView) findViewById(R.id.toolbar_right_tv);
-        mDisbandThem.setText("解散团队");
-
-        if (!mDatas.isEmpty()){
-            showMemberView();
-        }else {
-            showEmptyView();
-        }
-    }
-
-    //无旅行团
-    private void showEmptyView() {
-        mMemberView.setVisibility(View.GONE);
-        mEmptyView.setVisibility(View.VISIBLE);
-        mDisbandThem.setVisibility(View.GONE);
-    }
-
-    //有旅行团
-    private void showMemberView() {
-        mMemberView.setVisibility(View.VISIBLE);
-        mEmptyView.setVisibility(View.GONE);
-        mDisbandThem.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void initListener() {
-        super.initListener();
-        mAddMemberBtn.setOnClickListener(this);
-        mBuildTeambtn.setOnClickListener(this);
-        mDisbandThem.setOnClickListener(this);
-    }
-
-    @Override
-    protected void onViewClick(View v) {
-        super.onViewClick(v);
-        switch (v.getId()){
-            case R.id.toolbar_right_tv:
-                mDatas.clear();
-                mAdapter.notifyDataSetChanged();
-                toolbar.setTitle("游客管理");
-                showEmptyView();
-                break;
-
-            case R.id.btn_add_member:
-                Bundle bundle = new Bundle();
-                bundle.putString("memberId", String.valueOf(mDatas.size()));
-                openActivity(mContext,MemberBindingActivity.class);
-                break;
-
-            case R.id.btn_build_team:
-                BuildTeamDialog buildTeamDialog = new BuildTeamDialog();
-                buildTeamDialog.show(getFragmentManager(), "BuildTeam");
-                break;
-        }
     }
 
     /**
@@ -180,11 +187,17 @@ public class MemberManageActivity extends BaseActivity
 
     @Override
     public void setTeamInfo(String teamName) {
-        toolbar.setTitle(teamName);
-        initDatas();
-        mAdapter.notifyDataSetChanged();
-        showMemberView();
-        T.showShortToast(this,"团队创建成功");
+        LogUtils.d(teamName);
+        if (teamName.isEmpty()){
+            T.showShortToast(mContext, "团队名称不能为空");
+        }else {
+            SPUtils.put(mContext, Sp.SP_KEY_TEAM_NAME, teamName);
+            toolbar.setTitle(teamName);
+            initDatas();
+            mAdapter.notifyDataSetChanged();
+            showMemberView();
+            T.showShortToast(this,"团队创建成功");
+        }
     }
 
     @Override

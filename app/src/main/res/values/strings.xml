@@ -6,6 +6,8 @@
     <string name="splash">splash</string>
 
     <string name="ckeck_updates">检查更新</string>
+    <string name="exit_login">退出登录</string>
+
     <string name="soft_update_no">已经是最新版本</string>
     <string name="soft_update_title">软件更新</string>
     <string name="soft_update_info">检测到新版本，立即更新吗</string>
@@ -49,6 +51,8 @@
 
     <string name="now_muster">紧急集合</string>
     <string name="time_muster">定时集合</string>
+    <string name="send_muster_msg">发送集合信息</string>
+    <string name="setting_time_muster">设置定时集合</string>
     <string name="hint_muster_msg">集合！集合了！</string>
 
     <string name="personal_name">姓名：</string>

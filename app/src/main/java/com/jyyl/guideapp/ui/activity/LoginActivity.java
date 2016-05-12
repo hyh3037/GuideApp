@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.biz.ReturnMessage;
 import com.jyyl.guideapp.biz.UserBiz;
@@ -201,7 +202,7 @@ public class LoginActivity extends BaseActivity {
                 // 将系统当前的时间赋值给exitTime
                 exitTime = System.currentTimeMillis();
             } else {
-                finish();
+                MyApplication.getInstance().exitApp();
             }
             return true;
         }

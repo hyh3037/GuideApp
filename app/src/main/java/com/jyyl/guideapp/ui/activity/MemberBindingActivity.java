@@ -99,7 +99,7 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
                 selectDeviceDialog.show(getFragmentManager(), "SelectDevice");
                 break;
             case R.id.btn_binding_member:
-                T.showShortToast(mContext, "游客与设备绑定成功");
+                T.showShortToast(mContext, "新增游客成功");
                 openActivity(mContext, MemberManageActivity.class);
                 finish();
                 break;

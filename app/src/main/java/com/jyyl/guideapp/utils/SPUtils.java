@@ -8,6 +8,13 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 public class SPUtils {
+
+    public SPUtils()
+    {
+            /* cannot be instantiated */
+        throw new UnsupportedOperationException("cannot be instantiated");
+    }
+
     /**
      * 保存在手机里面的文件名
      */

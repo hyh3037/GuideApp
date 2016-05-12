@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/skyblue"
         android:padding="10dp"
-        android:text="@string/time_muster"
+        android:text="@string/setting_time_muster"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_medium"/>
 
@@ -34,6 +34,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:padding="10dp"
+        android:background="@drawable/abc_edit_text_material"
         android:text="@string/hint_muster_msg"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_medium"/>

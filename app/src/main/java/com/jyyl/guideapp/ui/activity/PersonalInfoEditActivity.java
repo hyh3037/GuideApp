@@ -25,7 +25,7 @@ public class PersonalInfoEditActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_information);
+        setContentView(R.layout.activity_personal_info_edit);
         mContext = this;
         initToolBar();
     }
@@ -65,6 +65,7 @@ public class PersonalInfoEditActivity extends BaseActivity{
         switch (v.getId()) {
             case R.id.toolbar_right_tv:
                 T.showShortToast(mContext, "保存成功");
+                finish();
                 break;
         }
     }

@@ -23,6 +23,12 @@ public class BaseConstans {
     public static final int PAGE_THREE = 2;
     public static final int PAGE_FOUR = 3;
 
+
+    /**
+     * 默认团队名称
+     */
+    public static final String TEAM_NAME = "teamName";
+
     /*****
      * 系统相册（包含有 照相、选择本地图片）
      */

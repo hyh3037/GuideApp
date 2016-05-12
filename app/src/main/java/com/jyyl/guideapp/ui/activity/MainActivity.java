@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,7 +53,6 @@ import com.jyyl.guideapp.utils.BitmapUtils;
 import com.jyyl.guideapp.utils.FileUtils;
 import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.SPUtils;
-import com.jyyl.guideapp.utils.ScreenUtils;
 import com.jyyl.guideapp.utils.T;
 
 import java.io.IOException;
@@ -141,7 +139,7 @@ public class MainActivity extends BaseActivity
     protected void onViewClick(View v) {
         super.onViewClick(v);
         switch (v.getId()) {
-            case R.id.ib_loc_normal: //回到当前位置
+            case R.id.ib_loc_normal: //手动更新定位
                 resetMarker();
                 locService.request();//重新请求定位
                 break;
@@ -202,9 +200,9 @@ public class MainActivity extends BaseActivity
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         //设置地图类型 MAP_TYPE_NORMAL 普通图； MAP_TYPE_SATELLITE 卫星图；MAP_TYPE_NONE 空白地图
-        mBaiduMap.setCompassPosition(new Point(ScreenUtils.getScreenWidth(this) - 100, 120));
-        //指南针坐标
-        mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(15)); //改变地图状态
+        mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(13)); //改变地图状态
+        mBaiduMap.getUiSettings().setRotateGesturesEnabled(false);//禁止旋转手势
+        mBaiduMap.getUiSettings().setOverlookingGesturesEnabled(false); //禁止俯视手势
         mBaiduMap.setOnMarkerClickListener(this);
         mMapView.showZoomControls(false); //隐藏缩放按钮
         mMapView.removeViewAt(1); //隐藏百度logo
@@ -333,7 +331,7 @@ public class MainActivity extends BaseActivity
         // 在地图上添加Marker，并显示
         if (mMarkerSelf == null) {
             mMarkerSelf = (Marker) mBaiduMap.addOverlay(option);
-            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(point));
+            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(point , 13));
             addMarkerMember(mMemberList);
         } else {
             mMarkerSelf.setPosition(point);
@@ -414,7 +412,8 @@ public class MainActivity extends BaseActivity
         holder.mNoticeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                T.showShortToast(mContext,"提醒");
+                NowMusterDialog nowMusterDialog = new NowMusterDialog();
+                nowMusterDialog.show(getFragmentManager(), "NowMuster");
                 //隐藏InfoWindow
                 mBaiduMap.hideInfoWindow();
             }
@@ -478,7 +477,7 @@ public class MainActivity extends BaseActivity
                 // 将系统当前的时间赋值给exitTime
                 exitTime = System.currentTimeMillis();
             } else {
-                finish();
+                MyApplication.getInstance().exitApp();
             }
             return true;
         }

@@ -100,7 +100,11 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         mToolbarCheckBox.setOnClickListener(this);
         mToolbarRightTv.setOnClickListener(this);
         mToolbarRightIv.setImageResource(R.drawable.delete);
-        mToolbarRightIv.setVisibility(View.VISIBLE);
+        if (mDatas.size() > 0){
+            mToolbarRightIv.setVisibility(View.VISIBLE);
+        }else {
+            mToolbarRightIv.setVisibility(View.GONE);
+        }
         mToolbarCheckBox.setVisibility(View.GONE);
         mToolbarRightTv.setVisibility(View.GONE);
     }
@@ -180,9 +184,13 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                 toolbar.setTitle(mTitle);
                 toolbar.setNavigationIcon(R.drawable.ic_back);
                 mBindingView.setVisibility(View.VISIBLE);
-                mToolbarRightIv.setVisibility(View.VISIBLE);
                 mToolbarCheckBox.setVisibility(View.GONE);
                 mToolbarRightTv.setVisibility(View.GONE);
+                if (mDatas.size() > 0){
+                    mToolbarRightIv.setVisibility(View.VISIBLE);
+                }else {
+                    mToolbarRightIv.setVisibility(View.GONE);
+                }
                 mAdapter.notifyDataSetChanged();
                 break;
         }
@@ -199,7 +207,7 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
     }
 
     /**
-     * 刷新toolbar
+     * 刷新 批量删除模式 toolbar
      */
     @Override
     public void refreshToolbar() {
@@ -256,6 +264,11 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         }else {
             mDatas.add(new DeviceInfo(number,deviceId));
             number++;
+            if (mDatas.size() > 0){
+                mToolbarRightIv.setVisibility(View.VISIBLE);
+            }else {
+                mToolbarRightIv.setVisibility(View.GONE);
+            }
             mAdapter.notifyDataSetChanged();
             T.showShortToast(this,"绑定成功");
         }

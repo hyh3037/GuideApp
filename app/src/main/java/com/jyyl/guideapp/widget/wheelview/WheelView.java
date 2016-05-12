@@ -41,11 +41,6 @@ public class WheelView extends View {
     private static final int MIN_DELTA_FOR_SCROLLING = 1;
 
     /**
-     * 当前条目中的文字颜色
-     */
-    private static final int VALUE_TEXT_COLOR = 0xFF000000;
-
-    /**
      * 非当前条目的文字颜色
      */
     private static final int ITEMS_TEXT_COLOR = 0xFFCFCFCF;
@@ -59,17 +54,22 @@ public class WheelView extends View {
     /**
      * 额外的条目高度 Additional items height (is added to standard text item height)
      */
-    private static final int ADDITIONAL_ITEM_HEIGHT = 50;
+    private static final int ADDITIONAL_ITEM_HEIGHT = 30;
 
     /**
      * 字体大小
      */
-    private static final int TEXT_SIZE = 60;
+    private static final int TEXT_SIZE = 64;
 
     /**
      * 顶部 和 底部 条目的隐藏大小, 如果是正数 会隐藏一部份, 0 顶部 和 底部的字正好紧贴 边缘, 负数时 顶部和底部 与 字有一定间距
      */
-    private static final int ITEM_OFFSET = TEXT_SIZE / 10;
+    private static final int ITEM_OFFSET = TEXT_SIZE / 5;
+
+    /**
+     * 当前条目中的文字颜色
+     */
+    private static final int VALUE_TEXT_COLOR = 0xFF000000;
 
     /**
      * Additional width for items layout
