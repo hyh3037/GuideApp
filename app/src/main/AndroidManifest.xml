@@ -107,6 +107,7 @@
 
         <activity
             android:name=".ui.activity.HealthDataActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
 
         <activity

@@ -11,9 +11,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.bean.MemberInfo;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.constans.Sp;
+import com.jyyl.guideapp.entity.MemberInfo;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
@@ -31,7 +31,8 @@ import java.util.ArrayList;
  * @Date: 2016/4/22  17:17
  */
 public class MemberManageActivity extends BaseActivity
-        implements BuildTeamDialog.OnBuildTeamListener, MemberLongClickDialog.OnMemberLongClickListener{
+        implements BuildTeamDialog.OnBuildTeamListener, MemberLongClickDialog
+        .OnMemberLongClickListener {
     private Toolbar toolbar;
     private TextView mDisbandThem;
     private Context mContext;
@@ -66,6 +67,9 @@ public class MemberManageActivity extends BaseActivity
         mBuildTeambtn = (Button) findViewById(R.id.btn_build_team);
         mDisbandThem = (TextView) findViewById(R.id.toolbar_right_tv);
         mDisbandThem.setText("解散团队");
+
+        longClickDialog = new MemberLongClickDialog(this);
+        longClickDialog.setOnMemberLongClickListener(this);
     }
 
     @Override
@@ -79,7 +83,7 @@ public class MemberManageActivity extends BaseActivity
     @Override
     protected void onViewClick(View v) {
         super.onViewClick(v);
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.toolbar_right_tv: //解散团队
                 SPUtils.put(mContext, Sp.SP_KEY_TEAM_NAME, BaseConstans.TEAM_NAME);
                 mDatas.clear();
@@ -91,7 +95,7 @@ public class MemberManageActivity extends BaseActivity
             case R.id.btn_add_member:
                 Bundle bundle = new Bundle();
                 bundle.putString("memberId", String.valueOf(mDatas.size()));
-                openActivity(mContext,MemberBindingActivity.class);
+                openActivity(mContext, MemberBindingActivity.class);
                 break;
 
             case R.id.btn_build_team:
@@ -101,16 +105,17 @@ public class MemberManageActivity extends BaseActivity
         }
     }
 
+
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //        toolbar.setBackgroundColor(Color.TRANSPARENT);
         toolbar.setTitleTextColor(Color.WHITE);
         mTeamName = (String) SPUtils.get(mContext, Sp.SP_KEY_TEAM_NAME, BaseConstans.TEAM_NAME);
         if (mTeamName != null) {
-            if (mTeamName.equals(BaseConstans.TEAM_NAME)){
+            if (mTeamName.equals(BaseConstans.TEAM_NAME)) {
                 toolbar.setTitle("游客管理");
                 showEmptyView();
-            }else {
+            } else {
                 toolbar.setTitle(mTeamName);
                 initDatas();
                 showMemberView();
@@ -142,11 +147,12 @@ public class MemberManageActivity extends BaseActivity
 
     private void initListview() {
         mListView = (ListView) findViewById(R.id.member_listview);
-        mAdapter = new BaseAdapterHelper<MemberInfo>(mContext,mDatas,R.layout.item_member_listview) {
+        mAdapter = new BaseAdapterHelper<MemberInfo>(mContext, mDatas, R.layout
+                .item_member_listview) {
 
             @Override
             public void convert(ViewHolder holder, MemberInfo memberInfo) {
-                holder.setText(R.id.member_name,memberInfo.getName());
+                holder.setText(R.id.member_name, memberInfo.getName());
             }
         };
         mListView.setAdapter(mAdapter);
@@ -164,14 +170,13 @@ public class MemberManageActivity extends BaseActivity
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,
                                            View view, final int position, long id) {
-
-                longClickDialog = new MemberLongClickDialog();
-                longClickDialog.show(getFragmentManager(), "MemberLongClick");
+                longClickDialog.show();
                 longClickIndex = position;
                 return true;
             }
         });
     }
+
 
     /**
      * 测试数据
@@ -188,28 +193,26 @@ public class MemberManageActivity extends BaseActivity
     @Override
     public void setTeamInfo(String teamName) {
         LogUtils.d(teamName);
-        if (teamName.isEmpty()){
+        if (teamName.isEmpty()) {
             T.showShortToast(mContext, "团队名称不能为空");
-        }else {
+        } else {
             SPUtils.put(mContext, Sp.SP_KEY_TEAM_NAME, teamName);
             toolbar.setTitle(teamName);
             initDatas();
             mAdapter.notifyDataSetChanged();
             showMemberView();
-            T.showShortToast(this,"团队创建成功");
+            T.showShortToast(this, "团队创建成功");
         }
     }
 
     @Override
     public void onMemberInfo() {
         openActivity(mContext, MemberInfoActivity.class);
-        longClickDialog.dismiss();
     }
 
     @Override
     public void onDeleteBinding() {
         mDatas.remove(longClickIndex);
         mAdapter.notifyDataSetChanged();
-        longClickDialog.dismiss();
     }
 }

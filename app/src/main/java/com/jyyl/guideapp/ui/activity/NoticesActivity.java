@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.bean.NoticeInfo;
+import com.jyyl.guideapp.entity.NoticeInfo;
 import com.jyyl.guideapp.ui.adapter.NoticeAdapter;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 

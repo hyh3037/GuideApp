@@ -31,13 +31,13 @@
 
         <ImageButton
             android:id="@+id/ib_loc_normal"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignLeft="@+id/button"
             android:layout_alignParentBottom="true"
             android:layout_alignStart="@+id/button"
-            android:layout_marginBottom="30dp"
-            android:background="@color/transparent"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/shape_wihte_bg"
             android:src="@drawable/main_icon_location"/>
 
         <LinearLayout

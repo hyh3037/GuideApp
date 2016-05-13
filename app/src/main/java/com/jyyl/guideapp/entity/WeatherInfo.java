@@ -1,4 +1,4 @@
-package com.jyyl.guideapp.bean;
+package com.jyyl.guideapp.entity;
 
 /**
  * @Fuction:

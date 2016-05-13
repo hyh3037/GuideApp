@@ -1,4 +1,4 @@
-package com.jyyl.guideapp.bean;
+package com.jyyl.guideapp.entity;
 
 import android.widget.Button;
 import android.widget.ImageView;

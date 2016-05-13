@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.bean.DeviceInfo;
+import com.jyyl.guideapp.entity.DeviceInfo;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
 

@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.bean.DeviceInfo;
+import com.jyyl.guideapp.entity.DeviceInfo;
 import com.jyyl.guideapp.ui.adapter.DeviceManageAdapter;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.utils.LogUtils;

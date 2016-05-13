@@ -7,10 +7,7 @@ package com.jyyl.guideapp.http;
  */
 public class Api {
 
-    /**
-     * 新浪图片新闻
-     */
-    public static final String BASE_URL = "http://www.weather.com.cn/";
+    public static final String BASE_URL = "http://101.200.142.90:8080/";
 
 
 }

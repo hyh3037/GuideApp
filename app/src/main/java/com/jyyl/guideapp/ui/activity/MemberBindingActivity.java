@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.bean.DeviceInfo;
+import com.jyyl.guideapp.entity.DeviceInfo;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.SelectDeviceDialog;

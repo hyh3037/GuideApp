@@ -41,8 +41,8 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.bean.InfoWindowHolder;
-import com.jyyl.guideapp.bean.MemberInfo;
+import com.jyyl.guideapp.entity.InfoWindowHolder;
+import com.jyyl.guideapp.entity.MemberInfo;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.receive.AlarmReceiver;
@@ -436,16 +436,15 @@ public class MainActivity extends BaseActivity
         super.onPause();
         //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
         mMapView.onPause();
-
         //关闭抽屉菜单
+//        mDrawerLayout.closeDrawers();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mDrawerLayout.closeDrawers();
             }
-        }, 350);
+        }, 500);
     }
-
 
     @Override
     protected void onDestroy() {

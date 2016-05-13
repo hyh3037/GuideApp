@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.bean.DeviceInfo;
+import com.jyyl.guideapp.entity.DeviceInfo;
 import com.jyyl.guideapp.ui.activity.RefreshToolbarListener;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;

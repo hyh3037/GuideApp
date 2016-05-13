@@ -30,7 +30,7 @@
     <string name="reset_pwd">完　成</string>
 
     <!--Toast-->
-    <string name="network_false">网络连接异常</string>
+    <string name="network_false">当前网络不可用，请检查你的网络设置</string>
 
 
     <string name="device_management">设备管理</string>

@@ -18,7 +18,7 @@ import java.util.List;
  * @Date: 2016/4/13  13:45
  */
 public class MyApplication extends Application {
-    private static volatile MyApplication instance = null;
+    private static MyApplication instance;
     private List<Activity> mList = new LinkedList<Activity>();
 
     public LocationService locationService;
@@ -28,15 +28,6 @@ public class MyApplication extends Application {
      * 获取单例
      */
     public static MyApplication getInstance() {
-        // if already inited, no need to get lock everytime
-        if (instance == null) {
-            synchronized (MyApplication.class) {
-                if (instance == null) {
-                    instance = new MyApplication();
-                }
-            }
-        }
-
         return instance;
     }
 
@@ -44,9 +35,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         SDKInitializer.initialize(getApplicationContext());
         super.onCreate();
+        instance = this;
 
         WriteLog.getInstance().init(); // 初始化日志
-        instance = this;
         locationService = new LocationService(getApplicationContext());
         mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
 

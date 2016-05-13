@@ -75,7 +75,7 @@ public class RetrofitManager {
         return instance;
     }
 
-    public ApiService getApiService(){
+    private ApiService getApiService(){
         return  mApiService;
     }
 
