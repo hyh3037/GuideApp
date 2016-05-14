@@ -46,7 +46,6 @@ public class MemberManageActivity extends BaseActivity
     private ListView mListView;
     private BaseAdapterHelper mAdapter;
     private ArrayList<MemberInfo> mDatas = new ArrayList<>();
-    private MemberLongClickDialog longClickDialog;
     private int longClickIndex = -1;
 
     @Override
@@ -67,9 +66,6 @@ public class MemberManageActivity extends BaseActivity
         mBuildTeambtn = (Button) findViewById(R.id.btn_build_team);
         mDisbandThem = (TextView) findViewById(R.id.toolbar_right_tv);
         mDisbandThem.setText("解散团队");
-
-        longClickDialog = new MemberLongClickDialog(this);
-        longClickDialog.setOnMemberLongClickListener(this);
     }
 
     @Override
@@ -170,7 +166,9 @@ public class MemberManageActivity extends BaseActivity
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,
                                            View view, final int position, long id) {
-                longClickDialog.show();
+                MemberLongClickDialog longClickDialog = new MemberLongClickDialog();
+                longClickDialog.setMemberName(mDatas.get(position).getName());
+                longClickDialog.show(getFragmentManager(), "MemberLongClick");
                 longClickIndex = position;
                 return true;
             }
@@ -203,11 +201,6 @@ public class MemberManageActivity extends BaseActivity
             showMemberView();
             T.showShortToast(this, "团队创建成功");
         }
-    }
-
-    @Override
-    public void onMemberInfo() {
-        openActivity(mContext, MemberInfoActivity.class);
     }
 
     @Override

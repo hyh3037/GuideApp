@@ -1,14 +1,17 @@
 package com.jyyl.guideapp.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.constans.It;
 import com.jyyl.guideapp.entity.NoticeInfo;
+import com.jyyl.guideapp.ui.activity.NoticeDetailsActivity;
 import com.jyyl.guideapp.ui.activity.RefreshToolbarListener;
 import com.jyyl.guideapp.ui.base.BaseAdapterHelper;
 import com.jyyl.guideapp.ui.base.ViewHolder;
-import com.jyyl.guideapp.utils.T;
 
 import java.util.List;
 
@@ -53,19 +56,14 @@ public class NoticeAdapter extends BaseAdapterHelper<NoticeInfo> {
                     }
                     mListener.refreshToolbar();
                 } else {
-                    T.showShortToast(mContext, noticeInfo.getMessage());
+                    Intent intent = new Intent(mContext , NoticeDetailsActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString(It.BUNDLE_KEY_NOTICE_TITLE, noticeInfo.getMessage());
+//                    intent.putExtras(bundle);
+                    intent.putExtra(It.BUNDLE_KEY_NOTICE_TITLE, noticeInfo.getMessage());
+                    mContext.startActivity(intent);
+                    ((Activity) mContext).overridePendingTransition(R.anim.push_right_in, 0);
                 }
-            }
-        });
-
-        holder.setOnLongClickListener(R.id.item_notice, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (!flage){
-                    T.showShortToast(mContext, "删除");
-                    return true;
-                }
-                return false;
             }
         });
     }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <include layout="@layout/toolbar"/>
@@ -15,6 +16,68 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/shape_wihte_bg"
+                android:padding="10dp">
+
+                <com.jyyl.guideapp.widget.CircleImageView
+                    android:id="@+id/iv_member_photoview"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_launcher"
+                    app:civ_border_color="@color/lightgray"
+                    app:civ_border_width="1dp"
+                    android:layout_alignTop="@+id/name_deviceid"
+                    android:layout_alignBottom="@+id/name_deviceid"/>
+
+                <LinearLayout
+                    android:id="@+id/name_deviceid"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/iv_member_photoview"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_member_name"
+                        style="@style/textview_info"
+                        android:text="姓名：唐僧"/>
+
+                    <TextView
+                        android:id="@+id/tv_binding_deviceid"
+                        style="@style/textview_info"
+                        android:text="绑定设备编号：1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/name_deviceid"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_member_card_id"
+                        style="@style/textview_info"
+                        android:text="身份证：666666666666666666"/>
+
+                    <TextView
+                        android:id="@+id/tv_linkman_name"
+                        style="@style/textview_info"
+                        android:text="联系人：孙猴子"/>
+
+                    <TextView
+                        android:id="@+id/tv_linkman_phone"
+                        style="@style/textview_info"
+                        android:text="联系人电话：88888888888"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
             <include
                 android:id="@+id/blood_pressure"
                 layout="@layout/health_data_blood_pressure"/>

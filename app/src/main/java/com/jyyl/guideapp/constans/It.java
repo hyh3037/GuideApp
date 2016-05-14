@@ -47,8 +47,9 @@ public class It {
 	public static final int ACTION_UP_PASSWORD = 0X003;
 
 	/**
-	 * 使用bundle 传递登录信息 时使用的key
+	 * 使用bundle 传递信息 时使用的key
 	 */
 	public static final String BUNDLE_KEY_LOGIN_ACCOUNT = "login_account";
 	public static final String BUNDLE_KEY_LOGIN_PASSWOED = "login_password";
+	public static final String BUNDLE_KEY_NOTICE_TITLE = "notice_title";
 }

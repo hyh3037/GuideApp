@@ -1,49 +1,52 @@
 package com.jyyl.guideapp.ui.activity;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.constans.It;
 import com.jyyl.guideapp.ui.base.BaseActivity;
-import com.jyyl.guideapp.widget.CircleImageView;
 
 /**
- * @Fuction: 游客详情
+ * @Fuction: 消息详情
  * @Author: Shang
- * @Date: 2016/5/10  16:53
+ * @Date: 2016/5/13  17:17
  */
-public class MemberInfoActivity extends BaseActivity{
-
+public class NoticeDetailsActivity extends BaseActivity {
     private Toolbar toolbar;
+    private TextView mContentTv;
     private Context mContext;
 
-    private CircleImageView mPhotoView;
-    private TextView mDeviceNumberTv;
-    private TextView mDeviceIdTv;
-    private TextView mBindingBtn;
-
-    private String mMemberId;
-    private Uri photoUri = null;
-    private Bitmap cropBitmap = null;
+    private String toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        setContentView(R.layout.activity_member_info);
+        setContentView(R.layout.activity_notice_details);
         initToolBar();
+    }
+
+    @Override
+    protected void initViews() {
+        super.initViews();
+        mContentTv = (TextView) findViewById(R.id.tv_notice_content);
     }
 
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //        toolbar.setBackgroundColor(Color.TRANSPARENT);
-        toolbar.setTitle("游客信息");
+        Intent intent = getIntent();
+        toolbarTitle = intent.getStringExtra(It.BUNDLE_KEY_NOTICE_TITLE);
+        if (!toolbarTitle.isEmpty()){
+            toolbar.setTitle(toolbarTitle);
+            mContentTv.setText(toolbarTitle);
+        }
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -55,8 +58,4 @@ public class MemberInfoActivity extends BaseActivity{
         });
     }
 
-    @Override
-    protected void initViews() {
-        super.initViews();
-    }
 }

@@ -1,12 +1,13 @@
 package com.jyyl.guideapp.ui.dialog;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.view.Gravity;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
 
@@ -15,52 +16,35 @@ import com.jyyl.guideapp.R;
  * @Author: Shang
  * @Date: 2016/5/11  8:32
  */
-public class MemberLongClickDialog extends Dialog implements View.OnClickListener {
+public class MemberLongClickDialog extends DialogFragment {
 
-    private Button mMemberInfoBtn;
-    private Button mDeleteBindingBtn;
-    private OnMemberLongClickListener mMemberLongClickListener;
-
-    public MemberLongClickDialog(Context context) {
-        super(context, R.style.selectPhotoDialog);
-        //初始化布局
-        setContentView(R.layout.dialog_member_longclick);
-        Window dialogWindow = getWindow();
-        dialogWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialogWindow.setGravity(Gravity.CENTER);
-        setCanceledOnTouchOutside(true);
-
-        mMemberInfoBtn = (Button) findViewById(R.id.btn_member_info);
-        mDeleteBindingBtn = (Button) findViewById(R.id.btn_delete_binding);
-        mMemberInfoBtn.setOnClickListener(this);
-        mDeleteBindingBtn.setOnClickListener(this);
-    }
+    private TextView mDeleteMember;
+    private String memberName;
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_member_info:
-                mMemberLongClickListener.onMemberInfo();
-                dismiss();
-                break;
-            case R.id.btn_delete_binding:
-                mMemberLongClickListener.onDeleteBinding();
-                dismiss();
-                break;
-        }
-
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_member_longclick, null);
+        mDeleteMember = (TextView) view.findViewById(R.id.tv_delete_member_msg);
+        mDeleteMember.setText(getString(R.string.delete_membet_msg,memberName));
+        builder.setView(view)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        OnMemberLongClickListener listener = (OnMemberLongClickListener) getActivity();
+                        listener.onDeleteBinding();
+                    }
+                }).setNegativeButton("取消", null);
+        return builder.create();
     }
 
     public interface OnMemberLongClickListener{
-        void onMemberInfo();
         void onDeleteBinding();
     }
 
-    public OnMemberLongClickListener getOnMemberLongClickListener() {
-        return mMemberLongClickListener;
+    public void setMemberName(String name){
+        memberName = name;
     }
 
-    public void setOnMemberLongClickListener(OnMemberLongClickListener mMemberLongClickListener) {
-        this.mMemberLongClickListener = mMemberLongClickListener;
-    }
 }

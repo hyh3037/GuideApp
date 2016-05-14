@@ -100,10 +100,6 @@
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
-        <activity
-            android:name=".ui.activity.MemberInfoActivity"
-            android:screenOrientation="portrait"/>
-
 
         <activity
             android:name=".ui.activity.HealthDataActivity"
@@ -124,6 +120,10 @@
 
         <activity
             android:name=".ui.activity.NoticesActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".ui.activity.NoticeDetailsActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name="com.google.zxing.activity.CaptureActivity"/>

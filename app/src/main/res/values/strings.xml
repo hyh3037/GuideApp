@@ -77,6 +77,9 @@
     <string name="btn_binding_member">确认</string>
     <string name="binding_device">绑定设备：</string>
 
+    <string name="delete_member">删除游客</string>
+    <string name="delete_membet_msg">从团队中删除游客%s</string>
+
     <string name="info_notice">提 醒</string>
 
 </resources>

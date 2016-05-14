@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.ui.base.BaseActivity;
-import com.jyyl.guideapp.utils.T;
 
 /**
  * @Fuction: 体征数据
@@ -20,10 +19,10 @@ public class HealthDataActivity extends BaseActivity{
     private Toolbar toolbar;
     private Context mContext;
 
-    private View mBloodPressure;
-    private View mBloodsugar;
-    private View mHeartRate;
-    private View mStepCounter;
+//    private View mBloodPressure;
+//    private View mBloodsugar;
+//    private View mHeartRate;
+//    private View mStepCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,37 +51,37 @@ public class HealthDataActivity extends BaseActivity{
     @Override
     protected void initViews() {
         super.initViews();
-        mBloodPressure = findViewById(R.id.blood_pressure);
-        mBloodsugar = findViewById(R.id.blood_sugar);
-        mHeartRate = findViewById(R.id.heart_rate);
-        mStepCounter = findViewById(R.id.step_counter);
+//        mBloodPressure = findViewById(R.id.blood_pressure);
+//        mBloodsugar = findViewById(R.id.blood_sugar);
+//        mHeartRate = findViewById(R.id.heart_rate);
+//        mStepCounter = findViewById(R.id.step_counter);
     }
 
     @Override
     protected void initListener() {
         super.initListener();
-        mBloodPressure.setOnClickListener(this);
-        mBloodsugar.setOnClickListener(this);
-        mHeartRate.setOnClickListener(this);
-        mStepCounter.setOnClickListener(this);
+//        mBloodPressure.setOnClickListener(this);
+//        mBloodsugar.setOnClickListener(this);
+//        mHeartRate.setOnClickListener(this);
+//        mStepCounter.setOnClickListener(this);
     }
 
-    @Override
-    protected void onViewClick(View v) {
-        super.onViewClick(v);
-        switch (v.getId()){
-            case R.id.blood_pressure:
-                T.showShortToast(mContext,"血压");
-                break;
-            case R.id.blood_sugar:
-                T.showShortToast(mContext,"血糖");
-                break;
-            case R.id.heart_rate:
-                T.showShortToast(mContext,"心率");
-                break;
-            case R.id.step_counter:
-                T.showShortToast(mContext,"步数");
-                break;
-        }
-    }
+//    @Override
+//    protected void onViewClick(View v) {
+//        super.onViewClick(v);
+//        switch (v.getId()){
+//            case R.id.blood_pressure:
+//                T.showShortToast(mContext,"血压");
+//                break;
+//            case R.id.blood_sugar:
+//                T.showShortToast(mContext,"血糖");
+//                break;
+//            case R.id.heart_rate:
+//                T.showShortToast(mContext,"心率");
+//                break;
+//            case R.id.step_counter:
+//                T.showShortToast(mContext,"步数");
+//                break;
+//        }
+//    }
 }
