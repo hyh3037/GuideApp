@@ -18,7 +18,7 @@
 
     <com.jyyl.guideapp.widget.pickerview.TimePicker
         android:id="@+id/time_picker"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="15dp"
@@ -34,7 +34,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:padding="10dp"
-        android:background="@drawable/abc_edit_text_material"
         android:text="@string/hint_muster_msg"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_medium"/>

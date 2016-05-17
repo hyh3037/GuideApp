@@ -48,7 +48,7 @@
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">10dp</item>
-        <item name="android:background">@drawable/selector_textview_rectangle</item>
+        <item name="android:background">@drawable/selector_textview</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
     </style>
 

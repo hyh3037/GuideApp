@@ -1,29 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="match_parent"
               android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:background="@color/skyblue"
-        android:textColor="@color/white"
+        android:padding="10dp"
         android:text="@string/send_muster_msg"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size_medium"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:padding="10dp"
+        android:background="@drawable/shape_wihte_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="选择接收游客"/>
+
+        <TextView
+            android:id="@+id/select_member"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/selector_textview"
+            android:drawableRight="@drawable/select_down"
+            android:text="所有人"
+            android:textSize="@dimen/text_size_medium"/>
+
+        <GridView
+            android:id="@+id/gridviw_member"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="2dp"
+            android:numColumns="3"/>
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/et_nowmuster_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:hint="集合信息"
         android:padding="10dp"
-        android:textSize="@dimen/text_size_medium"
-        android:background="@drawable/abc_edit_text_material"
-        android:text="@string/hint_muster_msg"/>
+        android:text="@string/hint_muster_msg"
+        android:textSize="@dimen/text_size_medium"/>
 
 
 </LinearLayout>

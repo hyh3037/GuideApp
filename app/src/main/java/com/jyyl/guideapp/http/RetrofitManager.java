@@ -50,7 +50,7 @@ public class RetrofitManager {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
-//                .client(getOkHttpClient())
+                .client(getOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

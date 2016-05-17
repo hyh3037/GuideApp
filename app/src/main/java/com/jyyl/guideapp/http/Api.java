@@ -9,5 +9,4 @@ public class Api {
 
     public static final String BASE_URL = "http://101.200.142.90:8080/";
 
-
 }

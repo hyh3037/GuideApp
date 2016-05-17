@@ -95,11 +95,10 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
         setContentView(R.layout.activity_main);
 
         setSwipeBackEnable(false);  //禁用SwipeBackLayout
-        mContext = this;
-
         initBaiduMap();
     }
 
