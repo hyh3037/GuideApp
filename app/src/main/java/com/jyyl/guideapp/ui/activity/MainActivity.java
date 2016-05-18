@@ -47,8 +47,9 @@ import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.receive.AlarmReceiver;
 import com.jyyl.guideapp.ui.base.BaseActivity;
-import com.jyyl.guideapp.ui.dialog.NowMusterDialog;
-import com.jyyl.guideapp.ui.dialog.TimeMusterDialog;
+import com.jyyl.guideapp.ui.dialog.MusterNowDialog;
+import com.jyyl.guideapp.ui.dialog.MusterSingleDialog;
+import com.jyyl.guideapp.ui.dialog.MusterTimeDialog;
 import com.jyyl.guideapp.utils.BitmapUtils;
 import com.jyyl.guideapp.utils.FileUtils;
 import com.jyyl.guideapp.utils.LogUtils;
@@ -66,8 +67,8 @@ import java.util.LinkedList;
  * @Date: 2016/4/13  14:55
  */
 public class MainActivity extends BaseActivity
-        implements NowMusterDialog.SendMusterMsgListener, TimeMusterDialog.TimeMusterListener,
-                   BaiduMap.OnMarkerClickListener {
+        implements MusterNowDialog.MusterNowListener, MusterTimeDialog.MusterTimeListener,
+                   MusterSingleDialog.MusterSingleListener,BaiduMap.OnMarkerClickListener {
 
     private static String TAG = "MainActivity";
 
@@ -150,13 +151,13 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.btn_now_muster:
-                NowMusterDialog nowMusterDialog = new NowMusterDialog();
-                nowMusterDialog.show(getFragmentManager(), "NowMuster");
+                MusterNowDialog musterNowDialog = new MusterNowDialog();
+                musterNowDialog.show(getFragmentManager(), "NowMuster");
                 setMusterVisibility(false);
                 break;
             case R.id.btn_time_muster:
-                TimeMusterDialog timeMusterDialog = new TimeMusterDialog();
-                timeMusterDialog.show(getFragmentManager(), "TimeMuster");
+                MusterTimeDialog musterTimeDialog = new MusterTimeDialog();
+                musterTimeDialog.show(getFragmentManager(), "TimeMuster");
                 setMusterVisibility(false);
                 break;
         }
@@ -168,7 +169,9 @@ public class MainActivity extends BaseActivity
     private void resetMarker() {
         mBaiduMap.clear();
         mMarkerSelf = null;
-        addMarkers();
+        if (location != null) {
+            addMarkers();
+        }
     }
 
     /**
@@ -411,8 +414,8 @@ public class MainActivity extends BaseActivity
         holder.mNoticeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NowMusterDialog nowMusterDialog = new NowMusterDialog();
-                nowMusterDialog.show(getFragmentManager(), "NowMuster");
+                MusterSingleDialog musterSingleDialog = new MusterSingleDialog();
+                musterSingleDialog.show(getFragmentManager(), "MusterSingle");
                 //隐藏InfoWindow
                 mBaiduMap.hideInfoWindow();
             }
@@ -489,7 +492,12 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void sendMsg(String msg) {
+    public void sendSingleMsg(String msg) {
+        T.showShortToast(this, "集合信息已发送");
+    }
+
+    @Override
+    public void sendNowMsg(String msg) {
         T.showShortToast(this, "集合信息已发送");
     }
 

@@ -22,15 +22,13 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * @Fuction: Retrofit请求管理类，对retrofit实例化的简单封装
+ * @Fuction: 配置Okhttp
  * @Author: Shang
- * @Date: 2016/4/11  14:25
+ * @Date: 2016/5/18  9:04
  */
-public class RetrofitManager {
+public class OkHttpClientHelper {
 
     //设缓存有效期为两天
     private static final long CACHE_STALE_SEC = 60 * 60 * 24 * 2;
@@ -41,46 +39,34 @@ public class RetrofitManager {
     private static final String CACHE_CONTROL_NETWORK = "max-age=0";
 
     private static volatile OkHttpClient sOkHttpClient;
+    private static final int DEFAULT_TIMEOUT = 10;
 
-    private ApiService mApiService;
+    // 配置OkHttpClient
+    public static OkHttpClient getOkHttpClient() {
+        if (sOkHttpClient == null) {
+            synchronized (HttpMethods.class) {
+                if (sOkHttpClient == null) {
+                    // OkHttpClient配置是一样的,静态创建一次即可
+                    // 指定缓存路径,缓存大小100Mb
+                    Cache cache = new Cache(new File(MyApplication.getInstance().getCacheDir(), "HttpCache"),
+                            1024 * 1024 * 100);
 
-    private static volatile RetrofitManager instance = null;
+                    sOkHttpClient = new OkHttpClient.Builder()
+                            .cache(cache)
+                            .addNetworkInterceptor(mRewriteCacheControlInterceptor)
+                            .addInterceptor(mRewriteCacheControlInterceptor)
+                            .addInterceptor(mLoggingInterceptor).retryOnConnectionFailure(true)
+                            .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS) //超时时间
+                            .build();
 
-    private RetrofitManager() {
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Api.BASE_URL)
-                .client(getOkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        mApiService = retrofit.create(ApiService.class);
-    }
-
-    /**
-     * 获取单例
-     * @return 实例
-     */
-    public static RetrofitManager getInstance() {
-
-        // if already inited, no need to get lock everytime
-        if (instance == null) {
-            synchronized (RetrofitManager.class) {
-                if (instance == null) {
-                    instance = new RetrofitManager();
                 }
             }
         }
-
-        return instance;
-    }
-
-    private ApiService getApiService(){
-        return  mApiService;
+        return sOkHttpClient;
     }
 
     // 云端响应头拦截器，用来配置缓存策略
-    private Interceptor mRewriteCacheControlInterceptor = new Interceptor() {
+    private static Interceptor mRewriteCacheControlInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
@@ -104,7 +90,7 @@ public class RetrofitManager {
     };
 
     // 打印返回的json数据拦截器
-    private Interceptor mLoggingInterceptor = new Interceptor() {
+    private static Interceptor mLoggingInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
 
@@ -140,32 +126,6 @@ public class RetrofitManager {
         }
     };
 
-
-
-
-
-    // 配置OkHttpClient
-    private OkHttpClient getOkHttpClient() {
-        if (sOkHttpClient == null) {
-            synchronized (RetrofitManager.class) {
-                if (sOkHttpClient == null) {
-                    // OkHttpClient配置是一样的,静态创建一次即可
-                    // 指定缓存路径,缓存大小100Mb
-                    Cache cache = new Cache(new File(MyApplication.getInstance().getCacheDir(), "HttpCache"),
-                            1024 * 1024 * 100);
-
-                    sOkHttpClient = new OkHttpClient.Builder().cache(cache)
-                            .addNetworkInterceptor(mRewriteCacheControlInterceptor)
-                            .addInterceptor(mRewriteCacheControlInterceptor)
-                            .addInterceptor(mLoggingInterceptor).retryOnConnectionFailure(true)
-                            .connectTimeout(30, TimeUnit.SECONDS).build();
-
-                }
-            }
-        }
-        return sOkHttpClient;
-    }
-
     /**
      * 根据网络状况获取缓存的策略
      *
@@ -175,5 +135,4 @@ public class RetrofitManager {
     private String getCacheControl() {
         return NetUtils.isConnected(MyApplication.getInstance()) ? CACHE_CONTROL_NETWORK : CACHE_CONTROL_CACHE;
     }
-
 }

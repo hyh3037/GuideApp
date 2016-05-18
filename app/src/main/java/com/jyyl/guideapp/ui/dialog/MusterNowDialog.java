@@ -24,7 +24,7 @@ import java.util.List;
  * @Author: Shang
  * @Date: 2016/4/29  11:47
  */
-public class NowMusterDialog extends DialogFragment {
+public class MusterNowDialog extends DialogFragment {
     private TextView mSelectMemberTv;
     private GridView mGridView;
     private List<MemberInfo> tvMemberList = new ArrayList<>();
@@ -34,15 +34,15 @@ public class NowMusterDialog extends DialogFragment {
     private boolean flag = false;
 
     //向activity传递数据的接口
-    public interface SendMusterMsgListener {
-        void sendMsg(String msg);
+    public interface MusterNowListener {
+        void sendNowMsg(String msg);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_now_muster, null);
+        View view = inflater.inflate(R.layout.dialog_muster_now, null);
         mSelectMemberTv = (TextView) view.findViewById(R.id.select_member);
         mGridView = (GridView) view.findViewById(R.id.gridviw_member);
         mMusterMsg = (EditText) view.findViewById(R.id.et_nowmuster_msg);
@@ -69,8 +69,8 @@ public class NowMusterDialog extends DialogFragment {
                 .setPositiveButton("发送", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SendMusterMsgListener listener = (SendMusterMsgListener) getActivity();
-                        listener.sendMsg(mMusterMsg.getText().toString());
+                        MusterNowListener listener = (MusterNowListener) getActivity();
+                        listener.sendNowMsg(mMusterMsg.getText().toString());
                     }
                 }).setNegativeButton("取消", null);
         return builder.create();

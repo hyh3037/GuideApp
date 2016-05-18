@@ -8,8 +8,8 @@ android {
         applicationId "com.jyyl.guideapp"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.3"
     }
 
     //签名
