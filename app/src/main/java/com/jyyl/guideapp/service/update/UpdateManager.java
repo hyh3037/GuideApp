@@ -205,19 +205,24 @@ public class UpdateManager {
     private class downloadXmlThread extends Thread {
         @Override
         public void run() {
+            HttpURLConnection conn = null;
             try {
                 String path = "https://shangbb.github.io/version";
                 URL url = null;
                 url = new URL(path);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
-                if (200 == conn.getResponseCode()) {
+                if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
                     inStream = conn.getInputStream();
                     mHandler.sendEmptyMessage(DOWNLOAD_XML);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally{
+                if(conn != null){
+                    conn.disconnect();
+                }
             }
         }
     }

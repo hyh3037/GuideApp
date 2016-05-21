@@ -15,7 +15,7 @@ import com.jyyl.guideapp.entity.DeviceInfo;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.SelectDeviceDialog;
-import com.jyyl.guideapp.utils.BitmapUtils;
+import com.jyyl.guideapp.utils.ImageUtils;
 import com.jyyl.guideapp.utils.FileUtils;
 import com.jyyl.guideapp.utils.SelectPictureUtils;
 import com.jyyl.guideapp.utils.T;
@@ -143,7 +143,7 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
      */
     private void setPhotoView() {
         try {
-            cropBitmap = BitmapUtils.getBitmapFromUri(photoUri, this);
+            cropBitmap = ImageUtils.getBitmapFromUri(photoUri, this);
             //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
 
             if (cropBitmap != null) {

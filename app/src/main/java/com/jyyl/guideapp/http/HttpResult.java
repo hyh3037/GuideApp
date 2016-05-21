@@ -6,31 +6,31 @@ package com.jyyl.guideapp.http;
  */
 public class HttpResult<T> {
 
-    private int resultCode;
-    private String resultMessage;
-    private T data;
+    private String status;
+    private String descritpion;
+    private T values;
 
-    public int getResultCode() {
-        return resultCode;
+    public String getStatus() {
+        return status;
     }
 
-    public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getResultMessage() {
-        return resultMessage;
+    public String getDescritpion() {
+        return descritpion;
     }
 
-    public void setResultMessage(String resultMessage) {
-        this.resultMessage = resultMessage;
+    public void setDescritpion(String descritpion) {
+        this.descritpion = descritpion;
     }
 
-    public T getData() {
-        return data;
+    public T getValues() {
+        return values;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setValues(T values) {
+        this.values = values;
     }
 }

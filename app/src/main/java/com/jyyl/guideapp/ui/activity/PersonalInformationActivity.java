@@ -12,10 +12,13 @@ import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.constans.BaseConstans;
+import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.SelectPhotoDialog;
-import com.jyyl.guideapp.utils.BitmapUtils;
+import com.jyyl.guideapp.utils.ImageUtils;
 import com.jyyl.guideapp.utils.FileUtils;
+import com.jyyl.guideapp.utils.QiNiuUploadUtils;
+import com.jyyl.guideapp.utils.SPUtils;
 import com.jyyl.guideapp.utils.SelectPictureUtils;
 import com.jyyl.guideapp.utils.T;
 import com.jyyl.guideapp.widget.CircleImageView;
@@ -143,7 +146,7 @@ public class PersonalInformationActivity extends BaseActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // 点击取消按钮
-        if(resultCode == RESULT_CANCELED){
+        if (resultCode == RESULT_CANCELED) {
             return;
         }
 
@@ -155,7 +158,7 @@ public class PersonalInformationActivity extends BaseActivity
             case BaseConstans.SystemPicture.PHOTO_REQUEST_GALLERY://相册获取
 
                 if (data == null) {
-                    T.showShortToast(this,"选择图片文件出错");
+                    T.showShortToast(this, "选择图片文件出错");
                     return;
                 }
                 photoUri = data.getData();
@@ -172,9 +175,10 @@ public class PersonalInformationActivity extends BaseActivity
                 mPhotoView.setImageBitmap(bit);*/
                 setPhotoView();
 
-                //下面可以用来上传pc服务端
-//                File file = FileUtils.getFileByUri(this, photoUri);
-//                Log.d("File", file.toString());
+                //上传图片到七牛云
+                String key = "guide_"+ SPUtils.get(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT,null);
+                if (cropBitmap != null)
+                    QiNiuUploadUtils.getInstance().upload(cropBitmap,key);
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -185,11 +189,11 @@ public class PersonalInformationActivity extends BaseActivity
      */
     private void setPhotoView() {
         try {
-            cropBitmap = BitmapUtils.getBitmapFromUri(cutUri, this); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
+            cropBitmap = ImageUtils.getBitmapFromUri(cutUri, this); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
 
             if (cropBitmap != null) {
                 mPhotoView.setImageBitmap(cropBitmap);
-            }else {
+            } else {
                 mPhotoView.setImageResource(R.mipmap.ic_launcher);
             }
         } catch (Exception e) {

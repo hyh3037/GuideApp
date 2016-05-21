@@ -41,17 +41,16 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.entity.InfoWindowHolder;
-import com.jyyl.guideapp.entity.MemberInfo;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.constans.Sp;
+import com.jyyl.guideapp.entity.MemberInfo;
 import com.jyyl.guideapp.receive.AlarmReceiver;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.MusterNowDialog;
 import com.jyyl.guideapp.ui.dialog.MusterSingleDialog;
 import com.jyyl.guideapp.ui.dialog.MusterTimeDialog;
-import com.jyyl.guideapp.utils.BitmapUtils;
 import com.jyyl.guideapp.utils.FileUtils;
+import com.jyyl.guideapp.utils.ImageUtils;
 import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.SPUtils;
 import com.jyyl.guideapp.utils.T;
@@ -402,7 +401,7 @@ public class MainActivity extends BaseActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cropBitmap = BitmapUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
+        cropBitmap = ImageUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
         if (cropBitmap != null) {
             holder.mPhotoIv.setImageBitmap(cropBitmap);
         }else {
@@ -529,5 +528,14 @@ public class MainActivity extends BaseActivity
     class LocationEntity {
         BDLocation location;
         long time;
+    }
+
+    /**
+     * 复用弹出面板Marker的控件
+     */
+    public class InfoWindowHolder {
+        public ImageView mPhotoIv;
+        public TextView mNameTv;
+        public Button mNoticeBtn;
     }
 }

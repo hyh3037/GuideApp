@@ -7,13 +7,13 @@ import java.util.List;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Subscriber;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * @Fuction: 对retrofit实例化的简单封装,包含同一个BASE_URL所有网络交互的方法
+ * @Fuction: 对retrofit实例化的简单封装, 包含同一个BASE_URL所有网络交互的方法
  * @Author: Shang
  * @Date: 2016/5/18  14:25
  */
@@ -63,21 +63,30 @@ public class HttpMethods {
 
         @Override
         public T call(HttpResult<T> httpResult) {
-            if (httpResult.getResultCode() != ResultCode.HTTP_SUCCESS) {
-                throw new ApiException(httpResult.getResultCode());
+            if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+                return httpResult.getValues();
+            }else {
+                throw new ApiException(httpResult.getStatus());
             }
-            return httpResult.getData();
         }
     }
 
-    public void getDeviceInfo(Subscriber<List<DeviceInfo>> subscriber, String phone) {
+    public Observable<String> sendCode(String phone) {
+        return mApiService.sendCode(phone, "0", "jy")
+                .map(new HttpResultFunc<String>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
 
-        mApiService.getDeviceInfo(phone)
+    }
+
+    public Observable<List<DeviceInfo>> getDeviceInfo(String phone) {
+
+        return mApiService.getDeviceInfo(phone)
                 .map(new HttpResultFunc<List<DeviceInfo>>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+                .observeOn(AndroidSchedulers.mainThread());
 
     }
 }

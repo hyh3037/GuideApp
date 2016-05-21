@@ -67,6 +67,7 @@ dependencies {
     compile 'com.android.support:design:22.2.1'
 
     compile 'com.google.zxing:core:3.2.1'
+    compile 'com.qiniu:qiniu-android-sdk:7.2.0'
 
     //滑动退出activity
     compile 'me.imid.swipebacklayout.lib:library:1.0.0'

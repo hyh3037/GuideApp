@@ -19,7 +19,7 @@ import com.jyyl.guideapp.ui.activity.NoticesActivity;
 import com.jyyl.guideapp.ui.activity.PersonalInformationActivity;
 import com.jyyl.guideapp.ui.activity.SettingsActivity;
 import com.jyyl.guideapp.ui.base.BaseFragment;
-import com.jyyl.guideapp.utils.BitmapUtils;
+import com.jyyl.guideapp.utils.ImageUtils;
 import com.jyyl.guideapp.utils.FileUtils;
 
 /**
@@ -92,7 +92,7 @@ public class NavLeftFragment extends BaseFragment implements View.OnClickListene
             Uri cutUri = FileUtils.getUriByFileDirAndFileName(BaseConstans.SystemPicture
                     .SAVE_DIRECTORY, BaseConstans.SystemPicture.SAVE_CUT_PIC_NAME);
 
-            cropBitmap = BitmapUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
+            cropBitmap = ImageUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
 
             if (cropBitmap != null) {
                 photoView.setImageBitmap(cropBitmap);

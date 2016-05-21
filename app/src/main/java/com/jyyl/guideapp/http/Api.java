@@ -9,4 +9,6 @@ public class Api {
 
     public static final String BASE_URL = "http://101.200.142.90:8080/";
 
+    public static final String QINIU_TOKEN_URL = "http://101.200.142.90:8080/opera/opera/uploadtoken";
+
 }

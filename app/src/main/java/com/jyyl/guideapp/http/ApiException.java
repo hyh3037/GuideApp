@@ -2,7 +2,7 @@ package com.jyyl.guideapp.http;
 
 public class ApiException extends RuntimeException {
 
-    public ApiException(int resultCode) {
+    public ApiException(String resultCode, String detailMessage) {
         this(getApiExceptionMessage(resultCode));
     }
 
@@ -16,10 +16,10 @@ public class ApiException extends RuntimeException {
      * @param code
      * @return
      */
-    private static String getApiExceptionMessage(int code){
+    private static String getApiExceptionMessage(String code){
         String message = "";
         switch (code) {
-            case ResultCode.HTTP_TOKEN_INVALID:
+            case ResultStatus.HTTP_TOKEN_INVALID:
                 message = "Token失效";
                 break;
             default:

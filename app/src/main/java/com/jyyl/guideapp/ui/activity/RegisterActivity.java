@@ -16,8 +16,11 @@ import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.biz.ReturnMessage;
 import com.jyyl.guideapp.biz.UserBiz;
 import com.jyyl.guideapp.constans.It;
+import com.jyyl.guideapp.http.BaseSubscriber;
+import com.jyyl.guideapp.http.HttpMethods;
 import com.jyyl.guideapp.receive.SMSBroadcastReceiver;
 import com.jyyl.guideapp.ui.base.BaseActivity;
+import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.T;
 
 import rx.Observable;
@@ -59,7 +62,7 @@ public class RegisterActivity extends BaseActivity {
 
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setBackgroundColor(Color.TRANSPARENT);
+        //        toolbar.setBackgroundColor(Color.TRANSPARENT);
         toolbar.setTitle("注册");
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
@@ -95,10 +98,26 @@ public class RegisterActivity extends BaseActivity {
         super.onViewClick(v);
         switch (v.getId()) {
             case R.id.send_code://获取验证码
-                TimeCount timeCount = new TimeCount(30000, 1000);
-                timeCount.start();
-                // TODO 请求接口发送验证码
-                T.showShortToast(this, "验证码已发送");
+
+                HttpMethods.getInstance().sendCode("15268990185")
+                        .subscribe(new BaseSubscriber<String>() {
+                            @Override
+                            public void onStart() {
+                                super.onStart();
+                                TimeCount timeCount = new TimeCount(30000, 1000);
+                                timeCount.start();
+                            }
+
+                            @Override
+                            public void onCompleted() {}
+
+                            @Override
+                            public void onNext(String s) {
+                                LogUtils.d(s);
+                                T.showShortToast(mContext, "验证码已发送");
+                            }
+                        });
+
                 break;
             case R.id.btn_register://注册成功后跳转到登陆界面
                 account = mAccEt.getText().toString().trim();
@@ -115,9 +134,9 @@ public class RegisterActivity extends BaseActivity {
                 || TextUtils.isEmpty(password)
                 || TextUtils.isEmpty(rePwd)) {
             T.showShortToast(this, "注册信息不能为空");
-        }else if (!password.equals(rePwd)){
+        } else if (!password.equals(rePwd)) {
             T.showShortToast(this, "两次输入的密码不一致");
-        }else {
+        } else {
             Observable
                     .create(new Observable.OnSubscribe<ReturnMessage>() {
                         @Override
