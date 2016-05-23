@@ -18,18 +18,13 @@
         <com.jyyl.guideapp.widget.CleanEditText
             android:id="@+id/et_login_acc"
             style="@style/edittext_login_style"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edit_hight"
             android:layout_alignParentTop="true"
-            android:drawableRight="@drawable/abc_ic_clear_mtrl_alpha"
             android:hint="@string/phone_no"
             android:inputType="phone"/>
 
         <com.jyyl.guideapp.widget.CleanEditText
             android:id="@+id/et_login_pwd"
             style="@style/edittext_login_style"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edit_hight"
             android:layout_below="@+id/et_login_acc"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"

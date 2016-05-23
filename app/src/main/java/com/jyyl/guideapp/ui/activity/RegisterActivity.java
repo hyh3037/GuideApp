@@ -13,21 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.biz.ReturnMessage;
-import com.jyyl.guideapp.biz.UserBiz;
 import com.jyyl.guideapp.constans.It;
 import com.jyyl.guideapp.http.BaseSubscriber;
 import com.jyyl.guideapp.http.HttpMethods;
 import com.jyyl.guideapp.receive.SMSBroadcastReceiver;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.utils.LogUtils;
+import com.jyyl.guideapp.utils.RegexUtils;
 import com.jyyl.guideapp.utils.T;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 
 /**
@@ -55,9 +48,9 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
         setContentView(R.layout.activity_register);
         initToolBar();
-        mContext = this;
     }
 
     private void initToolBar() {
@@ -98,25 +91,14 @@ public class RegisterActivity extends BaseActivity {
         super.onViewClick(v);
         switch (v.getId()) {
             case R.id.send_code://获取验证码
-
-                HttpMethods.getInstance().sendCode("15268990185")
-                        .subscribe(new BaseSubscriber<String>() {
-                            @Override
-                            public void onStart() {
-                                super.onStart();
-                                TimeCount timeCount = new TimeCount(30000, 1000);
-                                timeCount.start();
-                            }
-
-                            @Override
-                            public void onCompleted() {}
-
-                            @Override
-                            public void onNext(String s) {
-                                LogUtils.d(s);
-                                T.showShortToast(mContext, "验证码已发送");
-                            }
-                        });
+                account = mAccEt.getText().toString().trim();
+                if (account.isEmpty()) {
+                    T.showShortToast(mContext, getString(R.string.toast_phone_not_null));
+                } else if (RegexUtils.checkMobile(account)) {
+                    getSecurityCode();
+                } else {
+                    T.showShortToast(mContext, getString(R.string.toast_phone_format_error));
+                }
 
                 break;
             case R.id.btn_register://注册成功后跳转到登陆界面
@@ -124,49 +106,58 @@ public class RegisterActivity extends BaseActivity {
                 securityCode = mSecurityCodeEt.getText().toString().trim();
                 password = mPwdEt.getText().toString().trim();
                 rePwd = mRePwdEt.getText().toString().trim();
-                register();
+                if (TextUtils.isEmpty(account) || TextUtils.isEmpty(securityCode)
+                        || TextUtils.isEmpty(password)
+                        || TextUtils.isEmpty(rePwd)) {
+                    T.showShortToast(this, getString(R.string.toast_submit_information_not_null));
+                } else if (!RegexUtils.checkPassword(password)){
+                    T.showShortToast(this, getString(R.string.toast_password_format_error));
+                } else if (!password.equals(rePwd)) {
+                    T.showShortToast(this, getString(R.string.toast_two_password_not_consistent));
+                } else {
+                    register();
+                }
+
                 break;
         }
     }
 
+    /**
+     * 获取验证码
+     */
+    private void getSecurityCode() {
+        HttpMethods.getInstance().getSecurityCode(account)
+                .subscribe(new BaseSubscriber<String>(mContext) {
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        TimeCount timeCount = new TimeCount(30000, 1000);
+                        timeCount.start();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        LogUtils.d(s);
+                        T.showShortToast(mContext, getString(R.string.toast_verification_code_has_been_sent));
+                    }
+                });
+    }
+
     private void register() {
-        if (TextUtils.isEmpty(account) || TextUtils.isEmpty(securityCode)
-                || TextUtils.isEmpty(password)
-                || TextUtils.isEmpty(rePwd)) {
-            T.showShortToast(this, "注册信息不能为空");
-        } else if (!password.equals(rePwd)) {
-            T.showShortToast(this, "两次输入的密码不一致");
-        } else {
-            Observable
-                    .create(new Observable.OnSubscribe<ReturnMessage>() {
-                        @Override
-                        public void call(Subscriber<? super ReturnMessage> subscriber) {
-                            ReturnMessage returnMessage = UserBiz.getInstance()
-                                    .userRegister(account, password, securityCode);
-                            subscriber.onNext(returnMessage);
-                            subscriber.onCompleted();
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())// 指定 subscribe() 发生在 IO 线程
-                    .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
-                    .subscribe(new Action1<ReturnMessage>() {
-                        @Override
-                        public void call(ReturnMessage returnMessage) {
-                            if (returnMessage.isSuccess()) {
-                                // 注册成功跳转到登录
-                                Bundle bundle = new Bundle();
-                                bundle.putInt(It.START_ACTIVITY_WITH, It.ACTION_REGISTER);
-                                bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
-                                bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, password);
-                                openActivity(mContext, LoginActivity.class, bundle);
-                                T.showShortToast(mContext, "注册成功");
-                                finish();
-                            } else {
-                                T.showShortToast(mContext, returnMessage.getResultMessage());
-                            }
-                        }
-                    });
-        }
+        HttpMethods.getInstance().registerAccount(account, password, securityCode)
+                .subscribe(new BaseSubscriber<String>(mContext) {
+                    @Override
+                    public void onNext(String s) {
+                        // 注册成功跳转到登录
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(It.START_ACTIVITY_WITH, It.ACTION_REGISTER);
+                        bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
+                        bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, password);
+                        openActivity(mContext, LoginActivity.class, bundle);
+                        T.showShortToast(mContext, getString(R.string.toast_register_success));
+                        finish();
+                    }
+                });
     }
 
     //倒计时

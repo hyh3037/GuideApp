@@ -5,15 +5,19 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
+import com.jyyl.guideapp.constans.It;
+import com.jyyl.guideapp.http.BaseSubscriber;
+import com.jyyl.guideapp.http.HttpMethods;
 import com.jyyl.guideapp.ui.base.BaseActivity;
+import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.RegexUtils;
 import com.jyyl.guideapp.utils.T;
 
@@ -30,31 +34,27 @@ public class ResetPwdActivity extends BaseActivity {
     private Context mContext;
     private Toolbar toolbar;
 
-    private EditText mPhoneEt;
+    private EditText mAccountEt;
     private EditText mSecurityCodeEt;
     private TextView mSendCodeTv;
-    private Button nNextBtn;
-    private LinearLayout resetItem1;
-
     private EditText mNewPwdEt;
     private EditText mRePwdEt;
     private Button mResetPwdBtn;
-    private LinearLayout resetItem2;
 
-    private String phone, securityCode, newPwd, rePwd;
+    private String account, securityCode, newPwd, rePwd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_pwd);
-//        AndroidBug5497Workaround.assistActivity(this);
+        //        AndroidBug5497Workaround.assistActivity(this);
         initToolBar();
         mContext = this;
     }
 
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setBackgroundColor(Color.TRANSPARENT);
+        //        toolbar.setBackgroundColor(Color.TRANSPARENT);
         toolbar.setTitle("手机验证");
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
@@ -70,23 +70,18 @@ public class ResetPwdActivity extends BaseActivity {
     @Override
     protected void initViews() {
         super.initViews();
-        mPhoneEt = (EditText) findViewById(R.id.et_phone);
+        mAccountEt = (EditText) findViewById(R.id.et_phone);
         mSecurityCodeEt = (EditText) findViewById(R.id.et_security_code);
         mSendCodeTv = (TextView) findViewById(R.id.send_code);
-        nNextBtn = (Button) findViewById(R.id.btn_next);
-        resetItem1 = (LinearLayout) findViewById(R.id.reset_item_1);
-
         mNewPwdEt = (EditText) findViewById(R.id.et_new_pwd);
         mRePwdEt = (EditText) findViewById(R.id.et_re_pwd);
         mResetPwdBtn = (Button) findViewById(R.id.btn_reset_pwd);
-        resetItem2 = (LinearLayout) findViewById(R.id.reset_item_2);
     }
 
     @Override
     protected void initListener() {
         super.initListener();
         mSendCodeTv.setOnClickListener(this);
-        nNextBtn.setOnClickListener(this);
         mResetPwdBtn.setOnClickListener(this);
     }
 
@@ -95,44 +90,78 @@ public class ResetPwdActivity extends BaseActivity {
         super.onViewClick(v);
         switch (v.getId()) {
             case R.id.send_code://获取验证码
-                phone = mPhoneEt.getText().toString().trim();
-                if (RegexUtils.checkMobile(phone)) {
-                    TimeCount timeCount = new TimeCount(30000, 1000);
-                    timeCount.start();
-                    T.showShortToast(mContext, "验证码已发送");
+                account = mAccountEt.getText().toString().trim();
+                if (account.isEmpty()) {
+                    T.showShortToast(mContext, getString(R.string.toast_phone_not_null));
+                } else if (RegexUtils.checkMobile(account)) {
+                    getSecurityCode();
                 } else {
-                    T.showShortToast(mContext, "输入的手机号码有误");
+                    T.showShortToast(mContext, getString(R.string.toast_phone_format_error));
                 }
 
-                break;
-            case R.id.btn_next://下一步
-
-                //判断验证码是否正确
-                securityCode = mSecurityCodeEt.getText().toString().trim();
-                if ("1111".equals(securityCode)) {
-                    resetItem1.setVisibility(View.GONE);
-                    resetItem2.setVisibility(View.VISIBLE);
-                    toolbar.setTitle("密码重置");
-                } else {
-                    T.showShortToast(mContext, "验证码错误");
-                }
                 break;
 
             case R.id.btn_reset_pwd:
+                account = mAccountEt.getText().toString().trim();
+                securityCode = mSecurityCodeEt.getText().toString().trim();
                 newPwd = mNewPwdEt.getText().toString().trim();
                 rePwd = mRePwdEt.getText().toString().trim();
-                if (newPwd.equals(rePwd)) {
-                    /**
-                     * 请求服务端重置密码
-                     */
-                    T.showShortToast(mContext, "密码已修改");
-                    openActivity(mContext, LoginActivity.class);
-                    finish();
-                } else {
-                    T.showShortToast(mContext, "两次输入的密码不一致");
+                if (TextUtils.isEmpty(account) || TextUtils.isEmpty(securityCode)
+                        || TextUtils.isEmpty(newPwd)
+                        || TextUtils.isEmpty(rePwd)) {
+                    T.showShortToast(this, getString(R.string.toast_submit_information_not_null));
+                } else if (!RegexUtils.checkPassword(newPwd)){
+                    T.showShortToast(this, getString(R.string.toast_password_format_error));
+                } else if (!newPwd.equals(rePwd)) {
+                    T.showShortToast(this, getString(R.string.toast_two_password_not_consistent));
+                } else if (newPwd.equals(rePwd)) {
+                    resetPassword();
                 }
                 break;
+            default:
+                break;
         }
+    }
+
+    /**
+     * 重置密码
+     */
+    private void resetPassword() {
+        HttpMethods.getInstance().registerAccount(account, newPwd, securityCode)
+                .subscribe(new BaseSubscriber<String>(mContext) {
+                    @Override
+                    public void onNext(String s) {
+                        // 密码重置成功跳转到登录
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(It.START_ACTIVITY_WITH, It.ACTION_REGISTER);
+                        bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
+                        bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, newPwd);
+                        openActivity(mContext, LoginActivity.class, bundle);
+                        T.showShortToast(mContext, getString(R.string.toast_reset_success));
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 获取验证码
+     */
+    private void getSecurityCode() {
+        HttpMethods.getInstance().getSecurityCode(account)
+                .subscribe(new BaseSubscriber<String>(mContext) {
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        TimeCount timeCount = new TimeCount(30000, 1000);
+                        timeCount.start();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        LogUtils.d(s);
+                        T.showShortToast(mContext,getString(R.string.toast_verification_code_has_been_sent));
+                    }
+                });
     }
 
     //倒计时

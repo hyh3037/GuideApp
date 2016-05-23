@@ -1,8 +1,15 @@
 package com.jyyl.guideapp.http;
 
 import com.jyyl.guideapp.entity.DeviceInfo;
+import com.jyyl.guideapp.utils.LogUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -63,16 +70,66 @@ public class HttpMethods {
 
         @Override
         public T call(HttpResult<T> httpResult) {
-            if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
-                return httpResult.getValues();
+            if (!(ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+                throw new ApiException(httpResult.getStatus(),httpResult.getDescritpion());
             }else {
-                throw new ApiException(httpResult.getStatus());
+                return httpResult.getValues();
             }
         }
     }
 
-    public Observable<String> sendCode(String phone) {
-        return mApiService.sendCode(phone, "0", "jy")
+    /**
+     * 获取验证码
+     * @param phone
+     * @return
+     */
+    public Observable<String> getSecurityCode(String phone) {
+        return mApiService.getSecurityCode(phone, "0", "jy")
+                .map(new HttpResultFunc<String>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    /**
+     * 注册
+     * @param memberAccount
+     * @param memberPassword
+     * @param messInfo
+     * @return
+     */
+    public Observable<String> registerAccount(String memberAccount,String memberPassword,String messInfo) {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("industry", "jy");
+        params.put("memberAccount", memberAccount);
+        params.put("memberPassword", memberPassword);
+        params.put("messInfo", messInfo);
+        params.put("memberType", "0");
+        params.put("memberPhone", memberAccount);
+
+        return mApiService.registerAccount(params)
+                .map(new HttpResultFunc<String>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    /**
+     * 登录
+     * @param memberAccount
+     * @param memberPassword
+     * @return
+     */
+    public Observable<String> loginAccount(String memberAccount,String memberPassword) {
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        String loginTime = df.format(Calendar.getInstance().getTime());
+        LogUtils.d(loginTime);
+
+        return mApiService.loginAccount(loginTime,memberAccount,memberPassword,"jy" )
                 .map(new HttpResultFunc<String>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

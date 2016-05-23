@@ -1,6 +1,5 @@
 package com.jyyl.guideapp.ui.activity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,22 +13,16 @@ import android.widget.Toast;
 
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.biz.ReturnMessage;
-import com.jyyl.guideapp.biz.UserBiz;
 import com.jyyl.guideapp.constans.It;
 import com.jyyl.guideapp.constans.Sp;
+import com.jyyl.guideapp.http.BaseSubscriber;
+import com.jyyl.guideapp.http.HttpMethods;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.utils.LogUtils;
-import com.jyyl.guideapp.utils.MD5Utils;
+import com.jyyl.guideapp.utils.RegexUtils;
 import com.jyyl.guideapp.utils.SPUtils;
 import com.jyyl.guideapp.utils.T;
 import com.jyyl.guideapp.widget.CleanEditText;
-
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 
 /**
@@ -46,7 +39,6 @@ public class LoginActivity extends BaseActivity {
     private Context mContext;
 
     private String account, password;
-    private Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +113,14 @@ public class LoginActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.btn_login:
                 account = mAccEt.getText().toString().trim();
-                password = MD5Utils.toMd5(mPwdEt.getText().toString().trim());
-                login();
+                password = mPwdEt.getText().toString().trim();
+                if (TextUtils.isEmpty(account) || TextUtils.isEmpty(password)) {
+                    T.showShortToast(mContext, getString(R.string.toast_phone_password_not_null));
+                } else if (!RegexUtils.checkMobile(account)) {
+                    T.showShortToast(mContext, getString(R.string.toast_phone_format_error));
+                } else {
+                    login();
+                }
                 break;
             case R.id.login_forget_pwd:
                 openActivity(this, ResetPwdActivity.class);
@@ -134,57 +132,24 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void login() {
-        if (TextUtils.isEmpty(account) || TextUtils.isEmpty(password)) {
-            T.showShortToast(mContext, "手机号/密码不能为空");
-        } else {
-            mDialog = createLoadingDialog(mContext);
-            mDialog.show();
-
-            Observable.create(new Observable.OnSubscribe<ReturnMessage>() {
-                @Override
-                public void call(Subscriber<? super ReturnMessage>
-                                         subscriber) {
-                    ReturnMessage returnMessage = UserBiz.getInstance()
-                            .userLogin(account, password);
-                    subscriber.onNext(returnMessage);
-                    subscriber.onCompleted();
-                }
-            })
-                    .subscribeOn(Schedulers.io())// 指定 subscribe() 发生在 IO 线程
-                    .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber的回调发生在主线程
-                    .subscribe(new Observer<ReturnMessage>() {
-                        @Override
-                        public void onCompleted() {
-                            mDialog.dismiss();
+        HttpMethods.getInstance().loginAccount(account, password)
+                .subscribe(new BaseSubscriber<String>(mContext) {
+                    @Override
+                    public void onNext(String s) {
+                        if (s != null) {
+                            // 登录成功
+                            openActivity(mContext, MainActivity.class);
+                            //保存账号信息到SP
+                            SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT,
+                                    account);
+                            SPUtils.put(mContext, Sp
+                                    .SP_KEY_LAST_LOGIN_PASSWORD, password);
+                            SPUtils.put(mContext, Sp.SP_KEY_LOGIN_STATE, true);
+                            T.showShortToast(mContext, getString(R.string.toast_login_success));
+                            finish();
                         }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onNext(ReturnMessage returnMessage) {
-
-                            if (returnMessage.isSuccess()) {
-                                // 登录成功
-                                openActivity(mContext, MainActivity.class);
-                                //保存账号信息到SP
-                                SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT,
-                                        account);
-                                SPUtils.put(mContext, Sp
-                                        .SP_KEY_LAST_LOGIN_PASSWORD, password);
-                                SPUtils.put(mContext, Sp.SP_KEY_LOGIN_STATE, true);
-                                finish();
-                            } else {
-                                mAccEt.setText("");
-                                mPwdEt.setText("");
-                                T.showShortToast(mContext, returnMessage
-                                        .getResultMessage());
-                            }
-                        }
-                    });
-        }
+                    }
+                });
     }
 
     /**

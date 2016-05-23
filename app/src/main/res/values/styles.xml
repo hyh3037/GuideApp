@@ -19,6 +19,8 @@
     </style>
 
     <style name="edittext_login_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/login_edit_hight</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorHint">@color/white</item>
         <item name="android:textSize">@dimen/text_size_small_middle</item>

@@ -9,107 +9,73 @@
     <include
         layout="@layout/toolbar"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="20dp">
 
+        <com.jyyl.guideapp.widget.CleanEditText
+            android:id="@+id/et_phone"
+            style="@style/edittext_login_style"
+            android:hint="@string/phone_no"
+            android:inputType="phone"/>
+
+
         <LinearLayout
-            android:id="@+id/reset_item_1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:layout_height="@dimen/login_edit_hight"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
             <com.jyyl.guideapp.widget.CleanEditText
-                android:id="@+id/et_phone"
+                android:id="@+id/et_security_code"
                 style="@style/edittext_login_style"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/login_edit_hight"
-                android:hint="@string/phone_no"
-                android:inputType="phone"/>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/login_edit_hight"
-                android:layout_marginTop="20dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
                 android:background="@drawable/shape_transparent_bg"
-                android:orientation="horizontal">
+                android:hint="@string/security_code"
+                android:inputType="number"/>
 
-                <com.jyyl.guideapp.widget.CleanEditText
-                    android:id="@+id/et_security_code"
-                    style="@style/edittext_login_style"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:background="@null"
-                    android:hint="@string/security_code"
-                    android:inputType="number"/>
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"/>
-
-                <TextView
-                    android:id="@+id/send_code"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="@string/send_code"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_small_middle"/>
-            </LinearLayout>
-
-
-            <Button
-                android:id="@+id/btn_next"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
+            <TextView
+                android:id="@+id/send_code"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="2"
                 android:background="@drawable/selector_btn_bg"
-                android:text="@string/next"
+                android:gravity="center"
+                android:text="@string/send_code"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_medium"/>
+                android:textSize="@dimen/text_size_small_middle"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/reset_item_2"
+
+        <com.jyyl.guideapp.widget.CleanEditText
+            android:id="@+id/et_new_pwd"
+            style="@style/edittext_login_style"
+            android:layout_marginTop="20dp"
+            android:hint="@string/new_pwd"
+            android:inputType="textPassword"/>
+
+        <com.jyyl.guideapp.widget.CleanEditText
+            android:id="@+id/et_re_pwd"
+            style="@style/edittext_login_style"
+            android:layout_marginTop="20dp"
+            android:hint="@string/re_pwd"
+            android:inputType="textPassword"/>
+
+        <Button
+            android:id="@+id/btn_reset_pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/selector_btn_bg"
+            android:text="@string/reset_pwd"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium"/>
+    </LinearLayout>
 
-            <com.jyyl.guideapp.widget.CleanEditText
-                android:id="@+id/et_new_pwd"
-                style="@style/edittext_login_style"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/login_edit_hight"
-                android:hint="@string/new_pwd"
-                android:inputType="textPassword"/>
-
-            <com.jyyl.guideapp.widget.CleanEditText
-                android:id="@+id/et_re_pwd"
-                style="@style/edittext_login_style"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/login_edit_hight"
-                android:layout_marginTop="20dp"
-                android:hint="@string/re_pwd"
-                android:inputType="textPassword"/>
-
-            <Button
-                android:id="@+id/btn_reset_pwd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/selector_btn_bg"
-                android:text="@string/reset_pwd"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_medium"/>
-        </LinearLayout>
-    </RelativeLayout>
 </LinearLayout>

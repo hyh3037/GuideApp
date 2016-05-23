@@ -56,8 +56,6 @@
         <com.jyyl.guideapp.widget.CleanEditText
             android:id="@+id/et_pwd"
             style="@style/edittext_login_style"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edit_hight"
             android:layout_marginTop="20dp"
             android:hint="@string/password"
             android:inputType="textPassword"/>
@@ -65,8 +63,6 @@
         <com.jyyl.guideapp.widget.CleanEditText
             android:id="@+id/et_repwd"
             style="@style/edittext_login_style"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edit_hight"
             android:layout_marginTop="20dp"
             android:hint="@string/re_pwd"
             android:inputType="textPassword"/>

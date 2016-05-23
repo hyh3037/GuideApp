@@ -21,17 +21,13 @@
     <string name="register">注　册</string>
     <string name="forget_pwd">忘记密码？</string>
     <string name="phone_no">手机号</string>
-    <string name="password">密　码</string>
+    <string name="password">密　码 (6–16位字母或数字)</string>
     <string name="security_code">验证码</string>
     <string name="send_code">获取验证码</string>
     <string name="next">下一步</string>
-    <string name="new_pwd">新密码</string>
-    <string name="re_pwd">确认密码</string>
+    <string name="new_pwd">新密码 (6–16位字母或数字)</string>
+    <string name="re_pwd">确认密码 (与上面的密码保持一致)</string>
     <string name="reset_pwd">完　成</string>
-
-    <!--Toast-->
-    <string name="network_false">当前网络不可用，请检查你的网络设置</string>
-
 
     <string name="device_management">设备管理</string>
     <string name="member_management">游客管理</string>
@@ -81,5 +77,20 @@
     <string name="delete_membet_msg">从团队中删除游客%s</string>
 
     <string name="info_notice">提 醒</string>
+
+    <!--Toast-->
+    <string name="toast_network_false">当前网络不可用，请检查你的网络设置</string>
+    <string name="toast_server_connection_exception">服务器连接异常</string>
+    <string name="toast_phone_password_not_null">手机号/密码不能为空</string>
+    <string name="toast_phone_not_null">手机号码不能为空</string>
+    <string name="toast_phone_format_error">手机号码格式错误</string>
+    <string name="toast_verification_code_has_been_sent">验证码已发送</string>
+    <string name="toast_password_format_error">密码格式错误\n请输入6–16位字母或数字密码</string>
+    <string name="toast_two_password_not_consistent">两次输入的密码不一致</string>
+    <string name="toast_submit_information_not_null">提交信息不能为空</string>
+    <string name="toast_register_success">注册成功</string>
+    <string name="toast_login_success">登录成功</string>
+    <string name="toast_reset_success">密码重置成功</string>
+
 
 </resources>

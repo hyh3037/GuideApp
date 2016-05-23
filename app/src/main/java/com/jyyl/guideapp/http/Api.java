@@ -11,4 +11,10 @@ public class Api {
 
     public static final String QINIU_TOKEN_URL = "http://101.200.142.90:8080/opera/opera/uploadtoken";
 
+    public static final String REGISTER_URL = "http://1y5a133877.iask.in:19425/tourism/register";
+
+    public static final String LOGIN_URL = "http://1y5a133877.iask.in:19425/tourism/register";
+
+
+
 }
