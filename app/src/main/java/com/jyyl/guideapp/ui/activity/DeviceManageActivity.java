@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.entity.DeviceInfo;
+import com.jyyl.guideapp.http.BaseSubscriber;
+import com.jyyl.guideapp.http.HttpMethods;
 import com.jyyl.guideapp.ui.adapter.DeviceManageAdapter;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.utils.LogUtils;
@@ -58,11 +60,19 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         mContext = this;
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_management);
         initToolBar();
         initListview();
+
+        HttpMethods.getInstance().getUserDevices("12312312")
+                .subscribe(new BaseSubscriber<String>(mContext) {
+                    @Override
+                    public void onNext(String s) {
+                        LogUtils.d("s"+s);
+                    }
+                });
     }
 
     private void initListview() {

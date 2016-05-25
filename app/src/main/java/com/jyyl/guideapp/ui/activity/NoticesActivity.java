@@ -12,11 +12,12 @@ import android.widget.TextView;
 
 import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.entity.NoticeInfo;
+import com.jyyl.guideapp.jpush.NoticeCache;
 import com.jyyl.guideapp.ui.adapter.NoticeAdapter;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * @Fuction: 我的消息
@@ -35,7 +36,7 @@ public class NoticesActivity extends BaseActivity implements RefreshToolbarListe
     private boolean flage = false; //是否删除界面
     private boolean isChecked = false; //toolbar的checkbox选择状态
     private boolean isDelFinish = false; //false:取消 true:完成
-    private ArrayList<NoticeInfo> mDatas = new ArrayList<NoticeInfo>();
+    private LinkedList<NoticeInfo> mDatas = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,14 +107,14 @@ public class NoticesActivity extends BaseActivity implements RefreshToolbarListe
                 if (isChecked) {
                     //全不选
                     for (NoticeInfo noticeInfo : mDatas) {
-                        noticeInfo.setIsCheck(false);
+                        noticeInfo.setCheck(false);
                     }
                     mToolbarCheckBox.setChecked(false);
                     isChecked = false;
                 } else {
                     //全选
                     for (NoticeInfo noticeInfo : mDatas) {
-                        noticeInfo.setIsCheck(true);
+                        noticeInfo.setCheck(true);
                     }
                     mToolbarCheckBox.setChecked(true);
                     isChecked = true;
@@ -126,8 +127,9 @@ public class NoticesActivity extends BaseActivity implements RefreshToolbarListe
                 if (isDelFinish) {
                     itemRemove(mDatas);
                     for (NoticeInfo noticeInfo : mDatas) {
-                        noticeInfo.setIsCheck(false);
+                        noticeInfo.setCheck(false);
                     }
+                    NoticeCache.getInstance().saveNotcieCache(mDatas);
                 }
                 flage = false;
                 mAdapter.setFlag(false);
@@ -141,7 +143,7 @@ public class NoticesActivity extends BaseActivity implements RefreshToolbarListe
         }
     }
 
-    public void itemRemove(ArrayList<NoticeInfo> list) {
+    public void itemRemove(LinkedList<NoticeInfo> list) {
         Iterator<NoticeInfo> it = list.iterator();
         while (it.hasNext()) {
             NoticeInfo noticeInfo = it.next();
@@ -155,12 +157,7 @@ public class NoticesActivity extends BaseActivity implements RefreshToolbarListe
      * 测试数据
      */
     private void initDatas() {
-        NoticeInfo msg = null;
-        for (int i = 1; i < 10; i++) {
-            msg = new NoticeInfo("测试信息" + i);
-            mDatas.add(msg);
-        }
-
+        mDatas = NoticeCache.getInstance().getNoticeCache();
     }
 
 

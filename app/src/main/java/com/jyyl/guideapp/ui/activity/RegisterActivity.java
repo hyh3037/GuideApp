@@ -1,7 +1,6 @@
 package com.jyyl.guideapp.ui.activity;
 
 import android.content.Context;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -150,7 +149,7 @@ public class RegisterActivity extends BaseActivity {
                     public void onNext(String s) {
                         // 注册成功跳转到登录
                         Bundle bundle = new Bundle();
-                        bundle.putInt(It.START_ACTIVITY_WITH, It.ACTION_REGISTER);
+                        bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_REGISTER);
                         bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
                         bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, password);
                         openActivity(mContext, LoginActivity.class, bundle);
@@ -179,41 +178,37 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
-    /**
-     * ================================接收短信验证==>>开始=================================
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // 生成广播处理
-        mSmsBroadcastReceiver = new SMSBroadcastReceiver();
-
-        // 实例化过滤器并设置要过滤的广播
-        IntentFilter intentFilter = new IntentFilter(ACTION);
-        intentFilter.setPriority(Integer.MAX_VALUE);
-        // 注册广播
-        this.registerReceiver(mSmsBroadcastReceiver, intentFilter);
-
-        mSmsBroadcastReceiver
-                .setOnReceivedMessageListener(new SMSBroadcastReceiver.MessageListener() {
-                    @Override
-                    public void onReceived(String message) {
-
-                        mSecurityCodeEt.setText(message);
-
-                    }
-                });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // 注销短信监听广播
-        this.unregisterReceiver(mSmsBroadcastReceiver);
-    }
-
-    /**
-     * ==============================接收短信验证==>>结束================================
-     */
+//    /**================================接收短信验证==>>开始=================================*/
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        // 生成广播处理
+//        mSmsBroadcastReceiver = new SMSBroadcastReceiver();
+//
+//        // 实例化过滤器并设置要过滤的广播
+//        IntentFilter intentFilter = new IntentFilter(ACTION);
+//        intentFilter.setPriority(Integer.MAX_VALUE);
+//        // 注册广播
+//        this.registerReceiver(mSmsBroadcastReceiver, intentFilter);
+//
+//        mSmsBroadcastReceiver
+//                .setOnReceivedMessageListener(new SMSBroadcastReceiver.MessageListener() {
+//                    @Override
+//                    public void onReceived(String message) {
+//
+//                        mSecurityCodeEt.setText(message);
+//
+//                    }
+//                });
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        // 注销短信监听广播
+//        this.unregisterReceiver(mSmsBroadcastReceiver);
+//    }
+//
+//    /**==============================接收短信验证==>>结束================================*/
 
 }

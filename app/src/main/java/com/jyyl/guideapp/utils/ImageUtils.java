@@ -1,17 +1,21 @@
 package com.jyyl.guideapp.utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -62,37 +66,59 @@ public class ImageUtils {
     }
 
     /**
-     * 保存bitmap到指定文件
-     * @param strFileDir
-     *         文件夹路径
-     * @param strFileName
-     *         文件名
-     * @param mBitmap
+     * 将Bitmap保存到指定目录下，并且指定好文件名
      *
-     * @throws IOException
+     * @param bitmap
+     * @param folder
+     * @param fileName 指定的文件名包含后缀
+     * @return 保存成功，返回其对应的File，保存失败则返回null
      */
-    public static void saveBitmap(String strFileDir, String strFileName, Bitmap mBitmap) throws
-            IOException {
-        File file = FileUtils.getFile(strFileDir, strFileName);
-        FileOutputStream fOut = null;
-        try {
-            file.createNewFile();
-            fOut = new FileOutputStream(file);
-            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-            fOut.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            recycle(mBitmap);
+    public static File saveToFile(Bitmap bitmap, File folder, String fileName) {
+        if (bitmap != null) {
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            File file = new File(folder, fileName + ".jpg");
+            if (file.exists()) {
+                file.delete();
+            }
             try {
-                if (fOut != null) {
-                    fOut.close();
-                }
+                file.createNewFile();
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bos.flush();
+                bos.close();
+                return file;
             } catch (IOException e) {
                 e.printStackTrace();
+                return null;
             }
+        } else {
+            return null;
         }
+    }
 
+    /**
+     * 显示图片到相册
+     *
+     * @param context
+     * @param photoFile 要保存的图片文件
+     */
+    public static void displayToGallery(Context context, File photoFile) {
+        if (photoFile == null || !photoFile.exists()) {
+            return;
+        }
+        String photoPath = photoFile.getAbsolutePath();
+        String photoName = photoFile.getName();
+        // 其次把文件插入到系统图库
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
+            MediaStore.Images.Media.insertImage(contentResolver, photoPath, photoName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + photoPath)));
     }
 
     /**
@@ -239,68 +265,105 @@ public class ImageUtils {
     }
 
     /**
-     * 计算图片的缩放值
-     * @param options
-     * @param reqWidth
-     * @param reqHeight
+     * Google官方代码，计算合适的采样率
+     * Calculate an inSampleSize for use in a {@link android.graphics.BitmapFactory.Options} object when decoding
+     * bitmaps using the decode* methods from {@link android.graphics.BitmapFactory}. This implementation calculates
+     * the closest inSampleSize that is a power of 2 and will result in the final decoded bitmap
+     * having a width and height equal to or larger than the requested width and height.
      *
-     * @return
+     * @param options   An options object with out* params already populated (run through a decode*
+     *                  method with inJustDecodeBounds==true
+     * @param reqWidth  The requested width of the resulting bitmap
+     * @param reqHeight The requested height of the resulting bitmap
+     * @return The value to be used for inSampleSize
      */
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int
-            reqHeight) {
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // BEGIN_INCLUDE (calculate_sample_size)
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
+        int inSampleSize = 1;
 
-        int inSampleSize = 1; //1表示不缩放
         if (height > reqHeight || width > reqWidth) {
 
-            // Calculate ratios of height and width to requested height and
-            // width
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
 
-            // Choose the smallest ratio as inSampleSize value, this will
-            // guarantee
-            // a final image with both dimensions larger than or equal to the
-            // requested height and width.
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+
+            // This offers some additional logic in case the image has a strange
+            // aspect ratio. For example, a panorama may have a much larger
+            // width than height. In these cases the total pixels might still
+            // end up being too large to fit comfortably in memory, so we should
+            // be more aggressive with sample down the image (=larger inSampleSize).
+
+            long totalPixels = width * height / inSampleSize;
+
+            // Anything more than 2x the requested pixels we'll sample down further
+            final long totalReqPixelsCap = reqWidth * reqHeight * 2;
+
+            while (totalPixels > totalReqPixelsCap) {
+                inSampleSize *= 2;
+                totalPixels /= 2;
+            }
         }
-
         return inSampleSize;
+        // END_INCLUDE (calculate_sample_size)
     }
     /**=========================================压缩END============================================*/
 
 
     /**
-     * @param filename
+     * 获取图片的旋转角度
      *
-     * @return
+     * @param path 图片绝对路径
+     * @return 图片的旋转角度
      */
-    private static int readImageExif(String filename) {
-        int orientation = -2;
-        int res = 0;
+    public static int getBitmapDegree(String path) {
+        int degree = 0;
         try {
-            ExifInterface exif = new ExifInterface(filename);
-            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -2);
-            Log.e("Exif", "Orientation: " + orientation);
-            //根据图片头部信息判断需要旋转的角度，
-            //在三星的手机里，会自动在Exif头信息里写入旋转角度，拍照时设置ratation是无效的
+            // 从指定路径下读取图片，并获取其EXIF信息
+            ExifInterface exifInterface = new ExifInterface(path);
+            // 获取图片的旋转信息
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
             switch (orientation) {
-                case 3:
-                    res = 180;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
                     break;
-                case 6:
-                    res = 90;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
                     break;
-                case 8:
-                    res = 270;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
                     break;
             }
-        } catch (Exception e) {
-            Log.e("Exif", "No Exif info");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return res;
+        return degree;
+    }
+
+    /**
+     * 将图片按照指定的角度进行旋转
+     *
+     * @param bitmap 需要旋转的图片
+     * @param degree 指定的旋转角度
+     * @return 旋转后的图片
+     */
+    public static Bitmap rotateBitmapByDegree(Bitmap bitmap, int degree) {
+        // 根据旋转角度，生成旋转矩阵
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        // 将原始图片按照旋转矩阵进行旋转，并得到新的图片
+        Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+        }
+        return newBitmap;
     }
 
 }

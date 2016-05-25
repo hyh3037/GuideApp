@@ -67,16 +67,23 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Progres
      */
     @Override
     public void onError(Throwable e) {
+        LogUtils.d(e.toString());
         if (e instanceof HttpException) {
-            Toast.makeText(mContext, mContext.getString(R.string.toast_network_false),
-                    Toast.LENGTH_SHORT).show();
+            HttpException httpException = (HttpException) e;
+            if (504 == httpException.code()) {
+                Toast.makeText(mContext, mContext.getString(R.string.toast_error_network),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext, "网络错误HTTP_" + httpException.code(), Toast.LENGTH_SHORT)
+                        .show();
+            }
         } else if (e instanceof SocketTimeoutException) {
-            Toast.makeText(mContext, mContext.getString(R.string.toast_server_connection_exception),
+            Toast.makeText(mContext, mContext.getString(R.string.toast_socket_timeout),
                     Toast.LENGTH_SHORT).show();
         } else if (e instanceof ApiException) {
             Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
         } else {
-            LogUtils.d(e.toString() + e.getMessage());
+            Toast.makeText(mContext, "未知错误", Toast.LENGTH_SHORT).show();
         }
         dismissProgressDialog();
     }

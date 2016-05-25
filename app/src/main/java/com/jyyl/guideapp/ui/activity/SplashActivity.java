@@ -10,6 +10,8 @@ import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.utils.AppUtils;
 import com.jyyl.guideapp.utils.SPUtils;
 
+import cn.jpush.android.api.JPushInterface;
+
 /**
  * @author ShangBB
  * @Description: (欢迎界面,初始化)
@@ -28,6 +30,7 @@ public class SplashActivity extends BaseActivity {
         setSwipeBackEnable(false);
         initApp();
     }
+
     /**根据版本是否变更，决定是否启动引导页面*/
     private void isStartGuideActivity() {
         int version = AppUtils.getVersionCode(this);
@@ -70,6 +73,19 @@ public class SplashActivity extends BaseActivity {
         }, 2000);
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JPushInterface.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JPushInterface.onPause(this);
+    }
+
 
     @Override
     public void finish() {

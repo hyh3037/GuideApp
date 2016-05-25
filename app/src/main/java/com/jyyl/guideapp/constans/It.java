@@ -18,38 +18,33 @@ public class It {
 	 */
 	public static final String ACTION_LOGIN_ACTIVITY = "com.xaqy.leanmanager.action.login";
 	/**
-	 * 判断当前界面上一个界面activity是哪个
+	 * intent 启动位置
 	 */
-	public static final String START_ACTIVITY_WITH = "start_activity_with";
+	public static final String START_INTENT_WITH = "start_intent_with";
 
-	/**
-	 * 判断是哪个activity加载的fragment
-	 */
-	public static final String START_FRAGMENT_WITH = "start_fragment_with";
-	/**
-	 * 登录 Action
-	 */
-	public static final int ACTION_LOGIN = 0X000;
 
-	/**
-	 * 注册 Action
-	 */
-	public static final int ACTION_REGISTER = 0X001;
+	/**======================================INTENT START 编号========================================*/
+	//登录
+	public static final int ACTIVITY_LOGIN = 0X000;
 
-	/**
-	 * 忘记密码 Action
-	 */
-	public static final int ACTION_FORGET = 0X002;
+	//注册
+	public static final int ACTIVITY_REGISTER = 0X001;
 
-	/**
-	 * 修改密码 Action
-	 */
-	public static final int ACTION_UP_PASSWORD = 0X003;
+	//重置密码
+	public static final int ACTIVITY_RESET_PASSWORD = 0X003;
+
+    //JPUSH Receiver
+    public static final int RECEIVER_JPUSH_NOTICE = 0X020;
+
+    //消息通知列表
+    public static final int ACTIVITY_NOTICE = 0X021;
+
+    /**=====================================INTENT START 编号 END=====================================*/
 
 	/**
 	 * 使用bundle 传递信息 时使用的key
 	 */
 	public static final String BUNDLE_KEY_LOGIN_ACCOUNT = "login_account";
 	public static final String BUNDLE_KEY_LOGIN_PASSWOED = "login_password";
-	public static final String BUNDLE_KEY_NOTICE_TITLE = "notice_title";
+	public static final String BUNDLE_KEY_NOTICE_MSG = "notice_msg";
 }

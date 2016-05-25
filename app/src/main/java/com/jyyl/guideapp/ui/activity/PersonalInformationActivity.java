@@ -17,6 +17,7 @@ import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.SelectPhotoDialog;
 import com.jyyl.guideapp.utils.ImageUtils;
 import com.jyyl.guideapp.utils.FileUtils;
+import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.QiNiuUploadUtils;
 import com.jyyl.guideapp.utils.SPUtils;
 import com.jyyl.guideapp.utils.SelectPictureUtils;
@@ -42,16 +43,15 @@ public class PersonalInformationActivity extends BaseActivity
     private SelectPhotoDialog dialog;
 
     private Uri cameraUri = null;   //拍照保存图片的URI
-    private Uri photoUri = null;    //裁剪的图片URI
+    private Uri photoUri = null;    //被裁剪的图片URI
     private Uri cutUri = null;      //裁剪后图片的URI
     private Bitmap cropBitmap = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_information);
         mContext = this;
+        setContentView(R.layout.activity_personal_information);
         initToolBar();
         initUri();
     }
@@ -192,6 +192,12 @@ public class PersonalInformationActivity extends BaseActivity
             cropBitmap = ImageUtils.getBitmapFromUri(cutUri, this); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
 
             if (cropBitmap != null) {
+                String path = FileUtils.getFileByUri(this, cutUri).getAbsolutePath();
+                int degree = ImageUtils.getBitmapDegree(path);//检查是否有被旋转，并进行纠正
+                LogUtils.d("path:"+path+"\ndegree"+degree);
+                if (degree != 0) {
+                    cropBitmap = ImageUtils.rotateBitmapByDegree(cropBitmap, degree);
+                }
                 mPhotoView.setImageBitmap(cropBitmap);
             } else {
                 mPhotoView.setImageResource(R.mipmap.ic_launcher);

@@ -2,13 +2,10 @@ package com.jyyl.guideapp.http;
 
 import com.jyyl.guideapp.entity.DeviceInfo;
 import com.jyyl.guideapp.utils.LogUtils;
+import com.jyyl.guideapp.utils.TimeUtils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Retrofit;
@@ -125,11 +122,23 @@ public class HttpMethods {
      */
     public Observable<String> loginAccount(String memberAccount,String memberPassword) {
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
-        String loginTime = df.format(Calendar.getInstance().getTime());
+        String loginTime = TimeUtils.getStringDate();
         LogUtils.d(loginTime);
 
         return mApiService.loginAccount(loginTime,memberAccount,memberPassword,"jy" )
+                .map(new HttpResultFunc<String>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    public Observable<String> getUserDevices(String userId) {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("ascriptionId",userId);
+
+        return mApiService.getUserDevices(params)
                 .map(new HttpResultFunc<String>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

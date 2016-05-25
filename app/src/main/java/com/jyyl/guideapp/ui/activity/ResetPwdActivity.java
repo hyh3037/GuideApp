@@ -133,7 +133,7 @@ public class ResetPwdActivity extends BaseActivity {
                     public void onNext(String s) {
                         // 密码重置成功跳转到登录
                         Bundle bundle = new Bundle();
-                        bundle.putInt(It.START_ACTIVITY_WITH, It.ACTION_REGISTER);
+                        bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_RESET_PASSWORD);
                         bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
                         bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, newPwd);
                         openActivity(mContext, LoginActivity.class, bundle);

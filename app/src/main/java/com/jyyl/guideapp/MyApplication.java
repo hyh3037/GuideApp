@@ -8,9 +8,12 @@ import android.os.Vibrator;
 import com.baidu.location.service.LocationService;
 import com.baidu.location.service.WriteLog;
 import com.baidu.mapapi.SDKInitializer;
+import com.jyyl.guideapp.utils.CrashExceptionHandler;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * @Fuction:
@@ -18,6 +21,7 @@ import java.util.List;
  * @Date: 2016/4/13  13:45
  */
 public class MyApplication extends Application {
+
     private static MyApplication instance;
     private List<Activity> mList = new LinkedList<Activity>();
 
@@ -37,9 +41,15 @@ public class MyApplication extends Application {
         super.onCreate();
         instance = this;
 
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
+        JPushInterface.setSilenceTime(getApplicationContext(), 23, 30, 7, 30);
+
         WriteLog.getInstance().init(); // 初始化日志
         locationService = new LocationService(getApplicationContext());
         mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+
+        configCollectCrashInfo();
 
     }
 
@@ -58,5 +68,20 @@ public class MyApplication extends Application {
             if (activity != null)
                 activity.finish();
         }
+    }
+
+
+    /**app在sd卡的主目录*/
+    public final static String APP_MAIN_FOLDER_NAME = "Guide";
+    /**本地存放闪退日志的目录*/
+    public final static String CRASH_FOLDER_NAME = "crash";
+    /**app在sd卡存放图片的目录*/
+    public final static String PHOTO_FOLDER_NAME = "photo";
+    /**
+     * 配置奔溃信息的搜集
+     */
+    private void configCollectCrashInfo() {
+        CrashExceptionHandler crashExceptionHandler = new CrashExceptionHandler(this, APP_MAIN_FOLDER_NAME, CRASH_FOLDER_NAME);
+        Thread.setDefaultUncaughtExceptionHandler(crashExceptionHandler);
     }
 }

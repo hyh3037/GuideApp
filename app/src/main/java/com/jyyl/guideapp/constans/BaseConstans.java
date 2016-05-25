@@ -23,7 +23,6 @@ public class BaseConstans {
     public static final int PAGE_THREE = 2;
     public static final int PAGE_FOUR = 3;
 
-
     /**
      * 默认团队名称
      */

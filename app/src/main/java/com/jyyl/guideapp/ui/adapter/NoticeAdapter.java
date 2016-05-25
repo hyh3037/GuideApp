@@ -3,6 +3,7 @@ package com.jyyl.guideapp.ui.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 
 import com.jyyl.guideapp.R;
@@ -43,24 +44,24 @@ public class NoticeAdapter extends BaseAdapterHelper<NoticeInfo> {
             holder.setVisible(R.id.cb_item_select, false);
         }
         holder.setChecked(R.id.cb_item_select, noticeInfo.isCheck());
-        holder.setText(R.id.notice_msg, noticeInfo.getMessage());
+        holder.setText(R.id.notice_msg, noticeInfo.getContent());
 
         holder.setOnClickListener(R.id.item_notice, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (flage) {
                     if (noticeInfo.isCheck()) {
-                        noticeInfo.setIsCheck(false);
+                        noticeInfo.setCheck(false);
                     } else {
-                        noticeInfo.setIsCheck(true);
+                        noticeInfo.setCheck(true);
                     }
                     mListener.refreshToolbar();
                 } else {
                     Intent intent = new Intent(mContext , NoticeDetailsActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString(It.BUNDLE_KEY_NOTICE_TITLE, noticeInfo.getMessage());
-//                    intent.putExtras(bundle);
-                    intent.putExtra(It.BUNDLE_KEY_NOTICE_TITLE, noticeInfo.getMessage());
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_NOTICE);
+                    bundle.putString(It.BUNDLE_KEY_NOTICE_MSG, noticeInfo.getContent());
+                    intent.putExtras(bundle);
                     mContext.startActivity(intent);
                     ((Activity) mContext).overridePendingTransition(R.anim.push_right_in, 0);
                 }

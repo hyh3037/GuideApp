@@ -7,26 +7,48 @@ package com.jyyl.guideapp.entity;
  */
 public class NoticeInfo {
 
-    private String message;
+    private String title;
+    private String content;
+    private String time;
     private boolean isCheck;
 
-    public NoticeInfo(String message) {
-        this.message = message;
+    public NoticeInfo(String title, String content, String time) {
+        this.title = title;
+        this.content = content;
+        this.time = time;
+        this.isCheck = false;
     }
 
-    public String getMessage() {
-        return message;
+
+    public String getTitle() {
+        return title;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public boolean isCheck() {
         return isCheck;
     }
 
-    public void setIsCheck(boolean isCheck) {
-        this.isCheck = isCheck;
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 }

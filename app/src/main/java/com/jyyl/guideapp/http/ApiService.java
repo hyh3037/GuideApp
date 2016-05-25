@@ -38,6 +38,10 @@ public interface ApiService {
                                                 @Path("memberPassword") String memberPassword,
                                                 @Path("industry") String industry);
 
+    //获取导游所有设备
+    @POST(Api.USER_DEVICES_URL)
+    Observable<HttpResult<String>> getUserDevices(@Body Map<String, String> params);
+
     @GET("platformenter/platformenter/registered")
     Observable<HttpResult<List<DeviceInfo>>> getDeviceInfo(@Query("phone") String phone);
 }

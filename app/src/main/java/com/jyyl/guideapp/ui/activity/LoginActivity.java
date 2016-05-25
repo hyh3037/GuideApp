@@ -17,6 +17,7 @@ import com.jyyl.guideapp.constans.It;
 import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.http.BaseSubscriber;
 import com.jyyl.guideapp.http.HttpMethods;
+import com.jyyl.guideapp.jpush.JpushManager;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.RegexUtils;
@@ -119,7 +120,9 @@ public class LoginActivity extends BaseActivity {
                 } else if (!RegexUtils.checkMobile(account)) {
                     T.showShortToast(mContext, getString(R.string.toast_phone_format_error));
                 } else {
-                    login();
+                    openActivity(mContext, MainActivity.class);
+                    //TODO 测试
+//                    login();
                 }
                 break;
             case R.id.login_forget_pwd:
@@ -139,6 +142,13 @@ public class LoginActivity extends BaseActivity {
                         if (s != null) {
                             // 登录成功
                             openActivity(mContext, MainActivity.class);
+
+                            //设置Jpush 用户别名
+                            boolean isAliasState = (boolean) SPUtils.get(mContext,Sp.SP_KEY_ALIAS_STATE,false);
+                            if (!isAliasState){
+                                JpushManager.getInstance().setAlias(mContext,account);
+                            }
+
                             //保存账号信息到SP
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT,
                                     account);

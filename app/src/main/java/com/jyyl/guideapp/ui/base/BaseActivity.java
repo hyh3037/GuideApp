@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.constans.ActivityEvent;
 import com.jyyl.guideapp.utils.ScreenUtils;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
@@ -26,7 +25,7 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivityHelper;
  * @Date: 2016/4/18  17:16
  */
 public class BaseActivity extends AppCompatActivity
-        implements SwipeBackActivityBase, OnClickListener, ActivityEvent {
+        implements SwipeBackActivityBase, OnClickListener{
 
     private SwipeBackActivityHelper mHelper;
 
@@ -40,7 +39,6 @@ public class BaseActivity extends AppCompatActivity
 
         MyApplication.getInstance().addActivity(this);
     }
-
 
     @Override
     public void setContentView(int layoutResID) {
