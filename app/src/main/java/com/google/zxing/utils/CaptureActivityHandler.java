@@ -26,7 +26,7 @@ import com.google.zxing.Result;
 import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.camera.CameraManager;
 import com.google.zxing.decode.DecodeThread;
-import com.jyyl.guideapp.R;
+import com.jyyl.jinyou.R;
 
 /**
  * This class handles all the messaging which comprises the state machine for

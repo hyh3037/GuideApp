@@ -1,9 +1,9 @@
 <manifest
-    package="com.jyyl.guideapp"
+    package="com.jyyl.jinyou"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <permission
-        android:name="com.jyyl.guideapp.permission.JPUSH_MESSAGE"
+        android:name="com.jyyl.jinyou.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
     <!-- Required  一些系统要求的权限，如访问网络等-->
@@ -50,7 +50,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
-        android:name=".MyApplication"
+        android:name="com.jyyl.jinyou.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -59,7 +59,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="mOMo7XLWuvb2fhliz4Nu9pXmFZuUIoqj"/>
+            android:value="N6RNGIOVpQt9aBAg16GNCPojqxfuQtMA"/>
 
         <service
             android:name="com.baidu.location.f"
@@ -71,7 +71,7 @@
         </service>
 
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name="com.jyyl.jinyou.ui.activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -81,64 +81,64 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.GuideActivity"
+            android:name="com.jyyl.jinyou.ui.activity.GuideActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.LoginActivity"
+            android:name="com.jyyl.jinyou.ui.activity.LoginActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.RegisterActivity"
+            android:name="com.jyyl.jinyou.ui.activity.RegisterActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.ResetPwdActivity"
+            android:name="com.jyyl.jinyou.ui.activity.ResetPwdActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name="com.jyyl.jinyou.ui.activity.MainActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.DeviceManageActivity"
+            android:name="com.jyyl.jinyou.ui.activity.DeviceManageActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.MemberManageActivity"
+            android:name="com.jyyl.jinyou.ui.activity.MemberManageActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.MemberBindingActivity"
+            android:name="com.jyyl.jinyou.ui.activity.MemberBindingActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
 
         <activity
-            android:name=".ui.activity.HealthDataActivity"
+            android:name="com.jyyl.jinyou.ui.activity.HealthDataActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.SettingsActivity"
+            android:name="com.jyyl.jinyou.ui.activity.SettingsActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.PersonalInformationActivity"
+            android:name="com.jyyl.jinyou.ui.activity.PersonalInformationActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.PersonalInfoEditActivity"
+            android:name="com.jyyl.jinyou.ui.activity.PersonalInfoEditActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.NoticesActivity"
+            android:name="com.jyyl.jinyou.ui.activity.NoticesActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.activity.NoticeDetailsActivity"
+            android:name="com.jyyl.jinyou.ui.activity.NoticeDetailsActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="jpush.testAction" />
@@ -148,10 +148,10 @@
 
         <activity android:name="com.google.zxing.activity.CaptureActivity"/>
 
-        <service android:name=".service.update.UpdateService"/>
+        <service android:name="com.jyyl.jinyou.service.update.UpdateService"/>
 
         <receiver
-            android:name=".receive.AlarmReceiver">
+            android:name="com.jyyl.jinyou.receive.AlarmReceiver">
         </receiver>
 
         <!--======================================极光推送START====================================-->
@@ -228,7 +228,7 @@
 
         <!-- User defined. 用户自定义的广播接收器-->
         <receiver
-            android:name=".jpush.JpushReceiver"
+            android:name="com.jyyl.jinyou.jpush.JpushReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!--Required 用户注册SDK的intent-->
@@ -243,7 +243,7 @@
 
         <!-- Required . Enable it you can get statistics data with channel -->
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
-        <meta-data android:name="JPUSH_APPKEY" android:value="7260403f54c0dfbc7237d2b8" /> <!-- </>值来自开发者平台取得的AppKey-->
+        <meta-data android:name="JPUSH_APPKEY" android:value="7474f03f41acd4283f1b57f2" /> <!-- </>值来自开发者平台取得的AppKey-->
 
         <!--======================================极光推送END====================================-->
 

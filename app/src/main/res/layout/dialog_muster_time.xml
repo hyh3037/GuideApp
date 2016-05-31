@@ -16,7 +16,7 @@
         android:textSize="@dimen/text_size_medium"/>
 
 
-    <com.jyyl.guideapp.widget.pickerview.TimePicker
+    <com.jyyl.jinyou.widget.pickerview.TimePicker
         android:id="@+id/time_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_margin="15dp"
         android:padding="10dp"
         android:gravity="center">
-    </com.jyyl.guideapp.widget.pickerview.TimePicker>
+    </com.jyyl.jinyou.widget.pickerview.TimePicker>
 
 
     <EditText

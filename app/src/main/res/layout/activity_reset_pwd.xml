@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_phone"
             style="@style/edittext_login_style"
             android:hint="@string/phone_no"
@@ -28,7 +28,7 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <com.jyyl.guideapp.widget.CleanEditText
+            <com.jyyl.jinyou.widget.CleanEditText
                 android:id="@+id/et_security_code"
                 style="@style/edittext_login_style"
                 android:layout_width="0dp"
@@ -52,14 +52,14 @@
         </LinearLayout>
 
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_new_pwd"
             style="@style/edittext_login_style"
             android:layout_marginTop="20dp"
             android:hint="@string/new_pwd"
             android:inputType="textPassword"/>
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_re_pwd"
             style="@style/edittext_login_style"
             android:layout_marginTop="20dp"

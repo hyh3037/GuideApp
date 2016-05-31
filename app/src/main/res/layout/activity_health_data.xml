@@ -24,7 +24,7 @@
                 android:background="@drawable/shape_wihte_bg"
                 android:padding="10dp">
 
-                <com.jyyl.guideapp.widget.CircleImageView
+                <com.jyyl.jinyou.widget.CircleImageView
                     android:id="@+id/iv_member_photoview"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"

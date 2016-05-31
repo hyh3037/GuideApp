@@ -5,7 +5,7 @@
               android:background="@drawable/shape_wihte_bg"
               android:padding="10dp">
 
-    <com.jyyl.guideapp.widget.wheelview.WheelView
+    <com.jyyl.jinyou.widget.wheelview.WheelView
         android:id="@+id/time_hour"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         android:textSize="28sp"
         android:textStyle="normal"/>
 
-    <com.jyyl.guideapp.widget.wheelview.WheelView
+    <com.jyyl.jinyou.widget.wheelview.WheelView
         android:id="@+id/time_min"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

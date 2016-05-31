@@ -84,7 +84,7 @@
     <!-- The left navigation drawer -->
     <fragment
         android:id="@+id/navigation_left"
-        android:name="com.jyyl.guideapp.ui.fragment.NavLeftFragment"
+        android:name="com.jyyl.jinyou.ui.fragment.NavLeftFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="left"

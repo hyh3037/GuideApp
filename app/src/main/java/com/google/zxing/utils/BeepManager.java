@@ -27,7 +27,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.zxing.activity.CaptureActivity;
-import com.jyyl.guideapp.R;
+import com.jyyl.jinyou.R;
 
 import java.io.Closeable;
 import java.io.IOException;

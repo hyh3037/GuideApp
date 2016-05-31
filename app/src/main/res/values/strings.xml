@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">导游端</string>
+    <string name="app_name">锦游</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
@@ -80,6 +80,7 @@
 
     <!--Toast-->
     <string name="toast_error_network">当前网络不可用，请检查你的网络设置</string>
+    <string name="toast_error_socket">服务器异常</string>
     <string name="toast_socket_timeout">服务器连接超时</string>
     <string name="toast_phone_password_not_null">手机号/密码不能为空</string>
     <string name="toast_phone_not_null">手机号码不能为空</string>

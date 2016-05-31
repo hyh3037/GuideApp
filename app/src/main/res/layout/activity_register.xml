@@ -15,7 +15,7 @@
         android:layout_margin="20dp"
         android:orientation="vertical">
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_acc"
             style="@style/edittext_login_style"
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <com.jyyl.guideapp.widget.CleanEditText
+            <com.jyyl.jinyou.widget.CleanEditText
                 android:id="@+id/et_security_code"
                 style="@style/edittext_login_style"
                 android:layout_width="0dp"
@@ -53,14 +53,14 @@
                 android:textSize="@dimen/text_size_small_middle"/>
         </LinearLayout>
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_pwd"
             style="@style/edittext_login_style"
             android:layout_marginTop="20dp"
             android:hint="@string/password"
             android:inputType="textPassword"/>
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_repwd"
             style="@style/edittext_login_style"
             android:layout_marginTop="20dp"

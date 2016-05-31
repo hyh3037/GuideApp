@@ -30,7 +30,7 @@
                 android:layout_height="160dp"
                 android:layout_marginBottom="10dp">
 
-                <com.jyyl.guideapp.widget.CircleImageView
+                <com.jyyl.jinyou.widget.CircleImageView
                     android:id="@+id/iv_member_photoview"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <com.jyyl.guideapp.widget.CleanEditText
+                    <com.jyyl.jinyou.widget.CleanEditText
                         android:id="@+id/et_member_name"
                         style="@style/edittext_info_style"
                         android:hint="@string/member_name"
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <com.jyyl.guideapp.widget.CleanEditText
+                    <com.jyyl.jinyou.widget.CleanEditText
                         android:id="@+id/et_member_id_card"
                         style="@style/edittext_info_style"
                         android:hint="@string/member_id_card"
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <com.jyyl.guideapp.widget.CleanEditText
+                    <com.jyyl.jinyou.widget.CleanEditText
                         android:id="@+id/et_linkman_name"
                         style="@style/edittext_info_style"
                         android:hint="@string/member_linkman_name"
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <com.jyyl.guideapp.widget.CleanEditText
+                    <com.jyyl.jinyou.widget.CleanEditText
                         android:id="@+id/et_linkman_tel"
                         style="@style/edittext_info_style"
                         android:hint="@string/member_linkman_tel"

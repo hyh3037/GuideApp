@@ -32,7 +32,7 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.common.HybridBinarizer;
-import com.jyyl.guideapp.R;
+import com.jyyl.jinyou.R;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;

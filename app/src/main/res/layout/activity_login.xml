@@ -15,14 +15,14 @@
         android:layout_margin="20dp"
         android:orientation="vertical">
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_login_acc"
             style="@style/edittext_login_style"
             android:layout_alignParentTop="true"
             android:hint="@string/phone_no"
             android:inputType="phone"/>
 
-        <com.jyyl.guideapp.widget.CleanEditText
+        <com.jyyl.jinyou.widget.CleanEditText
             android:id="@+id/et_login_pwd"
             style="@style/edittext_login_style"
             android:layout_below="@+id/et_login_acc"

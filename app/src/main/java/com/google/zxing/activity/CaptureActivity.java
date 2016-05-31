@@ -41,7 +41,7 @@ import com.google.zxing.decode.DecodeThread;
 import com.google.zxing.utils.BeepManager;
 import com.google.zxing.utils.CaptureActivityHandler;
 import com.google.zxing.utils.InactivityTimer;
-import com.jyyl.guideapp.R;
+import com.jyyl.jinyou.R;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
