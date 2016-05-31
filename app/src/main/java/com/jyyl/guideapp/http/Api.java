@@ -16,12 +16,28 @@ public class Api {
     public static final String REGISTER_URL = "tourism/register";
     //登录
     public static final String LOGIN_URL = "tourism/register";
-    //获取设备列表
-    public static final String USER_DEVICES_URL = "tourism/equipment/serach";
+    //验证码
+    public static final String SEURITYCODE_URL = "tourism/messageauth";
+
+
+    //上传导游位置
+    public static final String UPLOAD_LOCATION_URL = "tourism/position/realtime/addposition";
+
     //上传导游信息
-    public static final String ADD_GUIDEINFO_URL = "tourism/guideinfo/addguideinfo";
+    public static final String UPLOAD_GUIDEINFO_URL = "tourism/guideinfo/addguideinfo";
     //获取导游信息
     public static final String GET_GUIDEINFO_URL = "tourism/guideinfo/getguideinfo";
+
+
+    //获取团队信息
+    public static final String GET_TEAM_URL = "tourism/tourteam/getteam";
+
+    //获取设备列表
+    public static final String USER_DEVICES_URL = "tourism/equipment/serach";
+
+
+    //版本更新
+    public static final String UPDATE_URL = "tourism/version/appversion";
 
 
 

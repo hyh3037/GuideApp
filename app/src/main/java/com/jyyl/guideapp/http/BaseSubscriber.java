@@ -82,8 +82,6 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Progres
                     Toast.LENGTH_SHORT).show();
         } else if (e instanceof ApiException) {
             Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(mContext, "未知错误", Toast.LENGTH_SHORT).show();
         }
         dismissProgressDialog();
     }

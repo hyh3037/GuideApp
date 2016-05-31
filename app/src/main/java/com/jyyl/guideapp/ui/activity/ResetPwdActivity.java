@@ -21,6 +21,8 @@ import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.RegexUtils;
 import com.jyyl.guideapp.utils.T;
 
+import java.util.List;
+
 
 /**
  * @author ShangBB
@@ -128,9 +130,9 @@ public class ResetPwdActivity extends BaseActivity {
      */
     private void resetPassword() {
         HttpMethods.getInstance().registerAccount(account, newPwd, securityCode)
-                .subscribe(new BaseSubscriber<String>(mContext) {
+                .subscribe(new BaseSubscriber<List<String>>(mContext) {
                     @Override
-                    public void onNext(String s) {
+                    public void onNext(List<String> s) {
                         // 密码重置成功跳转到登录
                         Bundle bundle = new Bundle();
                         bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_RESET_PASSWORD);
@@ -148,7 +150,7 @@ public class ResetPwdActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account)
-                .subscribe(new BaseSubscriber<String>(mContext) {
+                .subscribe(new BaseSubscriber<List<String>>(mContext) {
                     @Override
                     public void onStart() {
                         super.onStart();
@@ -157,8 +159,8 @@ public class ResetPwdActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        LogUtils.d(s);
+                    public void onNext(List<String> s) {
+                        LogUtils.d(s.get(0));
                         T.showShortToast(mContext,getString(R.string.toast_verification_code_has_been_sent));
                     }
                 });

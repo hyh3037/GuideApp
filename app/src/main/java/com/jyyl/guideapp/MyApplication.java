@@ -9,6 +9,7 @@ import com.baidu.location.service.LocationService;
 import com.baidu.location.service.WriteLog;
 import com.baidu.mapapi.SDKInitializer;
 import com.jyyl.guideapp.utils.CrashExceptionHandler;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,9 @@ import cn.jpush.android.api.JPushInterface;
 public class MyApplication extends Application {
 
     private static MyApplication instance;
+
+    private String userId;
+
     private List<Activity> mList = new LinkedList<Activity>();
 
     public LocationService locationService;
@@ -49,6 +53,8 @@ public class MyApplication extends Application {
         locationService = new LocationService(getApplicationContext());
         mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
 
+        LeakCanary.install(this);
+
         configCollectCrashInfo();
 
     }
@@ -60,7 +66,7 @@ public class MyApplication extends Application {
 
     // remove Activity
     public void removeActivity(Activity activity) {
-        mList.add(activity);
+        mList.remove(activity);
     }
 
     public void exitApp() {
@@ -83,5 +89,13 @@ public class MyApplication extends Application {
     private void configCollectCrashInfo() {
         CrashExceptionHandler crashExceptionHandler = new CrashExceptionHandler(this, APP_MAIN_FOLDER_NAME, CRASH_FOLDER_NAME);
         Thread.setDefaultUncaughtExceptionHandler(crashExceptionHandler);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

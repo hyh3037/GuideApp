@@ -72,16 +72,15 @@ public class NoticeCache {
      * 获取缓存中的通知
      */
     public LinkedList<NoticeInfo> getNoticeCache() {
-        LinkedList<NoticeInfo> noticeInfos;
+        LinkedList<NoticeInfo> noticeInfos = new LinkedList<>();
         String cacheJsonString = mCache.getAsString(noticeChcheKey);
         LogUtils.d(TAG, cacheJsonString);
 
         if (cacheJsonString != null){
             Type listType = new TypeToken<LinkedList<NoticeInfo>>(){}.getType();
             noticeInfos = new Gson().fromJson(cacheJsonString,listType);
-            return noticeInfos;
         }
-        return null;
+        return noticeInfos;
     }
 
     /**

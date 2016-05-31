@@ -7,9 +7,7 @@ import android.widget.Toast;
 
 import com.jyyl.guideapp.MyApplication;
 import com.jyyl.guideapp.R;
-import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.utils.LogUtils;
-import com.jyyl.guideapp.utils.SPUtils;
 
 import java.util.Set;
 
@@ -78,8 +76,7 @@ public class JpushManager {
                 case 0:
                     logs = "Set tag and alias success";
                     LogUtils.i(TAG, logs);
-                    // 建议这里往 SharePreference 里写一个成功设置的状态。成功设置一次后，以后不必再次设置了。、
-                    SPUtils.put(getApplicationContext(), Sp.SP_KEY_ALIAS_STATE,true);
+                    // 建议这里往 SharePreference 里写一个成功设置的状态。成功设置一次后，以后不必再次设置了。
                     break;
                 case 6002:
                     logs = "Failed to set alias and tags due to timeout. Try again after 60s.";

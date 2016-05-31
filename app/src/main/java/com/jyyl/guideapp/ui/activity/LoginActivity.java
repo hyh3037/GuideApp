@@ -25,6 +25,8 @@ import com.jyyl.guideapp.utils.SPUtils;
 import com.jyyl.guideapp.utils.T;
 import com.jyyl.guideapp.widget.CleanEditText;
 
+import java.util.List;
+
 
 /**
  * @author ShangBB
@@ -120,9 +122,7 @@ public class LoginActivity extends BaseActivity {
                 } else if (!RegexUtils.checkMobile(account)) {
                     T.showShortToast(mContext, getString(R.string.toast_phone_format_error));
                 } else {
-                    openActivity(mContext, MainActivity.class);
-                    //TODO 测试
-//                    login();
+                    login();
                 }
                 break;
             case R.id.login_forget_pwd:
@@ -136,24 +136,20 @@ public class LoginActivity extends BaseActivity {
 
     private void login() {
         HttpMethods.getInstance().loginAccount(account, password)
-                .subscribe(new BaseSubscriber<String>(mContext) {
+                .subscribe(new BaseSubscriber<List<String>>(mContext) {
                     @Override
-                    public void onNext(String s) {
+                    public void onNext(List<String> s) {
                         if (s != null) {
                             // 登录成功
                             openActivity(mContext, MainActivity.class);
 
-                            //设置Jpush 用户别名
-                            boolean isAliasState = (boolean) SPUtils.get(mContext,Sp.SP_KEY_ALIAS_STATE,false);
-                            if (!isAliasState){
-                                JpushManager.getInstance().setAlias(mContext,account);
-                            }
+                            String userId = "210e5012ed154eb880bb2b9ae9b990d4";
+                            MyApplication.getInstance().setUserId(userId);
+                            JpushManager.getInstance().setAlias(mContext, userId);
 
                             //保存账号信息到SP
-                            SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT,
-                                    account);
-                            SPUtils.put(mContext, Sp
-                                    .SP_KEY_LAST_LOGIN_PASSWORD, password);
+                            SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT, account);
+                            SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_PASSWORD, password);
                             SPUtils.put(mContext, Sp.SP_KEY_LOGIN_STATE, true);
                             T.showShortToast(mContext, getString(R.string.toast_login_success));
                             finish();

@@ -10,7 +10,7 @@ package com.jyyl.guideapp.constans;
  */
 public class BaseConstans {
 
-    public static final String APP_NAME = "APP";
+    public static final String APP_NAME = "Guide";
 
     public static final int RESULT_OK = 0;
     public static final int RESULT_FAILURE = 1;

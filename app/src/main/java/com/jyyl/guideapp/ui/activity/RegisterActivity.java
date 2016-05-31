@@ -21,6 +21,8 @@ import com.jyyl.guideapp.utils.LogUtils;
 import com.jyyl.guideapp.utils.RegexUtils;
 import com.jyyl.guideapp.utils.T;
 
+import java.util.List;
+
 
 /**
  * @author ShangBB
@@ -126,7 +128,7 @@ public class RegisterActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account)
-                .subscribe(new BaseSubscriber<String>(mContext) {
+                .subscribe(new BaseSubscriber<List<String>>(mContext) {
                     @Override
                     public void onStart() {
                         super.onStart();
@@ -135,8 +137,8 @@ public class RegisterActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        LogUtils.d(s);
+                    public void onNext(List<String> s) {
+                        LogUtils.d(s.get(0));
                         T.showShortToast(mContext, getString(R.string.toast_verification_code_has_been_sent));
                     }
                 });
@@ -144,9 +146,9 @@ public class RegisterActivity extends BaseActivity {
 
     private void register() {
         HttpMethods.getInstance().registerAccount(account, password, securityCode)
-                .subscribe(new BaseSubscriber<String>(mContext) {
+                .subscribe(new BaseSubscriber<List<String>>(mContext) {
                     @Override
-                    public void onNext(String s) {
+                    public void onNext(List<String> s) {
                         // 注册成功跳转到登录
                         Bundle bundle = new Bundle();
                         bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_REGISTER);

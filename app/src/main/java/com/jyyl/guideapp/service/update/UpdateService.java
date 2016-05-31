@@ -49,8 +49,8 @@ public class UpdateService extends Service {
                 Environment.MEDIA_MOUNTED)) {
             apkPath = Environment.getExternalStorageDirectory()
                     .getAbsolutePath() + "/update";
-            apkurl = UpdateManager.mHashMap.get("url");
-            apkName = UpdateManager.mHashMap.get("name");
+            apkurl = UpdateManager.versionInfo.getVersionUrl();
+            apkName = "com.jyyl.guide_"+UpdateManager.versionInfo.getVersioninfo();
             registerBroader();
             setUpNotifiction();
             new Thread(new DownApkRunnable()).start();

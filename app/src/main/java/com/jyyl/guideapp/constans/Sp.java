@@ -23,10 +23,6 @@ public class Sp {
      * 登录状态
      */
     public static final String SP_KEY_LOGIN_STATE = "login_state";
-    /**
-     * Jpush 用户别名设置状态
-     */
-    public static final String SP_KEY_ALIAS_STATE = "alias_state";
 
     /**
      * 上次登录账号/密码

@@ -1,16 +1,14 @@
 package com.jyyl.guideapp.http;
 
 
-import com.jyyl.guideapp.entity.DeviceInfo;
+import com.jyyl.guideapp.entity.VersionInfo;
 
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -22,26 +20,46 @@ public interface ApiService {
 
 
     //获取验证码
-    @GET("http://1y5a133877.iask.in:19425/tourism/messageauth/{phone}&{type}&{industry}")
-    Observable<HttpResult<String>> getSecurityCode(@Path("phone") String phone,
-                                                   @Path("type") String type,
-                                                   @Path("industry") String industry);
+    @GET(Api.SEURITYCODE_URL+"/{phone}&{type}&{industry}")
+    Observable<HttpResultList<String>> getSecurityCode(@Path("phone") String phone,
+                                                       @Path("type") String type,
+                                                       @Path("industry") String industry);
 
     //注册
     @POST(Api.REGISTER_URL)
-    Observable<HttpResult<String>> registerAccount(@Body Map<String, String> params);
+    Observable<HttpResultList<String>> registerAccount(@Body Map<String, String> params);
 
     //登录
     @GET(Api.LOGIN_URL + "/{loginTime}&{memberAccount}&{memberPassword}&{industry}")
-    Observable<HttpResult<String>> loginAccount(@Path("loginTime") String loginTime,
-                                                @Path("memberAccount") String memberAccount,
-                                                @Path("memberPassword") String memberPassword,
-                                                @Path("industry") String industry);
+    Observable<HttpResultList<String>> loginAccount(@Path("loginTime") String loginTime,
+                                                    @Path("memberAccount") String memberAccount,
+                                                    @Path("memberPassword") String memberPassword,
+                                                    @Path("industry") String industry);
+
+
+    //上传导游位置
+    @POST(Api.UPLOAD_LOCATION_URL)
+    Observable<HttpResultList<String>> uploadLocation(@Body Map<String, String> params);
+
+    //上传导游信息
+    @POST(Api.UPLOAD_GUIDEINFO_URL)
+    Observable<HttpResultList<String>> uploadGuideInfo(@Body Map<String, String> params);
+
+    //获取导游信息
+    @POST(Api.GET_GUIDEINFO_URL)
+    Observable<HttpResultList<String>> getGuideInfo(@Body Map<String, String> params);
+
 
     //获取导游所有设备
     @POST(Api.USER_DEVICES_URL)
-    Observable<HttpResult<String>> getUserDevices(@Body Map<String, String> params);
+    Observable<HttpResultList<String>> getUserDevices(@Body Map<String, String> params);
 
-    @GET("platformenter/platformenter/registered")
-    Observable<HttpResult<List<DeviceInfo>>> getDeviceInfo(@Query("phone") String phone);
+
+
+    //版本更新
+    @GET(Api.UPDATE_URL+"/{versioncode}&{versiontype}&{industry}")
+    Observable<HttpResultList<VersionInfo>> updateVersion(@Path("versioncode") String versioncode,
+                                                          @Path("versiontype") String versiontype,
+                                                          @Path("industry") String industry);
+
 }

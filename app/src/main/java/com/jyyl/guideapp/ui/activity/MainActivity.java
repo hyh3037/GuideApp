@@ -44,6 +44,8 @@ import com.jyyl.guideapp.R;
 import com.jyyl.guideapp.constans.BaseConstans;
 import com.jyyl.guideapp.constans.Sp;
 import com.jyyl.guideapp.entity.MemberInfo;
+import com.jyyl.guideapp.http.BaseSubscriber;
+import com.jyyl.guideapp.http.HttpMethods;
 import com.jyyl.guideapp.receive.AlarmReceiver;
 import com.jyyl.guideapp.ui.base.BaseActivity;
 import com.jyyl.guideapp.ui.dialog.MusterNowDialog;
@@ -58,6 +60,7 @@ import com.jyyl.guideapp.utils.T;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -87,6 +90,7 @@ public class MainActivity extends BaseActivity
     // 存放历史定位结果的链表，最大存放当前结果的前5次定位结果
 
     private Marker mMarkerSelf = null;  //导游位置marker
+    private BitmapDescriptor bitmap; //导游位置marker图标
     private BitmapDescriptor markerBitmap;
     private LinkedList<MemberInfo> mMemberList = new LinkedList<>();//游客信息集合
     private LinearLayout infowindow;
@@ -300,6 +304,20 @@ public class MainActivity extends BaseActivity
             try {
                 location = msg.getData().getParcelable("loc");
                 if (location != null) {
+                    //上传导游位置
+                    HttpMethods.getInstance().uploadLocation(String.valueOf(location.getLongitude()),
+                            String.valueOf(location.getLatitude()),location.getTime())
+                            .subscribe(new BaseSubscriber<List<String>>(mContext) {
+                                @Override
+                                public void onStart() {
+                                    LogUtils.d(TAG, "导游位置上传......");
+                                }
+
+                                @Override
+                                public void onNext(List<String> strings) {
+                                    LogUtils.d(TAG, "导游位置上传成功");
+                                }
+                            });
                     addMarkers();
                 }
             } catch (Exception e) {
@@ -309,6 +327,7 @@ public class MainActivity extends BaseActivity
         }
 
     };
+
 
     private void addMarkers() {
         //模拟位置
@@ -323,7 +342,6 @@ public class MainActivity extends BaseActivity
         mMemberList.get(4).setLatLng(new LatLng((location.getLatitude() + 0.02),
                 (location.getLongitude()) - 0.004));
         // 构建Marker图标
-        BitmapDescriptor bitmap;
         bitmap = BitmapDescriptorFactory.fromResource(R.drawable
                 .main_icon_compass);
         LatLng point = new LatLng(location.getLatitude(), location.getLongitude());

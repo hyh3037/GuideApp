@@ -27,6 +27,7 @@ import com.jyyl.guideapp.utils.T;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @Fuction: 设备管理
@@ -66,11 +67,11 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         initToolBar();
         initListview();
 
-        HttpMethods.getInstance().getUserDevices("12312312")
-                .subscribe(new BaseSubscriber<String>(mContext) {
+        HttpMethods.getInstance().getUserDevices()
+                .subscribe(new BaseSubscriber<List<String>>(mContext) {
                     @Override
-                    public void onNext(String s) {
-                        LogUtils.d("s"+s);
+                    public void onNext(List<String> s) {
+                        LogUtils.d("s"+s.get(0));
                     }
                 });
     }
