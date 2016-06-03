@@ -158,7 +158,7 @@ public class MemberManageActivity extends BaseActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
                 bundle.putString("name", mDatas.get(position).getName());
-                openActivity(mContext, HealthDataActivity.class, bundle);
+                openActivity(mContext, MemberInfoActivity.class, bundle);
             }
         });
 

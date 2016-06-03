@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/toolbar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_wihte_bg">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.jyyl.jinyou.widget.CircleImageView
+                android:id="@+id/iv_member_photoview"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="20dp"
+                android:src="@mipmap/ic_launcher"
+                app:civ_border_color="@color/lightgray"
+                app:civ_border_width="1dp"/>
+
+            <TextView
+                android:id="@+id/tv_member_name"
+                style="@style/textview_info"
+                android:text="姓名：唐僧"/>
+
+            <TextView
+                android:id="@+id/tv_member_card_id"
+                style="@style/textview_info"
+                android:text="身份证：666666666666666666"/>
+
+            <TextView
+                android:id="@+id/tv_linkman_name"
+                style="@style/textview_info"
+                android:text="监护人：孙猴子"/>
+
+            <TextView
+                android:id="@+id/tv_linkman_phone"
+                style="@style/textview_info"
+                android:text="监护人电话：88888888888"/>
+
+            <TextView
+                android:id="@+id/tv_binding_deviceid"
+                style="@style/textview_info"
+                android:text="绑定设备编号：1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp">
+
+            <Button
+                android:id="@+id/btn_call_phone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?android:button"
+                android:background="@drawable/selector_btn_bg_bw"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="打电话"
+                android:textSize="@dimen/text_size_medium"/>
+
+            <Button
+                android:id="@+id/btn_send_msg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_bg_bw"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="发信息"
+                android:textSize="@dimen/text_size_medium"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:scrollbars="none">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="10dp"-->
+    <!--android:background="@drawable/shape_wihte_bg"-->
+    <!--android:padding="10dp">-->
+
+    <!--<com.jyyl.jinyou.widget.CircleImageView-->
+    <!--android:id="@+id/iv_member_photoview"-->
+    <!--android:layout_width="80dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@mipmap/ic_launcher"-->
+    <!--app:civ_border_color="@color/lightgray"-->
+    <!--app:civ_border_width="1dp"-->
+    <!--android:layout_alignTop="@+id/name_deviceid"-->
+    <!--android:layout_alignBottom="@+id/name_deviceid"/>-->
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/name_deviceid"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_toRightOf="@id/iv_member_photoview"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_member_name"-->
+    <!--style="@style/textview_info"-->
+    <!--android:text="姓名：唐僧"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_binding_deviceid"-->
+    <!--style="@style/textview_info"-->
+    <!--android:text="绑定设备编号：1"/>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_below="@id/name_deviceid"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_member_card_id"-->
+    <!--style="@style/textview_info"-->
+    <!--android:text="身份证：666666666666666666"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_linkman_name"-->
+    <!--style="@style/textview_info"-->
+    <!--android:text="联系人：孙猴子"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_linkman_phone"-->
+    <!--style="@style/textview_info"-->
+    <!--android:text="联系人电话：88888888888"/>-->
+
+    <!--</LinearLayout>-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<include-->
+    <!--android:id="@+id/blood_pressure"-->
+    <!--layout="@layout/health_data_blood_pressure"/>-->
+
+    <!--<include-->
+    <!--android:id="@+id/blood_sugar"-->
+    <!--layout="@layout/health_data_blood_sugar"/>-->
+
+    <!--<include-->
+    <!--android:id="@+id/heart_rate"-->
+    <!--layout="@layout/health_data_heart_rate"/>-->
+
+    <!--<include-->
+    <!--android:id="@+id/step_counter"-->
+    <!--layout="@layout/health_data_step_counter"/>-->
+    <!--</LinearLayout>-->
+
+    <!--</ScrollView>-->
+
+</LinearLayout>

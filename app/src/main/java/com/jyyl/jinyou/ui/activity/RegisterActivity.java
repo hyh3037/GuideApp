@@ -21,8 +21,6 @@ import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.RegexUtils;
 import com.jyyl.jinyou.utils.T;
 
-import java.util.List;
-
 
 /**
  * @author ShangBB
@@ -128,35 +126,38 @@ public class RegisterActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account)
-                .subscribe(new BaseSubscriber<List<String>>(mContext) {
+                .subscribe(new BaseSubscriber<Object>(mContext) {
                     @Override
                     public void onStart() {
-                        super.onStart();
-                        TimeCount timeCount = new TimeCount(30000, 1000);
-                        timeCount.start();
                     }
 
                     @Override
-                    public void onNext(List<String> s) {
-                        LogUtils.d(s.get(0));
-                        T.showShortToast(mContext, getString(R.string.toast_verification_code_has_been_sent));
+                    public void onNext(Object o) {
+                        if (o == null){
+                            T.showShortToast(mContext, getString(R.string.toast_verification_code_has_been_sent));
+                            TimeCount timeCount = new TimeCount(30000, 1000);
+                            timeCount.start();
+                            LogUtils.d("验证码发送成功");
+                        }
                     }
                 });
     }
 
     private void register() {
         HttpMethods.getInstance().registerAccount(account, password, securityCode)
-                .subscribe(new BaseSubscriber<List<String>>(mContext) {
+                .subscribe(new BaseSubscriber<Object>(mContext) {
                     @Override
-                    public void onNext(List<String> s) {
-                        // 注册成功跳转到登录
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_REGISTER);
-                        bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
-                        bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, password);
-                        openActivity(mContext, LoginActivity.class, bundle);
-                        T.showShortToast(mContext, getString(R.string.toast_register_success));
-                        finish();
+                    public void onNext(Object o) {
+                        if (o == null){
+                            // 注册成功跳转到登录
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_REGISTER);
+                            bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
+                            bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, password);
+                            openActivity(mContext, LoginActivity.class, bundle);
+                            T.showShortToast(mContext, getString(R.string.toast_register_success));
+                            finish();
+                        }
                     }
                 });
     }

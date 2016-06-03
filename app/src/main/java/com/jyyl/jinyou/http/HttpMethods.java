@@ -1,6 +1,7 @@
 package com.jyyl.jinyou.http;
 
 import com.jyyl.jinyou.MyApplication;
+import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.entity.LoginResult;
 import com.jyyl.jinyou.entity.VersionInfo;
 import com.jyyl.jinyou.utils.LogUtils;
@@ -85,10 +86,10 @@ public class HttpMethods {
         @Override
         public T call(HttpResult<T> httpResult) {
             LogUtils.d(TAG, httpResult.toString());
-            if (!(ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
-                throw new ApiException(httpResult.getDescritpion());
-            }else {
+            if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
                 return httpResult.getValues();
+            }else {
+                throw new ApiException(httpResult.getDescritpion());
             }
         }
     }
@@ -100,9 +101,9 @@ public class HttpMethods {
      * @param phone
      * @return
      */
-    public Observable<List<String>> getSecurityCode(String phone) {
+    public Observable<Object> getSecurityCode(String phone) {
         return mApiService.getSecurityCode(phone, "0", "jy")
-                .map(new HttpResultListFunc<String>())
+                .map(new HttpResultFunc<>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -116,18 +117,18 @@ public class HttpMethods {
      * @param messInfo
      * @return
      */
-    public Observable<List<String>> registerAccount(String memberAccount,String memberPassword,String messInfo) {
+    public Observable<Object> registerAccount(String memberAccount,String memberPassword,String messInfo) {
 
         Map<String, String> params = new HashMap<>();
         params.put("industry", "jy");
         params.put("memberAccount", memberAccount);
         params.put("memberPassword", memberPassword);
         params.put("messInfo", messInfo);
-        params.put("memberType", "0");
+        params.put("memberType", "1");
         params.put("memberPhone", memberAccount);
 
         return mApiService.registerAccount(params)
-                .map(new HttpResultListFunc<String>())
+                .map(new HttpResultFunc<>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -145,7 +146,7 @@ public class HttpMethods {
         String loginTime = TimeUtils.getStringDate();
         LogUtils.d(loginTime);
 
-        return mApiService.loginAccount(loginTime,memberAccount,memberPassword,"jy","jy" )
+        return mApiService.loginAccount(loginTime,memberAccount,memberPassword,"jy" )
                 .map(new HttpResultListFunc<LoginResult>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -220,18 +221,38 @@ public class HttpMethods {
      * 查询导游所拥有的设备
      * @return
      */
-    public Observable<List<String>> getUserDevices() {
+    public Observable<List<DeviceResult>> getUserDevices() {
 
         Map<String, String> params = new HashMap<>();
         params.put("ascriptionId",MyApplication.getInstance().getUserId());
 
         return mApiService.getUserDevices(params)
-                .map(new HttpResultListFunc<String>())
+                .map(new HttpResultListFunc<DeviceResult>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
     }
+
+    /**
+     * 查询导游所拥有未绑定的设备
+     * @return
+     */
+    public Observable<List<DeviceResult>> getUserNotBoundDevices() {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("ascriptionId",MyApplication.getInstance().getUserId());
+        params.put("bindState","0");
+
+        return mApiService.getUserDevices(params)
+                .map(new HttpResultListFunc<DeviceResult>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+
 
     /**
      * 查询版本信息

@@ -17,7 +17,7 @@ android {
 
         relealse {
             //这样写就得把.jks文件放在项目目录
-            storeFile file('D:/Android workspace/jyyl.jks')
+            storeFile file('keystore/jyyl.jks')
             storePassword '147852369'
             keyAlias 'jyyl'
             keyPassword 'jyyl123'
@@ -31,7 +31,7 @@ android {
 
             versionNameSuffix "-debug"
             minifyEnabled false
-            zipAlignEnabled false
+            zipAlignEnabled true
             shrinkResources false
         }
 

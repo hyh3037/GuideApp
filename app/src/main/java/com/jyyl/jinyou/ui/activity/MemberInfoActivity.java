@@ -15,7 +15,7 @@ import com.jyyl.jinyou.ui.base.BaseActivity;
  * @Author: Shang
  * @Date: 2016/4/28  15:17
  */
-public class HealthDataActivity extends BaseActivity{
+public class MemberInfoActivity extends BaseActivity{
     private Toolbar toolbar;
     private Context mContext;
 
@@ -27,7 +27,7 @@ public class HealthDataActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_health_data);
+        setContentView(R.layout.activity_member_info);
         mContext = this;
         initToolBar();
     }

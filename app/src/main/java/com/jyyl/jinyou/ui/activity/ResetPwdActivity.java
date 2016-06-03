@@ -17,11 +17,8 @@ import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.base.BaseActivity;
-import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.RegexUtils;
 import com.jyyl.jinyou.utils.T;
-
-import java.util.List;
 
 
 /**
@@ -130,9 +127,9 @@ public class ResetPwdActivity extends BaseActivity {
      */
     private void resetPassword() {
         HttpMethods.getInstance().registerAccount(account, newPwd, securityCode)
-                .subscribe(new BaseSubscriber<List<String>>(mContext) {
+                .subscribe(new BaseSubscriber<Object>(mContext) {
                     @Override
-                    public void onNext(List<String> s) {
+                    public void onNext(Object o) {
                         // 密码重置成功跳转到登录
                         Bundle bundle = new Bundle();
                         bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_RESET_PASSWORD);
@@ -150,7 +147,7 @@ public class ResetPwdActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account)
-                .subscribe(new BaseSubscriber<List<String>>(mContext) {
+                .subscribe(new BaseSubscriber<Object>(mContext) {
                     @Override
                     public void onStart() {
                         super.onStart();
@@ -159,8 +156,7 @@ public class ResetPwdActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(List<String> s) {
-                        LogUtils.d(s.get(0));
+                    public void onNext(Object o) {
                         T.showShortToast(mContext,getString(R.string.toast_verification_code_has_been_sent));
                     }
                 });

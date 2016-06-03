@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.entity.DeviceInfo;
+import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.adapter.DeviceManageAdapter;
@@ -50,7 +51,7 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
     private ListView mListView;
     private DeviceManageAdapter mAdapter;
 
-    private ArrayList<DeviceInfo> mDatas = new ArrayList<DeviceInfo>();
+    private ArrayList<DeviceInfo> mDatas = new ArrayList<>();
     private boolean flage = false; //是否删除界面
     private boolean isChecked = false; //toolbar的checkbox选择状态
     private boolean isDelFinish = false; //false:取消 true:完成
@@ -68,10 +69,10 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         initListview();
 
         HttpMethods.getInstance().getUserDevices()
-                .subscribe(new BaseSubscriber<List<String>>(mContext) {
+                .subscribe(new BaseSubscriber<List<DeviceResult>>(mContext) {
                     @Override
-                    public void onNext(List<String> s) {
-                        LogUtils.d("s"+s.get(0));
+                    public void onNext(List<DeviceResult> deviceResults) {
+                        LogUtils.d("deviceResults"+deviceResults.toString());
                     }
                 });
     }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:fitsSystemWindows="true"
               android:gravity="center_horizontal"
-              android:fitsSystemWindows="true">
+              android:orientation="vertical">
 
     <include layout="@layout/toolbar"/>
 
@@ -13,122 +13,30 @@
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:gravity="center">
+
         <com.jyyl.jinyou.widget.CircleImageView
             android:id="@+id/iv_personal_photoview"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher"
             app:civ_border_color="@color/lightgray"
-            app:civ_border_width="1dp"
-            android:src="@mipmap/ic_launcher"/>
+            app:civ_border_width="1dp"/>
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_wihte_bg">
+    <TextView
+        android:id="@+id/personal_nickname"
+        style="@style/textview_personal_info"
+        android:text="@string/personal_name"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="@string/personal_name"/>
 
-        <TextView
-            android:id="@+id/personal_nickname"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="导游昵称"/>
+    <TextView
+        android:id="@+id/personal_guide_card"
+        style="@style/textview_personal_info"
+        android:text="@string/personal_guide_card"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_wihte_bg">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="@string/personal_guide_card"/>
-
-        <TextView
-            android:id="@+id/personal_guide_card"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="导游证件"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_wihte_bg">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="@string/personal_company"/>
-
-        <TextView
-            android:id="@+id/personal_company"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="所属公司"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_wihte_bg">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="@string/personal_notice"/>
-
-        <TextView
-            android:id="@+id/personal_notice"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:text="消息记录"/>
-
-    </LinearLayout>
-
+    <TextView
+        android:id="@+id/personal_company"
+        style="@style/textview_personal_info"
+        android:text="@string/personal_company"/>
 
 </LinearLayout>

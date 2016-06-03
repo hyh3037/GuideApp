@@ -22,6 +22,7 @@ import cn.jpush.android.api.JPushInterface;
 public class NoticeDetailsActivity extends BaseActivity {
     private Toolbar toolbar;
     private TextView mContentTv;
+    private String title, content;
     private Context mContext;
 
     @Override
@@ -41,27 +42,20 @@ public class NoticeDetailsActivity extends BaseActivity {
             Bundle bundle = getIntent().getExtras();
             int startIntent = bundle.getInt(It.START_INTENT_WITH);
             if ( It.ACTIVITY_NOTICE == startIntent){
-                String content = bundle.getString(It.BUNDLE_KEY_NOTICE_MSG);
-                mContentTv.setText("Content : " + content);
+                title = bundle.getString(It.BUNDLE_KEY_NOTICE_TITLE);
+                content = bundle.getString(It.BUNDLE_KEY_NOTICE_CONTENT);
             }else if (It.RECEIVER_JPUSH_NOTICE == startIntent){
-                String title = bundle.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE);
-                String content = bundle.getString(JPushInterface.EXTRA_ALERT);
-                mContentTv.setText("Title : " + title + "  " + "Content : " + content);
+                title = bundle.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE);
+                content = bundle.getString(JPushInterface.EXTRA_ALERT);
             }
+            mContentTv.setText(content);
 
         }
     }
 
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("通知详情");
-        //        toolbar.setBackgroundColor(Color.TRANSPARENT);
-//        Intent intent = getIntent();
-//        toolbarTitle = intent.getStringExtra(It.BUNDLE_KEY_NOTICE_TITLE);
-//        if (!toolbarTitle.isEmpty()){
-//            toolbar.setTitle(toolbarTitle);
-//            mContentTv.setText(toolbarTitle);
-//        }
+        toolbar.setTitle(title);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);

@@ -46,5 +46,6 @@ public class It {
 	 */
 	public static final String BUNDLE_KEY_LOGIN_ACCOUNT = "login_account";
 	public static final String BUNDLE_KEY_LOGIN_PASSWOED = "login_password";
-	public static final String BUNDLE_KEY_NOTICE_MSG = "notice_msg";
+	public static final String BUNDLE_KEY_NOTICE_TITLE = "notice_title";
+	public static final String BUNDLE_KEY_NOTICE_CONTENT = "notice_content";
 }

@@ -51,23 +51,22 @@
     <string name="setting_time_muster">设置定时集合</string>
     <string name="hint_muster_msg">集合！集合了！</string>
 
-    <string name="personal_name">姓名：</string>
-    <string name="personal_guide_card">证件：</string>
-    <string name="personal_company">公司：</string>
-    <string name="personal_notice">消息：</string>
+    <string name="personal_name">姓名：s%</string>
+    <string name="personal_guide_card">证件：s%</string>
+    <string name="personal_company">公司：s%</string>
 
     <string name="personal_et_name">姓名</string>
     <string name="personal_et_phone">手机号码</string>
     <string name="personal_et_company">公司名称</string>
     <string name="personal_et_guide_card">导游资格证</string>
 
-    <string name="scan_info">将二维码放入框内，即可自动扫描</string>
+    <string name="scan_info">将二维码放入取景框内保持15厘米左右距离\n即可自动扫描</string>
 
     <string name="select_device">选择设备</string>
     <string name="member_name">姓名</string>
     <string name="member_phone">电话</string>
     <string name="member_id_card">身份证号码</string>
-    <string name="member_linkman_name">紧急联系人</string>
+    <string name="member_linkman_name">监护人</string>
     <string name="member_linkman_tel">紧急联系人电话</string>
     <string name="click_take_photos">点击头像拍照</string>
     <string name="btn_binding_member">确认</string>

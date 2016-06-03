@@ -1,6 +1,7 @@
 package com.jyyl.jinyou.http;
 
 
+import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.entity.LoginResult;
 import com.jyyl.jinyou.entity.VersionInfo;
 
@@ -22,21 +23,20 @@ public interface ApiService {
 
     //获取验证码
     @GET(Api.SEURITYCODE_URL+"/{phone}&{type}&{industry}")
-    Observable<HttpResultList<String>> getSecurityCode(@Path("phone") String phone,
+    Observable<HttpResult<Object>> getSecurityCode(@Path("phone") String phone,
                                                        @Path("type") String type,
                                                        @Path("industry") String industry);
 
     //注册
     @POST(Api.REGISTER_URL)
-    Observable<HttpResultList<String>> registerAccount(@Body Map<String, String> params);
+    Observable<HttpResult<Object>> registerAccount(@Body Map<String, String> params);
 
     //登录
-    @GET(Api.LOGIN_URL + "/{loginTime}&{memberAccount}&{memberPassword}&{industry}&{enterpriseCode}")
+    @GET(Api.LOGIN_URL + "/{loginTime}&{memberAccount}&{memberPassword}&{industry}")
     Observable<HttpResultList<LoginResult>> loginAccount(@Path("loginTime") String loginTime,
                                                          @Path("memberAccount") String memberAccount,
                                                          @Path("memberPassword") String memberPassword,
-                                                         @Path("industry") String industry,
-                                                         @Path("enterpriseCode") String enterpriseCode);
+                                                         @Path("industry") String industry);
 
 
     //上传导游位置
@@ -52,9 +52,9 @@ public interface ApiService {
     Observable<HttpResultList<String>> getGuideInfo(@Body Map<String, String> params);
 
 
-    //获取导游所有设备
+    //获取导游设备信息
     @POST(Api.USER_DEVICES_URL)
-    Observable<HttpResultList<String>> getUserDevices(@Body Map<String, String> params);
+    Observable<HttpResultList<DeviceResult>> getUserDevices(@Body Map<String, String> params);
 
 
 

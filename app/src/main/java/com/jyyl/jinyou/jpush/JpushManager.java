@@ -3,6 +3,7 @@ package com.jyyl.jinyou.jpush;
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.jyyl.jinyou.MyApplication;
@@ -55,6 +56,7 @@ public class JpushManager {
      */
     public void setAlias(Context context, String alias) {
 
+        Log.d(TAG, alias);
         if (TextUtils.isEmpty(alias)) {
             Toast.makeText(context,R.string.error_alias_empty, Toast.LENGTH_SHORT).show();
             return;

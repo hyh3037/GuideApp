@@ -31,6 +31,14 @@ public class Sp {
     public static final String SP_KEY_LAST_LOGIN_PASSWORD = "last_login_password";
 
     /**
+     * 用户登录信息
+     */
+    public static final String SP_KEY_MEMBERID = "memberId";
+    public static final String SP_KEY_ABARDEEN_ACCOUNT = "abardeenAccount";
+    public static final String SP_KEY_ABARDEEN_PASSWORD = "abardeenPassword";
+    public static final String SP_KEY_MEMBER_TOKEN = "memberToken";
+
+    /**
      * 定时集合时间
      */
     public static final String SP_KEY_MUSTER_TIME = "muster_time";

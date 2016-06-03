@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.abading.ABaDingMethod;
 import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.LoginResult;
@@ -152,8 +153,19 @@ public class LoginActivity extends BaseActivity {
                             //保存账号信息到SP
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT, account);
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_PASSWORD, password);
+                            SPUtils.put(mContext, Sp.SP_KEY_MEMBERID, loginResult.getMemberId());
+                            SPUtils.put(mContext, Sp.SP_KEY_ABARDEEN_ACCOUNT, loginResult.getAbardeenAccount());
+                            SPUtils.put(mContext, Sp.SP_KEY_ABARDEEN_PASSWORD, loginResult.getAbardeenPassword());
+                            SPUtils.put(mContext, Sp.SP_KEY_MEMBER_TOKEN, loginResult.getMemberToken());
                             SPUtils.put(mContext, Sp.SP_KEY_LOGIN_STATE, true);
                             T.showShortToast(mContext, getString(R.string.toast_login_success));
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ABaDingMethod.getInstance().connectServer();
+                                }
+                            }).start();
+
                             finish();
                         }
                     }

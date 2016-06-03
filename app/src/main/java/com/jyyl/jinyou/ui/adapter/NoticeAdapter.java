@@ -44,7 +44,7 @@ public class NoticeAdapter extends BaseAdapterHelper<NoticeInfo> {
             holder.setVisible(R.id.cb_item_select, false);
         }
         holder.setChecked(R.id.cb_item_select, noticeInfo.isCheck());
-        holder.setText(R.id.notice_msg, noticeInfo.getContent());
+        holder.setText(R.id.notice_msg, noticeInfo.getTitle());
 
         holder.setOnClickListener(R.id.item_notice, new View.OnClickListener() {
             @Override
@@ -60,7 +60,8 @@ public class NoticeAdapter extends BaseAdapterHelper<NoticeInfo> {
                     Intent intent = new Intent(mContext , NoticeDetailsActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_NOTICE);
-                    bundle.putString(It.BUNDLE_KEY_NOTICE_MSG, noticeInfo.getContent());
+                    bundle.putString(It.BUNDLE_KEY_NOTICE_TITLE, noticeInfo.getTitle());
+                    bundle.putString(It.BUNDLE_KEY_NOTICE_CONTENT, noticeInfo.getContent());
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                     ((Activity) mContext).overridePendingTransition(R.anim.push_right_in, 0);
