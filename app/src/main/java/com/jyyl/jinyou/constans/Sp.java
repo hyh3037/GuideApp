@@ -33,10 +33,15 @@ public class Sp {
     /**
      * 用户登录信息
      */
-    public static final String SP_KEY_MEMBERID = "memberId";
+    public static final String SP_KEY_USER_ID = "user_id";
     public static final String SP_KEY_ABARDEEN_ACCOUNT = "abardeenAccount";
     public static final String SP_KEY_ABARDEEN_PASSWORD = "abardeenPassword";
     public static final String SP_KEY_MEMBER_TOKEN = "memberToken";
+
+    /**
+     * 当前账号是否有绑定设备
+     */
+    public static final String SP_KEY_IS_DEVICE = "is_device";
 
     /**
      * 定时集合时间

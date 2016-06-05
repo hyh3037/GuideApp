@@ -14,7 +14,7 @@ public class MemberInfo implements Serializable {
     private String idNumber;
     private String photoUrl;
     private String contactTelNumber;
-    private String bindingDeciveId; //绑定的设备ID
+    private String deciveImei; //绑定的设备imei
     private LatLng latLng;
 
     public MemberInfo(String name) {
@@ -55,12 +55,12 @@ public class MemberInfo implements Serializable {
         this.contactTelNumber = contactTelNumber;
     }
 
-    public String getBindingDeciveId() {
-        return bindingDeciveId;
+    public String getDeciveImei() {
+        return deciveImei;
     }
 
-    public void setBindingDeciveId(String bindingDeciveId) {
-        this.bindingDeciveId = bindingDeciveId;
+    public void setDeciveImei(String deciveImei) {
+        this.deciveImei = deciveImei;
     }
 
     public LatLng getLatLng() {

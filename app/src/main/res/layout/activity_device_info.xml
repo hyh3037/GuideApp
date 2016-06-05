@@ -7,32 +7,59 @@
 
     <include layout="@layout/toolbar"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_wihte_bg"
+        android:padding="10dp">
 
-        <TextView
-            style="@style/textview_info"
-            android:text="名称:　腕表"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            style="@style/textview_info"
-            android:text="编号:　1"/>
+            <TextView
+                android:id="@+id/tv_device_info_name"
+                style="@style/textview_info"
+                android:text="@string/device_info_name"/>
 
-        <TextView
-            style="@style/textview_info"
-            android:text="序列号:　100001"/>
+            <TextView
+                android:id="@+id/tv_device_info_imei"
+                style="@style/textview_info"
+                android:text="@string/device_info_imei"/>
 
-        <TextView
-            style="@style/textview_info"
-            android:text="绑定状态:　已绑定"/>
+            <TextView
+                android:id="@+id/tv_device_info_sos_no"
+                style="@style/textview_info"
+                android:text="@string/device_info_sos_no"/>
 
-        <TextView
-            style="@style/textview_info"
-            android:text="累计使用天数:　15天"/>
+            <TextView
+                android:id="@+id/tv_device_info_call_no"
+                style="@style/textview_info"
+                android:text="@string/device_info_call_no"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_device_info_binding_time"
+                style="@style/textview_info"
+                android:text="@string/device_info_binding_time"/>
+
+            <TextView
+                android:id="@+id/tv_device_info_use_state"
+                style="@style/textview_info"
+                android:text="@string/device_info_use_state"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/selector_btn_bg_red"
+            android:text="删除设备"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_large"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

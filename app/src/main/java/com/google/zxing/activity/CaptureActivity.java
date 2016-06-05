@@ -17,6 +17,7 @@ package com.google.zxing.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,6 +35,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.zxing.Result;
 import com.google.zxing.camera.CameraManager;
@@ -42,6 +44,8 @@ import com.google.zxing.utils.BeepManager;
 import com.google.zxing.utils.CaptureActivityHandler;
 import com.google.zxing.utils.InactivityTimer;
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.constans.It;
+import com.jyyl.jinyou.ui.activity.DeviceAddActivity;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -59,6 +63,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
     private Toolbar toolbar;
+    private TextView mToolbarRightTv;
+    private Context mContext;
+
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
     private InactivityTimer inactivityTimer;
@@ -83,6 +90,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        mContext = this;
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -112,6 +121,19 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         //        toolbar.setBackgroundColor(Color.TRANSPARENT);
         toolbar.setTitle("二维码");
         toolbar.setTitleTextColor(Color.WHITE);
+        mToolbarRightTv = (TextView) findViewById(R.id.toolbar_right_tv);
+        mToolbarRightTv.setText("手动添加");
+        mToolbarRightTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,DeviceAddActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(It.BUNDLE_KEY_INTENT_CODE,0);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+            }
+        });
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,13 +225,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         inactivityTimer.onActivity();
         beepManager.playBeepSoundAndVibrate();
 
-        Intent resultIntent = new Intent();
+        Intent resultIntent = new Intent(mContext, DeviceAddActivity.class);
         bundle.putInt("width", mCropRect.width());
         bundle.putInt("height", mCropRect.height());
-        bundle.putString("result", rawResult.getText());
+        bundle.putInt(It.BUNDLE_KEY_INTENT_CODE,1);
+        bundle.putString(It.BUNDLE_KEY_SCAN_RESULT, rawResult.getText());
         resultIntent.putExtras(bundle);
-        this.setResult(RESULT_OK, resultIntent);
-        CaptureActivity.this.finish();
+        startActivity(resultIntent);
+        finish();
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {

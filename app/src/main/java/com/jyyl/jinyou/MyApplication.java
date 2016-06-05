@@ -25,8 +25,6 @@ public class MyApplication extends Application {
 
     private static MyApplication instance;
 
-    private String userId;
-
     private List<Activity> mList = new LinkedList<Activity>();
 
     public LocationService locationService;
@@ -91,11 +89,4 @@ public class MyApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(crashExceptionHandler);
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }

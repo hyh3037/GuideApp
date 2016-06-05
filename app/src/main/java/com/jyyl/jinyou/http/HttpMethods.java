@@ -1,10 +1,14 @@
 package com.jyyl.jinyou.http;
 
+import android.content.Context;
+
 import com.jyyl.jinyou.MyApplication;
+import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.entity.LoginResult;
 import com.jyyl.jinyou.entity.VersionInfo;
 import com.jyyl.jinyou.utils.LogUtils;
+import com.jyyl.jinyou.utils.SPUtils;
 import com.jyyl.jinyou.utils.TimeUtils;
 
 import java.util.HashMap;
@@ -29,6 +33,7 @@ public class HttpMethods {
     private static String TAG = "HttpMethods";
 
     private ApiService mApiService;
+    private Context appContext;
 
     private static volatile HttpMethods instance = null;
 
@@ -43,6 +48,8 @@ public class HttpMethods {
                 .build();
 
         mApiService = retrofit.create(ApiService.class);
+
+        appContext = MyApplication.getInstance().getApplicationContext();
     }
 
     /**
@@ -162,8 +169,9 @@ public class HttpMethods {
     public Observable<List<String>> uploadLocation(String longitude, String latitude, String locationTime) {
 
         Map<String, String> params = new HashMap<>();
-        params.put("memberId",MyApplication.getInstance().getUserId());
-        LogUtils.d(TAG,MyApplication.getInstance().getUserId());
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+        params.put("memberId", userId);
+        LogUtils.d(TAG,userId);
         params.put("longitude",longitude);
         params.put("latitude",latitude);
         params.put("locationTime",locationTime);
@@ -184,7 +192,8 @@ public class HttpMethods {
     public Observable<List<String>> uploadGuideInfo(String guideCard) {
 
         Map<String, String> params = new HashMap<>();
-        params.put("guideId",MyApplication.getInstance().getUserId());
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+        params.put("guideId",userId);
         params.put("guideCard",guideCard);
         params.put("guideCardAddress","");
         params.put("guideWorkTime","");
@@ -205,7 +214,8 @@ public class HttpMethods {
     public Observable<List<String>> getGuideInfo() {
 
         Map<String, String> params = new HashMap<>();
-        params.put("guideId", MyApplication.getInstance().getUserId());
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+        params.put("guideId", userId);
 
         return mApiService.getGuideInfo(params)
                 .map(new HttpResultListFunc<String>())
@@ -224,7 +234,8 @@ public class HttpMethods {
     public Observable<List<DeviceResult>> getUserDevices() {
 
         Map<String, String> params = new HashMap<>();
-        params.put("ascriptionId",MyApplication.getInstance().getUserId());
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+        params.put("ascriptionId",userId);
 
         return mApiService.getUserDevices(params)
                 .map(new HttpResultListFunc<DeviceResult>())
@@ -241,7 +252,8 @@ public class HttpMethods {
     public Observable<List<DeviceResult>> getUserNotBoundDevices() {
 
         Map<String, String> params = new HashMap<>();
-        params.put("ascriptionId",MyApplication.getInstance().getUserId());
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+        params.put("ascriptionId",userId);
         params.put("bindState","0");
 
         return mApiService.getUserDevices(params)

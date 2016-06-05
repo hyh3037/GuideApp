@@ -1,14 +1,15 @@
 package com.jyyl.jinyou.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.entity.DeviceInfo;
+import com.jyyl.jinyou.ui.activity.DeviceInfoActivity;
 import com.jyyl.jinyou.ui.activity.RefreshToolbarListener;
 import com.jyyl.jinyou.ui.base.BaseAdapterHelper;
 import com.jyyl.jinyou.ui.base.ViewHolder;
-import com.jyyl.jinyou.utils.T;
 
 import java.util.List;
 
@@ -54,7 +55,8 @@ public class DeviceManageAdapter extends BaseAdapterHelper<DeviceInfo> {
                     }
                     mListener.refreshToolbar();
                 } else {
-                    T.showShortToast(mContext, deviceInfo.getDeviceId());
+                    Intent intent = new Intent(mContext, DeviceInfoActivity.class);
+                    mContext.startActivity(intent);
                 }
             }
         });

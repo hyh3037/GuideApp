@@ -7,47 +7,15 @@
 
     <include layout="@layout/toolbar"/>
 
-    <RelativeLayout
-        android:id="@+id/view_binding_device"
+    <Button
+        android:id="@+id/btn_binding_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:gravity="center_vertical">
-
-        <EditText
-            android:id="@+id/et_device_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/btn_binding_device"
-            android:background="@drawable/shape_wihte_bg"
-            android:inputType="number"
-            android:hint="输入设备ID"
-            android:padding="10dp"/>
-
-        <ImageButton
-            android:id="@+id/btn_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/et_device_id"
-            android:layout_alignRight="@+id/et_device_id"
-            android:background="@color/transparent"
-            android:padding="10dp"
-            android:src="@drawable/notification_tool_deep_barcode"/>
-
-        <Button
-            android:id="@+id/btn_binding_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/et_device_id"
-            android:layout_marginLeft="10dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/selector_btn_bg_white"
-            android:text="绑定设备"/>
-    </RelativeLayout>
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_btn_bg_white"
+        android:text="新增设备"/>
 
     <ListView
         android:id="@+id/device_listview"
@@ -63,5 +31,5 @@
         android:padding="15dip"
         android:text="无可用绑定设备"
         android:textSize="@dimen/text_size_large"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 </LinearLayout>

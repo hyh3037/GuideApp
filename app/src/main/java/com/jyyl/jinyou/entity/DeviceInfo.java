@@ -1,7 +1,5 @@
 package com.jyyl.jinyou.entity;
 
-import com.baidu.mapapi.model.LatLng;
-
 /**
  * @Fuction: 绑定设备信息
  * @Author: Shang
@@ -9,8 +7,8 @@ import com.baidu.mapapi.model.LatLng;
  */
 public class DeviceInfo {
     private int number;
+    private String bindingId;
     private String deviceId;
-    private LatLng mLatLng; //设备地理位置
     private boolean state;
     private boolean isCheck;
 
@@ -18,11 +16,6 @@ public class DeviceInfo {
         this.number = number;
         this.deviceId = deviceId;
         this.state = false;
-    }
-
-    public DeviceInfo(String deviceId, LatLng latLng) {
-        this.deviceId = deviceId;
-        mLatLng = latLng;
     }
 
     public int getNumber() {
@@ -33,20 +26,20 @@ public class DeviceInfo {
         this.number = number;
     }
 
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
+    }
+
     public String getDeviceId() {
         return deviceId;
     }
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public LatLng getLatLng() {
-        return mLatLng;
-    }
-
-    public void setLatLng(LatLng latLng) {
-        mLatLng = latLng;
     }
 
     public boolean isState() {

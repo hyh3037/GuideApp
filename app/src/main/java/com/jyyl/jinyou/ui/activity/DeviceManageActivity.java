@@ -1,22 +1,19 @@
 package com.jyyl.jinyou.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.abading.ABaDingMethod;
 import com.jyyl.jinyou.entity.DeviceInfo;
 import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
@@ -30,12 +27,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * @Fuction: 设备管理
  * @Author: Shang
  * @Date: 2016/4/22  17:17
  */
-public class DeviceManageActivity extends BaseActivity implements RefreshToolbarListener{
+public class DeviceManageActivity extends BaseActivity implements RefreshToolbarListener {
     private Toolbar toolbar;
     private ImageView mToolbarRightIv;
     private CheckBox mToolbarCheckBox;
@@ -43,9 +45,6 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
     private String mTitle = "设备管理";
     private Context mContext;
 
-    private View mBindingView;
-    private EditText mDeviceIdEt;
-    private ImageButton mScanBtn;
     private Button mBinddingBtn;
 
     private ListView mListView;
@@ -56,7 +55,6 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
     private boolean isChecked = false; //toolbar的checkbox选择状态
     private boolean isDelFinish = false; //false:取消 true:完成
     private int number = 1;
-    private String deviceId = null;
 
     public static final int REQUEST_CODE = 0;
 
@@ -67,19 +65,35 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         setContentView(R.layout.activity_device_management);
         initToolBar();
         initListview();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        refreshDeviceDatas();
+    }
+
+    /**
+     * 获取绑定的设备信息
+     */
+    private void refreshDeviceDatas() {
         HttpMethods.getInstance().getUserDevices()
                 .subscribe(new BaseSubscriber<List<DeviceResult>>(mContext) {
                     @Override
                     public void onNext(List<DeviceResult> deviceResults) {
-                        LogUtils.d("deviceResults"+deviceResults.toString());
+                        LogUtils.d("deviceResults" + deviceResults.toString());
+                        for (DeviceResult deviceResult : deviceResults){
+                            String imei = deviceResult.getDeviceIMEI();
+                            mDatas.add(new DeviceInfo(number, imei));
+                        }
+                        refreshUI();
                     }
                 });
     }
 
     private void initListview() {
         mListView = (ListView) findViewById(R.id.device_listview);
-        mAdapter = new DeviceManageAdapter(mContext,mDatas,R.layout.item_device_listview);
+        mAdapter = new DeviceManageAdapter(mContext, mDatas, R.layout.item_device_listview);
         mAdapter.setFlag(flage);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(findViewById(R.id.device_empty_view));
@@ -112,9 +126,9 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         mToolbarCheckBox.setOnClickListener(this);
         mToolbarRightTv.setOnClickListener(this);
         mToolbarRightIv.setImageResource(R.drawable.delete);
-        if (mDatas.size() > 0){
+        if (mDatas.size() > 0) {
             mToolbarRightIv.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mToolbarRightIv.setVisibility(View.GONE);
         }
         mToolbarCheckBox.setVisibility(View.GONE);
@@ -125,43 +139,32 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
     protected void initViews() {
         super.initViews();
 
-        mBindingView = findViewById(R.id.view_binding_device);
-        mDeviceIdEt = (EditText) findViewById(R.id.et_device_id);
-        mScanBtn = (ImageButton) findViewById(R.id.btn_scan);
         mBinddingBtn = (Button) findViewById(R.id.btn_binding_device);
     }
 
     @Override
     protected void initListener() {
         super.initListener();
-        mDeviceIdEt.setOnClickListener(this);
-        mScanBtn.setOnClickListener(this);
         mBinddingBtn.setOnClickListener(this);
     }
 
     @Override
     protected void onViewClick(View v) {
         super.onViewClick(v);
-        switch (v.getId()){
-            case R.id.btn_scan:
-                Intent intent = new Intent(this, CaptureActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
-                break;
+        switch (v.getId()) {
             case R.id.btn_binding_device:
-                deviceId = mDeviceIdEt.getText().toString().trim();
-                addDevice(deviceId);
+                openActivity(mContext, CaptureActivity.class);
                 break;
             case R.id.toolbar_right_iv://进入批量删除模式
                 flage = true;
                 mAdapter.setFlag(true);
                 toolbar.setTitle(null);
                 toolbar.setNavigationIcon(null);
-                mBindingView.setVisibility(View.GONE);
+                mBinddingBtn.setVisibility(View.GONE);
                 mToolbarRightIv.setVisibility(View.GONE);
                 mToolbarCheckBox.setVisibility(View.VISIBLE);
                 mToolbarRightTv.setVisibility(View.VISIBLE);
-                refresh();
-                mAdapter.notifyDataSetChanged();
+                refreshToolbar();
                 break;
 
             case R.id.toolbar_checkbox:
@@ -180,8 +183,7 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                     mToolbarCheckBox.setChecked(true);
                     isChecked = true;
                 }
-                refresh();
-                mAdapter.notifyDataSetChanged();
+                refreshToolbar();
                 break;
 
             case R.id.toolbar_right_tv: //完成（确认删除）
@@ -195,25 +197,52 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                 mAdapter.setFlag(false);
                 toolbar.setTitle(mTitle);
                 toolbar.setNavigationIcon(R.drawable.ic_back);
-                mBindingView.setVisibility(View.VISIBLE);
+                mBinddingBtn.setVisibility(View.VISIBLE);
                 mToolbarCheckBox.setVisibility(View.GONE);
                 mToolbarRightTv.setVisibility(View.GONE);
-                if (mDatas.size() > 0){
-                    mToolbarRightIv.setVisibility(View.VISIBLE);
-                }else {
-                    mToolbarRightIv.setVisibility(View.GONE);
-                }
-                mAdapter.notifyDataSetChanged();
+                refreshUI();
                 break;
         }
     }
 
+    /**
+     * 删除选中设备
+     * @param list 设备集合
+     */
     public void itemRemove(ArrayList<DeviceInfo> list) {
-        Iterator<DeviceInfo> it = list.iterator();
+        final Iterator<DeviceInfo> it = list.iterator();
         while (it.hasNext()) {
             DeviceInfo deviceInfo = it.next();
             if (deviceInfo.isCheck()) {
-                it.remove();
+                final String bindingId = deviceInfo.getBindingId();
+                final String deviceId = deviceInfo.getDeviceId();
+                if (bindingId!=null){
+                    Observable.create(new Observable.OnSubscribe<Boolean>() {
+                        @Override
+                        public void call(Subscriber<? super Boolean> subscriber) {
+                            boolean isRemove = ABaDingMethod.getInstance()
+                                    .removeDevice(bindingId);
+                            subscriber.onNext(isRemove);
+                            subscriber.onCompleted();
+                        }
+                    })
+                            .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
+                            .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
+                            .subscribe(new BaseSubscriber<Boolean>(mContext) {
+                                @Override
+                                public void onNext(Boolean b) {
+                                    if (b){
+                                        T.showShortToast(mContext, deviceId + "删除成功");
+                                        it.remove();
+                                    }else {
+                                        T.showShortToast(mContext, deviceId + "删除失败");
+                                    }
+                                }
+                            });
+                }else {
+                    it.remove();
+                }
+
             }
         }
     }
@@ -234,7 +263,8 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                 mCheckedNum++;
             }
         }
-        mToolbarCheckBox.setText(mCheckedNum + " 已选中");
+        String checkNum = String.valueOf(mCheckedNum) + " 已选中";
+        mToolbarCheckBox.setText(checkNum);
 
         if (flage && mCheckedNum > 0) {
             isDelFinish = true;
@@ -253,46 +283,26 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){ //RESULT_OK = -1
-            Bundle bundle = data.getExtras();
-            deviceId = bundle.getString("result");
-            LogUtils.d(deviceId);
-            addDevice(deviceId);
-        }
-    }
-
     /**
-     * 添加设备
-     * @param deviceId id
+     * 刷新界面
      */
-    private void addDevice(String deviceId) {
-        if (TextUtils.isEmpty(deviceId)){
-            T.showShortToast(this, "请输入设备编号");
-        }else if (containsDeciveId(deviceId)){
-            T.showShortToast(this,"设备已存在");
-        }else {
-            mDatas.add(new DeviceInfo(number,deviceId));
-            number++;
-            if (mDatas.size() > 0){
-                mToolbarRightIv.setVisibility(View.VISIBLE);
-            }else {
-                mToolbarRightIv.setVisibility(View.GONE);
-            }
-            mAdapter.notifyDataSetChanged();
-            T.showShortToast(this,"绑定成功");
+    private void refreshUI() {
+        if (mDatas.size() > 0) {
+            mToolbarRightIv.setVisibility(View.VISIBLE);
+        } else {
+            mToolbarRightIv.setVisibility(View.GONE);
         }
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
      * 检查设备是否已存在
      * @param deviceId
+     *
      * @return
      */
-    private boolean containsDeciveId(String deviceId){
-        for (DeviceInfo deviceInfo : mDatas){
+    private boolean containsDeciveId(String deviceId) {
+        for (DeviceInfo deviceInfo : mDatas) {
             if (deviceId.equals(deviceInfo.getDeviceId()))
                 return true;
         }

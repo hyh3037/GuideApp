@@ -4,6 +4,8 @@ package com.jyyl.jinyou.abading;
 import android.content.Context;
 import android.util.Log;
 
+import com.jyyl.jinyou.utils.LogUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,13 +76,57 @@ public class SocketOpenHelper {
 
     /**
      * 连接服务器（REQ）
+     *
+     * 连接成功返回值：
+     * {"cmd":"ARE","code":"0","id":"1463126051218",
+     * "params":{
+     *      "sessionId":"1DefaultSession2",   //会话ID，服务端标识此次客户端和服务端的连接
+     *      "userId":774672119496704,
+     *      "ver":"1.0.4",
+     *      "wearerStatus":[   //关联的手表信息对象数组,数组每个元素是一个JSON对象，表示每个IMEI当前状态数据。
+     *          {"bVer":"1002", //Build版本
+     *          "btMac":"100000000000", //蓝牙mac地址，12位，无分隔符
+     *          "fVer":"v02",   //蓝牙估计版本
+     *          "fnStatus": //亲情号码状态对象
+     *              {"fns":[    //亲情号码数组
+     *                  {"mobile":"13533334444","name":"","no":1,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":2,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":3,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":4,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":5,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":6,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":7,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":8,"picId":0},
+     *                  {"mobile":"13533335555","name":"","no":9,"picId":0}],
+     *              "imei":"860860000030000",
+     *              "lut":"20150710122140",     //最后修改时间的字符串
+     *              "userId":774672119496704,   //最后修改亲情号码的用户ID
+     *              "userName":""},
+     *          "functionStatus":{"all":true},  //功能状态对象
+     *          "imei":"860860000030000",   //手表的imei
+     *          "mrStatus":{    //静音时段状态对象
+     *              "imei":"860860000030000",
+     *              "lut":"20160507165744",
+     *              "mrs":[],       //静音时段数组，每个元素都是静音时段对象
+     *              "userId":123,   //最后修改静音时段的用户ID
+     *              "userName":""},
+     *          "online":false,     //是否在线
+     *          "productId":"KT01W",    //手表型号
+     *          "sVer":"KT04_abr_60_hv01_sv90_cn_st20150424",   //手表的软件版本
+     *          "wifiMac":"200000000000",       //Wifi的mac地址，12位，无分隔符
+     *          "wmStatus":{"lut":"20150106151838"}     //工作模式状态对象
+     *          }
+     *        ]
+     *     }
+     *  }
      */
-    public void connectServer(JSONObject jsonObject) {
+    public boolean connectServer(JSONObject jsonObject) {
         try {
+
             socket = this.getSocket();
             if (socket == null || socket.isClosed()) {
-                Log.d(TAG, "腕表服务器连接失败");
-                return;
+                Log.d(TAG, "腕表服务器Socket连接失败");
+                return false;
             }
             os = socket.getOutputStream();
             is = socket.getInputStream();
@@ -90,19 +136,29 @@ public class SocketOpenHelper {
             JSONObject resultJson = inputRead();
 
             if (resultJson != null){
+
+                try {
+                    JSONObject params = resultJson.getJSONObject("params");
+                    Log.d(TAG, params.toString());
+                    String sessionId = (String) params.get("sessionId");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 if (hbThread == null) {
                     hbThread = new HBThread(os, is);
                 }
                 Thread thread = new Thread(hbThread);
                 thread.start();
+                return true;
             }else {
-                Log.d(TAG, "腕表服务器连接失败");
+                Log.d(TAG, "腕表服务器登录失败");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return false;
     }
 
     /**
@@ -111,28 +167,23 @@ public class SocketOpenHelper {
     public JSONObject getResultDatas(JSONObject jsonObject) {
         try {
 
-            if (socket == null || socket.isClosed()) {
+            int i = 0;
+            while (!socket.isConnected()) {
+                Log.d(TAG, "腕表服务器连接失败,重新连接");
                 this.connectServer(loginJson);
-                if (socket == null ||socket.isClosed()){
-                    Log.d(TAG, "腕表服务器连接失败");
-                    return jsonObject;
+                if (i == 5){
+                    Log.d(TAG, "腕表服务器连接失败,请稍后重试");
+                    return null;
                 }
+                i++;
             }
 
             outputWrite(jsonObject);
             JSONObject resultJson = inputRead();
-            try {
-
-                if (resultJson != null) {
-                    JSONObject params = resultJson.getJSONObject("params");
-                    Log.d(TAG, params.toString());
-                    return params;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (resultJson != null) {
+                LogUtils.d(TAG, resultJson.toString());
+                return resultJson;
             }
-            return resultJson;
-
         } catch (IOException e) {
             e.printStackTrace();
         }

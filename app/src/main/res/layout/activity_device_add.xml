@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
+
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/device_name"
+            android:textSize="@dimen/text_size_small_middle"/>
+
+        <com.jyyl.jinyou.widget.CleanEditText
+            android:id="@+id/et_device_name"
+            style="@style/edittext_info_style"
+            android:hint="@string/device_name_hint"
+            android:inputType="text"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/device_imei"
+            android:textSize="@dimen/text_size_small_middle"/>
+
+        <com.jyyl.jinyou.widget.CleanEditText
+            android:id="@+id/et_device_imei"
+            style="@style/edittext_info_style"
+            android:hint="@string/device_imei_hint"
+            android:inputType="number"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/device_sos_no"
+            android:textSize="@dimen/text_size_small_middle"/>
+
+        <com.jyyl.jinyou.widget.CleanEditText
+            android:id="@+id/et_device_sos_no"
+            style="@style/edittext_info_style"
+            android:hint="@string/device_sos_no_hint"
+            android:inputType="text"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

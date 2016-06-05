@@ -41,6 +41,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.abading.ABaDingMethod;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.MemberInfo;
@@ -51,16 +52,25 @@ import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.ui.dialog.MusterNowDialog;
 import com.jyyl.jinyou.ui.dialog.MusterSingleDialog;
 import com.jyyl.jinyou.ui.dialog.MusterTimeDialog;
+import com.jyyl.jinyou.ui.fragment.NavLeftFragment;
 import com.jyyl.jinyou.utils.FileUtils;
 import com.jyyl.jinyou.utils.ImageUtils;
 import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.SPUtils;
 import com.jyyl.jinyou.utils.T;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -70,7 +80,8 @@ import java.util.List;
  */
 public class MainActivity extends BaseActivity
         implements MusterNowDialog.MusterNowListener, MusterTimeDialog.MusterTimeListener,
-                   MusterSingleDialog.MusterSingleListener,BaiduMap.OnMarkerClickListener {
+                   MusterSingleDialog.MusterSingleListener,BaiduMap.OnMarkerClickListener,
+                   NavLeftFragment.NavCallback{
 
     private static String TAG = "MainActivity";
 
@@ -101,9 +112,10 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_main);
-
         setSwipeBackEnable(false);  //禁用SwipeBackLayout
+
         initBaiduMap();
+        connectABaDing();
     }
 
     @Override
@@ -164,6 +176,28 @@ public class MainActivity extends BaseActivity
                 setMusterVisibility(false);
                 break;
         }
+    }
+
+    /**
+     * 连接阿巴町腕表服务器
+     */
+    private void connectABaDing() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean isConnect = false;
+
+                for ( int i = 0;!isConnect; i++){
+                    if ( i < 5 ){
+                        isConnect = ABaDingMethod.getInstance().connectServer();
+                    }else {
+                        T.showShortToast("腕表服务器登录失败，请稍后重试");
+                        return;
+                    }
+                }
+                LogUtils.d(TAG, "腕表服务器登录成功");
+            }
+        }).start();
     }
 
     /**
@@ -330,17 +364,6 @@ public class MainActivity extends BaseActivity
 
 
     private void addMarkers() {
-        //模拟位置
-        mMemberList.get(0).setLatLng(new LatLng((location.getLatitude() + 0.05),
-                (location.getLongitude()) + 0.003));
-        mMemberList.get(1).setLatLng(new LatLng((location.getLatitude() - 0.01),
-                (location.getLongitude()) - 0.006));
-        mMemberList.get(2).setLatLng(new LatLng((location.getLatitude() + 0.05),
-                (location.getLongitude()) - 0.003));
-        mMemberList.get(3).setLatLng(new LatLng((location.getLatitude() - 0.04),
-                (location.getLongitude()) + 0.005));
-        mMemberList.get(4).setLatLng(new LatLng((location.getLatitude() + 0.02),
-                (location.getLongitude()) - 0.004));
         // 构建Marker图标
         bitmap = BitmapDescriptorFactory.fromResource(R.drawable
                 .main_icon_compass);
@@ -351,10 +374,44 @@ public class MainActivity extends BaseActivity
         if (mMarkerSelf == null) {
             mMarkerSelf = (Marker) mBaiduMap.addOverlay(option);
             mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(point , 13));
-            addMarkerMember(mMemberList);
+            refreshMembersLct();
         } else {
             mMarkerSelf.setPosition(point);
         }
+    }
+
+    /**
+     * 获取启用的腕表当前位置
+     */
+    private void refreshMembersLct() {
+        Observable.create(new Observable.OnSubscribe<LinkedList<MemberInfo>>() {
+            @Override
+            public void call(Subscriber<? super LinkedList<MemberInfo>> subscriber) {
+                for (MemberInfo memberInfo : mMemberList){
+                    String deviceImei = memberInfo.getDeciveImei();
+                    JSONObject jsonObject = ABaDingMethod.getInstance()
+                            .getDeviceDatas(deviceImei);
+                    try {
+                        JSONObject lct = (JSONObject) jsonObject.get("lct");
+                        double lat = lct.getDouble("u");
+                        double lng = lct.getDouble("o");
+                        memberInfo.setLatLng(new LatLng(lat,lng));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                subscriber.onNext(mMemberList);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
+                .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
+                .subscribe(new BaseSubscriber<LinkedList<MemberInfo>>(mContext) {
+                    @Override
+                    public void onNext(LinkedList<MemberInfo> memberInfos) {
+                        addMarkerMember(mMemberList);
+                    }
+                });
     }
 
     /**
@@ -455,14 +512,13 @@ public class MainActivity extends BaseActivity
         super.onPause();
         //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
         mMapView.onPause();
-        //关闭抽屉菜单
-//        mDrawerLayout.closeDrawers();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerLayout.closeDrawers();
-            }
-        }, 500);
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mDrawerLayout.closeDrawers();
+//            }
+//        }, 500);
     }
 
     @Override
@@ -479,6 +535,13 @@ public class MainActivity extends BaseActivity
     public void OpenLeftMenu(View view) {
         mDrawerLayout.openDrawer(Gravity.LEFT);
     }
+
+    //关闭抽屉菜单
+    @Override
+    public void closeLeftMenu() {
+        mDrawerLayout.closeDrawers();
+    }
+
 
     /**
      * ========================= 退出程序 ===========================
@@ -508,6 +571,8 @@ public class MainActivity extends BaseActivity
         overridePendingTransition(0, R.anim.push_app_exit);
     }
 
+
+    /**=====================================Dialog响应================================*/
     @Override
     public void sendSingleMsg(String msg) {
         T.showShortToast(this, "集合信息已发送");
@@ -538,6 +603,7 @@ public class MainActivity extends BaseActivity
         calendar.set(Calendar.MILLISECOND, 0);
         manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
+
 
     /**
      * 封装定位结果和时间的实体类

@@ -48,4 +48,6 @@ public class It {
 	public static final String BUNDLE_KEY_LOGIN_PASSWOED = "login_password";
 	public static final String BUNDLE_KEY_NOTICE_TITLE = "notice_title";
 	public static final String BUNDLE_KEY_NOTICE_CONTENT = "notice_content";
+	public static final String BUNDLE_KEY_INTENT_CODE = "intent_code";
+	public static final String BUNDLE_KEY_SCAN_RESULT = "scan_result";
 }

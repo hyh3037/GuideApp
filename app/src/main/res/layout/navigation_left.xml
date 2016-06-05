@@ -39,12 +39,22 @@
         android:text="@string/device_management"/>
 
     <TextView
-        android:id="@+id/tv_nav_health"
+        android:id="@+id/tv_nav_member"
         style="@style/textview_nav_item"
         android:text="@string/member_management"/>
 
+    <!--<TextView-->
+        <!--android:id="@+id/tv_nav_setting"-->
+        <!--style="@style/textview_nav_item"-->
+        <!--android:text="@string/setting"/>-->
+
     <TextView
-        android:id="@+id/tv_nav_setting"
+        android:id="@+id/tv_nav_ckeck_updates"
         style="@style/textview_nav_item"
-        android:text="@string/setting"/>
+        android:text="@string/ckeck_updates"/>
+
+    <TextView
+        android:id="@+id/tv_nav_exit_login"
+        style="@style/textview_nav_item"
+        android:text="@string/exit_login"/>
 </LinearLayout>

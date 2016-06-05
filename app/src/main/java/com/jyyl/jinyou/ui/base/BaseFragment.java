@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.jyyl.jinyou.R;
-
 
 /**
  * @author ShangBB
@@ -33,6 +31,6 @@ public class BaseFragment extends Fragment {
             intent.putExtras(pBundle);
         }
         startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.push_right_in, 0);
+        getActivity().overridePendingTransition(0, 0);
     }
 }

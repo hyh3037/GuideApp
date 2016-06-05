@@ -18,6 +18,7 @@ import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.ui.base.BaseAdapterHelper;
 import com.jyyl.jinyou.ui.base.ViewHolder;
 import com.jyyl.jinyou.ui.dialog.BuildTeamDialog;
+import com.jyyl.jinyou.ui.dialog.DeleteTeamDialog;
 import com.jyyl.jinyou.ui.dialog.MemberLongClickDialog;
 import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.SPUtils;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  */
 public class MemberManageActivity extends BaseActivity
         implements BuildTeamDialog.OnBuildTeamListener, MemberLongClickDialog
-        .OnMemberLongClickListener {
+        .OnMemberLongClickListener,DeleteTeamDialog.OnDeleteTeamListener {
     private Toolbar toolbar;
     private TextView mDisbandThem;
     private Context mContext;
@@ -81,11 +82,8 @@ public class MemberManageActivity extends BaseActivity
         super.onViewClick(v);
         switch (v.getId()) {
             case R.id.toolbar_right_tv: //解散团队
-                SPUtils.put(mContext, Sp.SP_KEY_TEAM_NAME, BaseConstans.TEAM_NAME);
-                mDatas.clear();
-                mAdapter.notifyDataSetChanged();
-                toolbar.setTitle("游客管理");
-                showEmptyView();
+                DeleteTeamDialog deleteTeamDialog = new DeleteTeamDialog();
+                deleteTeamDialog.show(getFragmentManager(), "DeleteTeam");
                 break;
 
             case R.id.btn_add_member:
@@ -201,6 +199,15 @@ public class MemberManageActivity extends BaseActivity
             showMemberView();
             T.showShortToast(this, "团队创建成功");
         }
+    }
+
+    @Override
+    public void deleteTeme() {
+        SPUtils.put(mContext, Sp.SP_KEY_TEAM_NAME, BaseConstans.TEAM_NAME);
+        mDatas.clear();
+        mAdapter.notifyDataSetChanged();
+        toolbar.setTitle("游客管理");
+        showEmptyView();
     }
 
     @Override

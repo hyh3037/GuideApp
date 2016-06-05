@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abading.ABaDingMethod;
 import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.LoginResult;
@@ -47,12 +46,14 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mContext = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        initToolBar();
-        mContext = this;
         //禁用SwipeBackLayout
         setSwipeBackEnable(false);
+
+        initToolBar();
+        initLoginAccount();
     }
 
     private void initToolBar() {
@@ -141,36 +142,34 @@ public class LoginActivity extends BaseActivity {
                 .subscribe(new BaseSubscriber<List<LoginResult>>(mContext) {
                     @Override
                     public void onNext(List<LoginResult> loginResults) {
-                        LoginResult loginResult = loginResults.get(0);
+                        final LoginResult loginResult = loginResults.get(0);
                         if (loginResult != null) {
                             // 登录成功
-                            openActivity(mContext, MainActivity.class);
+                            T.showShortToast(mContext, getString(R.string.toast_login_success));
 
                             String userId = loginResult.getMemberId();
-                            MyApplication.getInstance().setUserId(userId);
                             JpushManager.getInstance().setAlias(mContext, userId);
+                            String abdAccount = loginResult.getAbardeenAccount();
+                            String abdPassword = loginResult.getAbardeenPassword();
+                            String token = loginResult.getMemberToken();
 
                             //保存账号信息到SP
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT, account);
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_PASSWORD, password);
-                            SPUtils.put(mContext, Sp.SP_KEY_MEMBERID, loginResult.getMemberId());
-                            SPUtils.put(mContext, Sp.SP_KEY_ABARDEEN_ACCOUNT, loginResult.getAbardeenAccount());
-                            SPUtils.put(mContext, Sp.SP_KEY_ABARDEEN_PASSWORD, loginResult.getAbardeenPassword());
-                            SPUtils.put(mContext, Sp.SP_KEY_MEMBER_TOKEN, loginResult.getMemberToken());
+                            SPUtils.put(mContext, Sp.SP_KEY_USER_ID, userId);
+                            SPUtils.put(mContext, Sp.SP_KEY_ABARDEEN_ACCOUNT, abdAccount);
+                            SPUtils.put(mContext, Sp.SP_KEY_ABARDEEN_PASSWORD, abdPassword);
+                            SPUtils.put(mContext, Sp.SP_KEY_MEMBER_TOKEN, token);
                             SPUtils.put(mContext, Sp.SP_KEY_LOGIN_STATE, true);
-                            T.showShortToast(mContext, getString(R.string.toast_login_success));
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ABaDingMethod.getInstance().connectServer();
-                                }
-                            }).start();
 
+                            openActivity(mContext, MainActivity.class);
                             finish();
                         }
                     }
                 });
     }
+
+
 
     /**
      * ========================= 退出程序 ===========================
