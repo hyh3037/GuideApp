@@ -47,8 +47,4 @@ public class Sp {
      * 定时集合时间
      */
     public static final String SP_KEY_MUSTER_TIME = "muster_time";
-    /**
-     * 旅游团名称
-     */
-    public static final String SP_KEY_TEAM_NAME = "team_name";
 }

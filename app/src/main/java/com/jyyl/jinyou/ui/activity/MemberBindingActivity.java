@@ -11,15 +11,22 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.entity.DeviceInfo;
 import com.jyyl.jinyou.constans.BaseConstans;
+import com.jyyl.jinyou.entity.DeviceInfo;
+import com.jyyl.jinyou.http.ApiException;
+import com.jyyl.jinyou.http.BaseSubscriber;
+import com.jyyl.jinyou.http.HttpMethods;
+import com.jyyl.jinyou.http.HttpResult;
+import com.jyyl.jinyou.http.ResultStatus;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.ui.dialog.SelectDeviceDialog;
-import com.jyyl.jinyou.utils.ImageUtils;
 import com.jyyl.jinyou.utils.FileUtils;
+import com.jyyl.jinyou.utils.ImageUtils;
+import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.SelectPictureUtils;
 import com.jyyl.jinyou.utils.T;
 import com.jyyl.jinyou.widget.CircleImageView;
+import com.jyyl.jinyou.widget.CleanEditText;
 
 import java.io.IOException;
 
@@ -29,24 +36,33 @@ import java.io.IOException;
  * @Date: 2016/4/22  17:17
  */
 public class MemberBindingActivity extends BaseActivity implements SelectDeviceDialog
-                                                                        .OnSelectDeviceListener {
+                                                                           .OnSelectDeviceListener {
     private Toolbar toolbar;
     private Context mContext;
 
     private CircleImageView mPhotoView;
     private TextView mDeviceNumberTv;
-    private TextView mDeviceIdTv;
+    private TextView mDeviceImeiTv;
     private TextView mBindingBtn;
+    private CleanEditText mMemberNameEt;
+    private CleanEditText mLinkmanNameEt;
+    private CleanEditText mLinkmanTelEt;
+    private CleanEditText mMemberCardEt;
+    private String mMemberName, mLinkmanName, mLinkmanTel, mMemberCard,
+            headAddress, teamId, deviceId, mDeviceImei;
 
-    private String mMemberId;
     private Uri photoUri = null;
     private Bitmap cropBitmap = null;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_member_binding);
+
         initToolBar();
         initUri();
     }
@@ -69,12 +85,20 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
     @Override
     protected void initViews() {
         super.initViews();
+        teamId = getIntent().getExtras().getString("mTeamId");
+        LogUtils.d("mTeamId==>>"+ teamId );
 
-        mMemberId = getIntent().getStringExtra("memberId");
+        mMemberCardEt = (CleanEditText) findViewById(R.id.et_member_id_card);
+        mLinkmanTelEt = (CleanEditText) findViewById(R.id.et_linkman_tel);
+        mLinkmanNameEt = (CleanEditText) findViewById(R.id.et_linkman_name);
+        mMemberNameEt = (CleanEditText) findViewById(R.id.et_member_name);
+
         mPhotoView = (CircleImageView) findViewById(R.id.iv_member_photoview);
+
         mDeviceNumberTv = (TextView) findViewById(R.id.tv_member_device_number);
         mDeviceNumberTv.setVisibility(View.GONE);
-        mDeviceIdTv = (TextView) findViewById(R.id.tv_member_device_id);
+        mDeviceImeiTv = (TextView) findViewById(R.id.tv_member_device_imei);
+
         mBindingBtn = (TextView) findViewById(R.id.btn_binding_member);
     }
 
@@ -83,7 +107,7 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
         super.initListener();
 
         mPhotoView.setOnClickListener(this);
-        mDeviceIdTv.setOnClickListener(this);
+        mDeviceImeiTv.setOnClickListener(this);
         mBindingBtn.setOnClickListener(this);
     }
 
@@ -94,14 +118,39 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
             case R.id.iv_member_photoview:
                 SelectPictureUtils.startCamearPicCut(this, photoUri);
                 break;
-            case R.id.tv_member_device_id:
+            case R.id.tv_member_device_imei:
                 SelectDeviceDialog selectDeviceDialog = new SelectDeviceDialog();
                 selectDeviceDialog.show(getFragmentManager(), "SelectDevice");
                 break;
             case R.id.btn_binding_member:
-                T.showShortToast(mContext, "新增游客成功");
-                openActivity(mContext, MemberManageActivity.class);
-                finish();
+                mMemberName = mMemberNameEt.getText().toString();
+                mLinkmanName = mLinkmanNameEt.getText().toString();
+                mLinkmanTel = mLinkmanTelEt.getText().toString();
+                mMemberCard = mMemberCardEt.getText().toString();
+                mDeviceImei = mDeviceImeiTv.getText().toString();
+                if (mMemberName.isEmpty()){
+                    T.showShortToast(mContext, "游客姓名不能为空");
+                }else if (mLinkmanTel.isEmpty()){
+                    T.showShortToast(mContext, "监护人电话不能为空");
+                } else if (mDeviceImei.isEmpty()) {
+                    T.showShortToast(mContext, "请先选择绑定设备");
+                } else {
+                    HttpMethods.getInstance().addMember(mMemberName,mLinkmanName,mLinkmanTel,
+                            mMemberCard,headAddress,teamId,deviceId)
+                            .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                                @Override
+                                public void onNext(HttpResult httpResult) {
+                                    if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+                                        T.showShortToast(mContext, "添加游客成功");
+                                        openActivity(mContext, MemberManageActivity.class);
+                                        finish();
+                                    } else {
+                                        throw new ApiException(httpResult.getDescritpion());
+                                    }
+                                }
+                            });
+                }
+
                 break;
         }
     }
@@ -112,8 +161,8 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
             return;
         }
         try {
-            photoUri = FileUtils.getUriByFileDirAndFileName(BaseConstans.SystemPicture
-                    .SAVE_DIRECTORY, "member_" + mMemberId + ".jpg");
+            photoUri = FileUtils.getUriByFileDir(BaseConstans.SystemPicture
+                    .SAVE_DIRECTORY);
         } catch (IOException e) {
             T.showShortToast(mContext, "创建文件失败");
         }
@@ -161,7 +210,9 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
         if (deviceInfo != null) {
             mDeviceNumberTv.setVisibility(View.VISIBLE);
             mDeviceNumberTv.setText(String.valueOf(deviceInfo.getNumber()));
-            mDeviceIdTv.setText(deviceInfo.getDeviceResult().getDeviceIMEI());
+            mDeviceImeiTv.setText(deviceInfo.getDeviceResult().getDeviceIMEI());
+
+            deviceId = deviceInfo.getDeviceResult().getDeviceId();
         }
     }
 }

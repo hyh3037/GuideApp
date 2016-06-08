@@ -10,10 +10,34 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 public class FileUtils {
+
+
+    /**
+     * 随机生成32位字符串
+     * @return
+     */
+    public static String getUuidName(){
+        return UUID.randomUUID().toString().trim().replace("-", "");
+    }
+
+    /**
+     * 指定目录创建jpg文件，并获取uri
+     * @param strFileDir
+     * @return
+     * @throws IOException
+     */
+    public static Uri getUriByFileDir(String strFileDir) throws IOException {
+        String strFileName = getUuidName()+".jpg";
+        Uri uri = null;
+        uri = getUriByFileDirAndFileName(strFileDir, strFileName);
+        return uri;
+    }
+
     /****
-     * 通过目录和文件名来获取Uri
+     * 通过目录和文件名来创建/获取Uri
      * @param strFileDir   目录
      * @param strFileName   文件名
      * @return  Uri

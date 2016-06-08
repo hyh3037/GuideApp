@@ -82,7 +82,7 @@
     <string name="member_phone">电话</string>
     <string name="member_id_card">身份证号码</string>
     <string name="member_linkman_name">监护人</string>
-    <string name="member_linkman_tel">紧急联系人电话</string>
+    <string name="member_linkman_tel">监护人电话</string>
     <string name="click_take_photos">点击头像拍照</string>
     <string name="btn_binding_member">确认</string>
     <string name="binding_device">绑定设备：</string>

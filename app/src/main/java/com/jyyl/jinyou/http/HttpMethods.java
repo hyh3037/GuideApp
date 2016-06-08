@@ -6,6 +6,8 @@ import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.entity.LoginResult;
+import com.jyyl.jinyou.entity.MemberInfoResult;
+import com.jyyl.jinyou.entity.TeamInfo;
 import com.jyyl.jinyou.entity.VersionInfo;
 import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.SPUtils;
@@ -289,6 +291,123 @@ public class HttpMethods {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 创建旅游团队
+     * @param teamName
+     * @return
+     */
+    public Observable<HttpResult> createTeam(String teamName) {
+
+        String token = (String) SPUtils.get(appContext, Sp.SP_KEY_MEMBER_TOKEN, "-1");
+        LogUtils.d("token==>>"+token);
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("teamName", teamName);
+        params.put("createMemberId", userId);
+        params.put("teamDate", "0");
+        params.put("token", token);
+        params.put("industry", "jy");
+
+        return mApiService.createTeam(params)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 查询团队信息
+     * @return
+     */
+    public Observable<List<TeamInfo>> getTeamInfo() {
+
+        String token = (String) SPUtils.get(appContext, Sp.SP_KEY_MEMBER_TOKEN, "-1");
+        LogUtils.d("token==>>"+token);
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("createMemberId", userId);
+        params.put("token", token);
+        params.put("industry", "jy");
+
+        return mApiService.getTeamInfo(params)
+                .map(new HttpResultFunc<TeamInfo>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+
+    /**
+     * 解散团队
+     * @param tourTeamId
+     * @return
+     */
+    public Observable<HttpResult> deleteTeam(String tourTeamId) {
+
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+        String token = (String) SPUtils.get(appContext, Sp.SP_KEY_MEMBER_TOKEN, "-1");
+
+        return mApiService.deleteTeam(tourTeamId,userId,"jy",token)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 添加游客
+     * @param touristName
+     * @param touristContentName 监护人
+     * @param touristContentPhone 监护人电话
+     * @param touristIdCard 身份证
+     * @param headAddress 头像地址
+     * @param teamId
+     * @param deviceId imei
+     * @return
+     */
+    public Observable<HttpResult> addMember(String touristName,String touristContentName,
+                                             String touristContentPhone, String touristIdCard,
+                                             String headAddress,String teamId, String deviceId) {
+
+        String token = (String) SPUtils.get(appContext, Sp.SP_KEY_MEMBER_TOKEN, "-1");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("touristName", touristName);
+        params.put("touristContentName", touristContentName);
+        params.put("touristContentPhone", touristContentPhone);
+        params.put("touristIdCard", touristIdCard);
+        params.put("headAddress", headAddress);
+        params.put("teamId", teamId);
+        params.put("deviceId", deviceId);
+        params.put("token", token);
+        params.put("industry", "jy");
+
+        return mApiService.addMember(params)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<List<MemberInfoResult>> getMemberInfo() {
+
+        String token = (String) SPUtils.get(appContext, Sp.SP_KEY_MEMBER_TOKEN, "-1");
+        LogUtils.d("token==>>"+token);
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("createMemberId", userId);
+        params.put("token", token);
+        params.put("industry", "jy");
+
+        return mApiService.getMemberInfo(params)
+                .map(new HttpResultFunc<MemberInfoResult>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
 
 

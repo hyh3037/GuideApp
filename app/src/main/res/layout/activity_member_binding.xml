@@ -76,18 +76,6 @@
                     android:layout_marginTop="5dp">
 
                     <com.jyyl.jinyou.widget.CleanEditText
-                        android:id="@+id/et_member_id_card"
-                        style="@style/edittext_info_style"
-                        android:hint="@string/member_id_card"
-                        android:inputType="number"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <com.jyyl.jinyou.widget.CleanEditText
                         android:id="@+id/et_linkman_name"
                         style="@style/edittext_info_style"
                         android:hint="@string/member_linkman_name"
@@ -103,6 +91,18 @@
                         android:id="@+id/et_linkman_tel"
                         style="@style/edittext_info_style"
                         android:hint="@string/member_linkman_tel"
+                        android:inputType="number"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <com.jyyl.jinyou.widget.CleanEditText
+                        android:id="@+id/et_member_id_card"
+                        style="@style/edittext_info_style"
+                        android:hint="@string/member_id_card"
                         android:inputType="number"/>
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -131,7 +131,7 @@
                     tools:text="16"/>
 
                 <TextView
-                    android:id="@+id/tv_member_device_id"
+                    android:id="@+id/tv_member_device_imei"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:drawableRight="@drawable/select_down"

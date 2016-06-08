@@ -3,6 +3,8 @@ package com.jyyl.jinyou.http;
 
 import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.entity.LoginResult;
+import com.jyyl.jinyou.entity.MemberInfoResult;
+import com.jyyl.jinyou.entity.TeamInfo;
 import com.jyyl.jinyou.entity.VersionInfo;
 
 import java.util.Map;
@@ -63,8 +65,31 @@ public interface ApiService {
     //解除设备绑定
     @GET(Api.DEVICE_DELETE_URL + "/{deviceIEMI}&{industry}&{token}")
     Observable<HttpResult> deleteDevice(@Path("deviceIEMI") String deviceIEMI,
-                                           @Path("industry") String industry,
-                                           @Path("token") String token);
+                                        @Path("industry") String industry,
+                                        @Path("token") String token);
+
+    //创建旅游团队
+    @POST(Api.TEAM_CREATE_URL)
+    Observable<HttpResult> createTeam(@Body Map<String, String> params);
+
+    //查询团队信息
+    @POST(Api.TEAM_INFO_URL)
+    Observable<HttpResult<TeamInfo>> getTeamInfo(@Body Map<String, String> params);
+
+    //解散旅游团队
+    @GET(Api.TEAM_DELETE_URL + "/{tourTeamId}&{memberId}&{industry}&{token}")
+    Observable<HttpResult> deleteTeam(@Path("tourTeamId") String tourTeamId,
+                                      @Path("memberId") String memberId,
+                                      @Path("industry") String industry,
+                                      @Path("token") String token);
+
+    //添加游客
+    @POST(Api.MEMBER_ADD_URL)
+    Observable<HttpResult> addMember(@Body Map<String, String> params);
+
+    //获取游客信息
+    @POST(Api.TEAM_INFO_URL)
+    Observable<HttpResult<MemberInfoResult>> getMemberInfo(@Body Map<String, String> params);
 
 
     //版本更新

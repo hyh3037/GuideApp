@@ -55,7 +55,6 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
     private boolean flage = false; //是否删除界面
     private boolean isChecked = false; //toolbar的checkbox选择状态
     private boolean isDelFinish = false; //false:取消 true:完成
-    private int number = 1;
 
     public static final int REQUEST_CODE = 0;
 
@@ -91,8 +90,10 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                     public void onNext(List<DeviceResult> deviceResults) {
                         LogUtils.d("deviceResults" + deviceResults.toString());
                         mDatas.clear();
+                        int number = 1;
                         for (DeviceResult deviceResult : deviceResults){
                             mDatas.add(new DeviceInfo(number, deviceResult));
+                            number++;
                         }
                         refreshUI();
                     }

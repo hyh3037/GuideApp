@@ -28,10 +28,6 @@ public class Api {
     //获取导游信息
     public static final String GET_GUIDEINFO_URL = "tourism/guideinfo/getguideinfo";
 
-
-    //获取团队信息
-    public static final String GET_TEAM_URL = "tourism/tourteam/getteam";
-
     //获取设备列表
     public static final String USER_DEVICES_URL = "tourism/equipment/serach";
 
@@ -41,6 +37,20 @@ public class Api {
     //解除设备绑定
     public static final String DEVICE_DELETE_URL = "tourism/equipment/deleteinfo";
 
+    //创建旅游团队
+    public static final String TEAM_CREATE_URL = "tourism/tourteam/createteam";
+
+    //查询团队信息
+    public static final String TEAM_INFO_URL = "tourism/tourteam/getteam";
+
+    //解散旅游团队
+    public static final String TEAM_DELETE_URL = "tourism/tourteam/deleteteam";
+
+    //添加游客
+    public static final String MEMBER_ADD_URL = "tourism/tourist/addtourist";
+
+    //获取游客信息
+    public static final String MEMBER_INFO_URL = "tourism/tourist/addtourist";
 
     //版本更新
     public static final String UPDATE_URL = "tourism/version/appversion";

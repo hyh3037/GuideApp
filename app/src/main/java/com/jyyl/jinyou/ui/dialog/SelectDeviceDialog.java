@@ -11,10 +11,15 @@ import android.widget.ListView;
 
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.entity.DeviceInfo;
+import com.jyyl.jinyou.entity.DeviceResult;
+import com.jyyl.jinyou.http.BaseSubscriber;
+import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.base.BaseAdapterHelper;
 import com.jyyl.jinyou.ui.base.ViewHolder;
+import com.jyyl.jinyou.utils.LogUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Fuction: 绑定游客和设备
@@ -70,8 +75,20 @@ public class SelectDeviceDialog extends DialogFragment {
 
 
     private void initData() {
-        for (number = 1; number < 10; number++) {
-            deviceId = "10000" + number;
-        }
+
+        HttpMethods.getInstance().getUserDevices()
+                .subscribe(new BaseSubscriber<List<DeviceResult>>(this.getActivity()) {
+                    @Override
+                    public void onNext(List<DeviceResult> deviceResults) {
+                        LogUtils.d("deviceResults" + deviceResults.toString());
+                        mDatas.clear();
+                        int number = 1;
+                        for (DeviceResult deviceResult : deviceResults){
+                            mDatas.add(new DeviceInfo(number, deviceResult));
+                            number++;
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
     }
 }
