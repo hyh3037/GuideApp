@@ -60,6 +60,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Progres
     @Override
     public void onCompleted() {
         dismissProgressDialog();
+        mContext = null;
     }
 
     /**

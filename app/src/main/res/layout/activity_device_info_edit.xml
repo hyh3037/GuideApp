@@ -23,7 +23,7 @@
             android:text="@string/device_name"
             android:textSize="@dimen/text_size_small_middle"/>
 
-        <com.jyyl.jinyou.widget.CleanEditText
+        <EditText
             android:id="@+id/et_device_edit_name"
             style="@style/edittext_info_style"
             android:hint="@string/device_name_hint"
@@ -34,10 +34,23 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:layout_marginTop="10dp"
+            android:text="@string/device_imei"
+            android:textSize="@dimen/text_size_small_middle"/>
+
+        <EditText
+            android:id="@+id/tv_device_edit_imei"
+            style="@style/edittext_info_style"
+            android:hint="@string/device_imei_hint"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="10dp"
             android:text="@string/device_sos_no"
             android:textSize="@dimen/text_size_small_middle"/>
 
-        <com.jyyl.jinyou.widget.CleanEditText
+        <EditText
             android:id="@+id/et_device_edit_sos_no"
             style="@style/edittext_info_style"
             android:hint="@string/device_sos_no_hint"
@@ -51,8 +64,8 @@
             android:text="@string/device_call_no"
             android:textSize="@dimen/text_size_small_middle"/>
 
-        <com.jyyl.jinyou.widget.CleanEditText
-            android:id="@+id/et_device_imei"
+        <EditText
+            android:id="@+id/et_device_edit_call_no"
             style="@style/edittext_info_style"
             android:hint="@string/device_call_no_hint"
             android:inputType="number"/>

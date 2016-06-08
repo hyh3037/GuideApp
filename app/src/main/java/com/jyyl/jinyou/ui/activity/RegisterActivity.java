@@ -13,8 +13,11 @@ import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.constans.It;
+import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
+import com.jyyl.jinyou.http.HttpResult;
+import com.jyyl.jinyou.http.ResultStatus;
 import com.jyyl.jinyou.receive.SMSBroadcastReceiver;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.LogUtils;
@@ -109,7 +112,7 @@ public class RegisterActivity extends BaseActivity {
                         || TextUtils.isEmpty(password)
                         || TextUtils.isEmpty(rePwd)) {
                     T.showShortToast(this, getString(R.string.toast_submit_information_not_null));
-                } else if (!RegexUtils.checkPassword(password)){
+                } else if (!RegexUtils.checkPassword(password)) {
                     T.showShortToast(this, getString(R.string.toast_password_format_error));
                 } else if (!password.equals(rePwd)) {
                     T.showShortToast(this, getString(R.string.toast_two_password_not_consistent));
@@ -126,29 +129,33 @@ public class RegisterActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account)
-                .subscribe(new BaseSubscriber<Object>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
                     @Override
                     public void onStart() {
                     }
 
                     @Override
-                    public void onNext(Object o) {
-                        if (o == null){
-                            T.showShortToast(mContext, getString(R.string.toast_verification_code_has_been_sent));
+                    public void onNext(HttpResult httpResult) {
+                        if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+                            T.showShortToast(mContext, getString(R.string
+                                    .toast_verification_code_has_been_sent));
                             TimeCount timeCount = new TimeCount(30000, 1000);
                             timeCount.start();
                             LogUtils.d("验证码发送成功");
+                        } else {
+                            throw new ApiException(httpResult.getDescritpion());
                         }
+
                     }
                 });
     }
 
     private void register() {
         HttpMethods.getInstance().registerAccount(account, password, securityCode)
-                .subscribe(new BaseSubscriber<Object>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
                     @Override
-                    public void onNext(Object o) {
-                        if (o == null){
+                    public void onNext(HttpResult httpResult) {
+                        if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
                             // 注册成功跳转到登录
                             Bundle bundle = new Bundle();
                             bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_REGISTER);
@@ -157,6 +164,8 @@ public class RegisterActivity extends BaseActivity {
                             openActivity(mContext, LoginActivity.class, bundle);
                             T.showShortToast(mContext, getString(R.string.toast_register_success));
                             finish();
+                        } else {
+                            throw new ApiException(httpResult.getDescritpion());
                         }
                     }
                 });
@@ -181,37 +190,37 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
-//    /**================================接收短信验证==>>开始=================================*/
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        // 生成广播处理
-//        mSmsBroadcastReceiver = new SMSBroadcastReceiver();
-//
-//        // 实例化过滤器并设置要过滤的广播
-//        IntentFilter intentFilter = new IntentFilter(ACTION);
-//        intentFilter.setPriority(Integer.MAX_VALUE);
-//        // 注册广播
-//        this.registerReceiver(mSmsBroadcastReceiver, intentFilter);
-//
-//        mSmsBroadcastReceiver
-//                .setOnReceivedMessageListener(new SMSBroadcastReceiver.MessageListener() {
-//                    @Override
-//                    public void onReceived(String message) {
-//
-//                        mSecurityCodeEt.setText(message);
-//
-//                    }
-//                });
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        // 注销短信监听广播
-//        this.unregisterReceiver(mSmsBroadcastReceiver);
-//    }
-//
-//    /**==============================接收短信验证==>>结束================================*/
+    //    /**================================接收短信验证==>>开始=================================*/
+    //    @Override
+    //    protected void onStart() {
+    //        super.onStart();
+    //        // 生成广播处理
+    //        mSmsBroadcastReceiver = new SMSBroadcastReceiver();
+    //
+    //        // 实例化过滤器并设置要过滤的广播
+    //        IntentFilter intentFilter = new IntentFilter(ACTION);
+    //        intentFilter.setPriority(Integer.MAX_VALUE);
+    //        // 注册广播
+    //        this.registerReceiver(mSmsBroadcastReceiver, intentFilter);
+    //
+    //        mSmsBroadcastReceiver
+    //                .setOnReceivedMessageListener(new SMSBroadcastReceiver.MessageListener() {
+    //                    @Override
+    //                    public void onReceived(String message) {
+    //
+    //                        mSecurityCodeEt.setText(message);
+    //
+    //                    }
+    //                });
+    //    }
+    //
+    //    @Override
+    //    protected void onDestroy() {
+    //        super.onDestroy();
+    //        // 注销短信监听广播
+    //        this.unregisterReceiver(mSmsBroadcastReceiver);
+    //    }
+    //
+    //    /**==============================接收短信验证==>>结束================================*/
 
 }

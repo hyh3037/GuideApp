@@ -15,7 +15,8 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/selector_btn_bg_white"
-        android:text="新增设备"/>
+        android:textSize="@dimen/text_size_medium"
+        android:text="添加设备"/>
 
     <ListView
         android:id="@+id/device_listview"
@@ -29,7 +30,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:padding="15dip"
-        android:text="无可用绑定设备"
+        android:text="请先添加设备"
         android:textSize="@dimen/text_size_large"
         android:visibility="gone"/>
 </LinearLayout>

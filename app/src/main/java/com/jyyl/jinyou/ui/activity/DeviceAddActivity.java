@@ -9,24 +9,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abading.ABaDingMethod;
-import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.constans.Sp;
-import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.ui.base.BaseActivity;
-import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.SPUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
 /**
- * @Fuction: 新增设备
+ * @Fuction: 添加设备
  * @Author: Shang
  * @Date: 2016/6/5 14:17
  */
@@ -36,7 +24,7 @@ public class DeviceAddActivity extends BaseActivity {
 
     private Toolbar toolbar;
     private TextView mToolbarRightTv;
-    private String mTitle = "新增设备";
+    private String mTitle = "添加设备";
     private Context mContext;
 
     private EditText mDeviceNickname;
@@ -65,15 +53,7 @@ public class DeviceAddActivity extends BaseActivity {
                 getResources().getString(R.string.device_sos_no_hint));
         mDeviceSosNo.setText(sosNo);
 
-        Bundle bundle = getIntent().getExtras();
-        int intentCode = bundle.getInt(It.BUNDLE_KEY_INTENT_CODE);
-        if ( 0 == intentCode ){
-            mDeviceImei.setText(getResources().getString(R.string.device_imei_hint));
-        }else if ( 1 == intentCode ){
-            String bindingValidationCode = bundle.getString("result");
-            LogUtils.d(bindingValidationCode);
-            addDeviceByScan(bindingValidationCode);
-        }
+
     }
 
     private void initToolBar() {
@@ -97,41 +77,5 @@ public class DeviceAddActivity extends BaseActivity {
                 finish();
             }
         });
-    }
-
-    /**
-     * 扫描添加设备
-     * @param bindingValidationCode
-     *         扫描成功后的字符串后面的查询字段
-     */
-    private void addDeviceByScan(final String bindingValidationCode) {
-        Observable.create(new Observable.OnSubscribe<JSONObject>() {
-            @Override
-            public void call(Subscriber<? super JSONObject> subscriber) {
-                JSONObject jsonObject = ABaDingMethod.getInstance()
-                        .bindingDeviceByScan(bindingValidationCode);
-                subscriber.onNext(jsonObject);
-                subscriber.onCompleted();
-            }
-        })
-                .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
-                .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
-                .subscribe(new BaseSubscriber<JSONObject>(mContext) {
-                    @Override
-                    public void onNext(JSONObject jsonObject) {
-                        if (jsonObject != null) {
-
-                            try {
-                                String deviceId = (String) jsonObject.get("imei");
-                                String bindingId = (String) jsonObject.get("id");
-                                LogUtils.d(TAG, "IMEI==>>"+deviceId);
-                                mDeviceImei.setText(deviceId);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-
     }
 }

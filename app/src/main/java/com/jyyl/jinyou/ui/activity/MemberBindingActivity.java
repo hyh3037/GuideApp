@@ -161,7 +161,7 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
         if (deviceInfo != null) {
             mDeviceNumberTv.setVisibility(View.VISIBLE);
             mDeviceNumberTv.setText(String.valueOf(deviceInfo.getNumber()));
-            mDeviceIdTv.setText(deviceInfo.getDeviceId());
+            mDeviceIdTv.setText(deviceInfo.getDeviceResult().getDeviceIMEI());
         }
     }
 }

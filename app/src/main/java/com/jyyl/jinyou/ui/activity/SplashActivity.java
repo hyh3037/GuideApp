@@ -10,8 +10,6 @@ import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.AppUtils;
 import com.jyyl.jinyou.utils.SPUtils;
 
-import cn.jpush.android.api.JPushInterface;
-
 /**
  * @author ShangBB
  * @Description: (欢迎界面,初始化)
@@ -72,18 +70,6 @@ public class SplashActivity extends BaseActivity {
             }
         }, 2000);
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        JPushInterface.onResume(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        JPushInterface.onPause(this);
     }
 
 

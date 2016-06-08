@@ -48,7 +48,7 @@ public class SelectDeviceDialog extends DialogFragment {
             @Override
             public void convert(ViewHolder holder, DeviceInfo deviceInfo) {
                 holder.setText(R.id.tv_number, String.valueOf(deviceInfo.getNumber()));
-                holder.setText(R.id.tv_device_id, deviceInfo.getDeviceId());
+                holder.setText(R.id.tv_device_id, deviceInfo.getDeviceResult().getDeviceIMEI());
             }
         };
         mListView.setAdapter(mAdapter);
@@ -72,7 +72,6 @@ public class SelectDeviceDialog extends DialogFragment {
     private void initData() {
         for (number = 1; number < 10; number++) {
             deviceId = "10000" + number;
-            mDatas.add(new DeviceInfo(number, deviceId));
         }
     }
 }

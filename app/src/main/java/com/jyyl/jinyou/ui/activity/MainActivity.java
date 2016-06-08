@@ -41,7 +41,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abading.ABaDingMethod;
+import com.jyyl.jinyou.abardeen.ABaDingMethod;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.MemberInfo;
@@ -67,6 +67,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -191,7 +192,7 @@ public class MainActivity extends BaseActivity
                     if ( i < 5 ){
                         isConnect = ABaDingMethod.getInstance().connectServer();
                     }else {
-                        T.showShortToast("腕表服务器登录失败，请稍后重试");
+                        T.showShortToast(mContext, "腕表服务器登录失败，请稍后重试");
                         return;
                     }
                 }
@@ -505,6 +506,7 @@ public class MainActivity extends BaseActivity
         super.onResume();
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();
+        JPushInterface.onResume(this);
     }
 
     @Override
@@ -512,7 +514,7 @@ public class MainActivity extends BaseActivity
         super.onPause();
         //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
         mMapView.onPause();
-
+        JPushInterface.onPause(this);
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {

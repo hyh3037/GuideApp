@@ -1,15 +1,17 @@
 package com.jyyl.jinyou.http;
 
+import java.util.List;
+
 /**
  * 封装返回的 json
- * values : 单个对象
+ * values : 对象数组
  * @param <T>
  */
 public class HttpResult<T> {
 
     private String status;
     private String descritpion;
-    private T values;
+    private List<T> values;
 
     public String getStatus() {
         return status;
@@ -27,11 +29,11 @@ public class HttpResult<T> {
         this.descritpion = descritpion;
     }
 
-    public T getValues() {
+    public List<T> getValues() {
         return values;
     }
 
-    public void setValues(T values) {
+    public void setValues(List<T> values) {
         this.values = values;
     }
 

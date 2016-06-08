@@ -43,8 +43,8 @@
 
     <string name="device_info_name">设备名称: %s</string>
     <string name="device_info_imei">设备IMEI:  %s</string>
-    <string name="device_info_sos_no">SOS呼叫号码:  %s</string>
-    <string name="device_info_call_no">设备手机号码:  %s</string>
+    <string name="device_info_sos">SOS呼叫号码:  %s</string>
+    <string name="device_info_phone">设备手机号码:  %s</string>
     <string name="device_info_binding_time">设备绑定时间:  %s</string>
     <string name="device_info_use_state">设备使用状态:  %s</string>
 

@@ -1,32 +1,25 @@
 package com.jyyl.jinyou.entity;
 
+import java.io.Serializable;
+
 /**
  * @Fuction:
  * @Author: Shang
  * @Date: 2016/6/1  15:40
  */
-public class DeviceResult {
+public class DeviceResult implements Serializable{
 
-
-    /**
-     * deviceId : 537cf19ef29246f98fcd6439610d972b
-     * deviceType : 0
-     * deviceIMEI : aaa
-     * deviceName : 腕表
-     * ascriptionId :
-     * bindState : 0
-     * devicePhone :
-     * deviceNote :
-     */
-
-    private String deviceId;
-    private String deviceType;
-    private String deviceIMEI;
-    private String deviceName;
-    private String ascriptionId;
-    private String bindState;
-    private String devicePhone;
-    private String deviceNote;
+    private String deviceId;//设备id
+    private String deviceType;//设备类型
+    private String deviceIMEI;//设备IMEI
+    private String deviceName;//设备名称
+    private String ascriptionId;//归属人id，这里指的是导游的id
+    private String bindState;//启用状态
+    private String devicePhone;//绑定电话--腕表里的电话号是惟一的
+    private String deviceNote;//备注
+    private String deviceBindId;
+    private String sosPhone;
+    private String bindTime;
 
     public String getDeviceId() {
         return deviceId;
@@ -90,5 +83,29 @@ public class DeviceResult {
 
     public void setDeviceNote(String deviceNote) {
         this.deviceNote = deviceNote;
+    }
+
+    public String getDeviceBindId() {
+        return deviceBindId;
+    }
+
+    public void setDeviceBindId(String deviceBindId) {
+        this.deviceBindId = deviceBindId;
+    }
+
+    public String getSosPhone() {
+        return sosPhone;
+    }
+
+    public void setSosPhone(String sosPhone) {
+        this.sosPhone = sosPhone;
+    }
+
+    public String getBindTime() {
+        return bindTime;
+    }
+
+    public void setBindTime(String bindTime) {
+        this.bindTime = bindTime;
     }
 }

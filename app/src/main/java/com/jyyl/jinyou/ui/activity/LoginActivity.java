@@ -153,6 +153,8 @@ public class LoginActivity extends BaseActivity {
                             String abdPassword = loginResult.getAbardeenPassword();
                             String token = loginResult.getMemberToken();
 
+                            LogUtils.d("token==>>"+token);
+
                             //保存账号信息到SP
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT, account);
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_PASSWORD, password);

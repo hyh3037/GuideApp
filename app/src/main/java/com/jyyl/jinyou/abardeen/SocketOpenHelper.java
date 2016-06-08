@@ -1,4 +1,4 @@
-package com.jyyl.jinyou.abading;
+package com.jyyl.jinyou.abardeen;
 
 
 import android.content.Context;
@@ -191,7 +191,7 @@ public class SocketOpenHelper {
     }
 
     /**
-     * 写如数据
+     * 写入数据
      * @param paramJson
      *
      * @throws IOException
@@ -274,7 +274,7 @@ public class SocketOpenHelper {
             int cmdBodyLength = getCount(temp[4], temp[5], temp[6], temp[7]);
 
             String tempString = new String(temp, 0, temp.length);
-            Log.d(TAG, "tempString：" + tempString);
+//            Log.d(TAG, "tempString：" + tempString);
             if (tempString.contains("E105")){
                 Log.d(TAG, "无法找到用户");
                 return null;

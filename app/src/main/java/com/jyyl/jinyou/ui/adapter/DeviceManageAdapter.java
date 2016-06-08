@@ -1,5 +1,6 @@
 package com.jyyl.jinyou.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -42,21 +43,24 @@ public class DeviceManageAdapter extends BaseAdapterHelper<DeviceInfo> {
         }
         holder.setChecked(R.id.cb_item_select, deviceInfo.isCheck());
         holder.setText(R.id.tv_number, String.valueOf(deviceInfo.getNumber()));
-        holder.setText(R.id.tv_device_id, deviceInfo.getDeviceId());
+        holder.setText(R.id.tv_device_id, deviceInfo.getDeviceResult().getDeviceIMEI());
 
         holder.setOnClickListener(R.id.item_device_manage, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (flage) {
                     if (deviceInfo.isCheck()) {
-                        deviceInfo.setIsCheck(false);
+                        deviceInfo.setCheck(false);
                     } else {
-                        deviceInfo.setIsCheck(true);
+                        deviceInfo.setCheck(true);
                     }
                     mListener.refreshToolbar();
                 } else {
                     Intent intent = new Intent(mContext, DeviceInfoActivity.class);
+                    intent.putExtra("deviceInfo", deviceInfo.getDeviceResult());
                     mContext.startActivity(intent);
+                    ((Activity) mContext).overridePendingTransition(R.anim.push_right_in, 0);
+
                 }
             }
         });

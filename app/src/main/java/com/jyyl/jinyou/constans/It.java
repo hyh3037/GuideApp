@@ -39,6 +39,15 @@ public class It {
     //消息通知列表
     public static final int ACTIVITY_NOTICE = 0X021;
 
+	//扫描界面
+	public static final int ACTIVITY_CAPTURE = 0X039;
+
+	//设备管理
+	public static final int ACTIVITY_DEVICE_MANAGE = 0X030;
+
+	//设备详情
+	public static final int ACTIVITY_DEVICE_INFO = 0X031;
+
     /**=====================================INTENT START 编号 END=====================================*/
 
 	/**

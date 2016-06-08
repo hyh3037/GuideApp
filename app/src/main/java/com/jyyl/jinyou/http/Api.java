@@ -35,6 +35,12 @@ public class Api {
     //获取设备列表
     public static final String USER_DEVICES_URL = "tourism/equipment/serach";
 
+    //修改设备信息
+    public static final String DEVICE_INFO_EDIT_URL = "tourism/equipment/updateinfo";
+
+    //解除设备绑定
+    public static final String DEVICE_DELETE_URL = "tourism/equipment/deleteinfo";
+
 
     //版本更新
     public static final String UPDATE_URL = "tourism/version/appversion";

@@ -75,11 +75,10 @@ public class HttpMethods {
      * @param <T>
      *         Subscriber真正需要的数据类型，也就是Data部分的数据类型
      */
-    private class HttpResultListFunc<T> implements Func1<HttpResultList<T>, List<T>> {
+    private class HttpResultFunc<T> implements Func1<HttpResult<T>, List<T>> {
 
         @Override
-        public List<T> call(HttpResultList<T> httpResult) {
-            LogUtils.d(TAG, httpResult.toString());
+        public List<T> call(HttpResult<T> httpResult) {
             if (!(ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
                 throw new ApiException(httpResult.getDescritpion());
             }else {
@@ -88,18 +87,6 @@ public class HttpMethods {
         }
     }
 
-    private class HttpResultFunc<T> implements Func1<HttpResult<T>, T> {
-
-        @Override
-        public T call(HttpResult<T> httpResult) {
-            LogUtils.d(TAG, httpResult.toString());
-            if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
-                return httpResult.getValues();
-            }else {
-                throw new ApiException(httpResult.getDescritpion());
-            }
-        }
-    }
 
     /**=====================================网络请求方法=========================================*/
 
@@ -108,13 +95,11 @@ public class HttpMethods {
      * @param phone
      * @return
      */
-    public Observable<Object> getSecurityCode(String phone) {
+    public Observable<HttpResult> getSecurityCode(String phone) {
         return mApiService.getSecurityCode(phone, "0", "jy")
-                .map(new HttpResultFunc<>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-
     }
 
     /**
@@ -124,7 +109,7 @@ public class HttpMethods {
      * @param messInfo
      * @return
      */
-    public Observable<Object> registerAccount(String memberAccount,String memberPassword,String messInfo) {
+    public Observable<HttpResult> registerAccount(String memberAccount,String memberPassword,String messInfo) {
 
         Map<String, String> params = new HashMap<>();
         params.put("industry", "jy");
@@ -135,7 +120,6 @@ public class HttpMethods {
         params.put("memberPhone", memberAccount);
 
         return mApiService.registerAccount(params)
-                .map(new HttpResultFunc<>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -154,7 +138,7 @@ public class HttpMethods {
         LogUtils.d(loginTime);
 
         return mApiService.loginAccount(loginTime,memberAccount,memberPassword,"jy" )
-                .map(new HttpResultListFunc<LoginResult>())
+                .map(new HttpResultFunc<LoginResult>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -178,7 +162,7 @@ public class HttpMethods {
         params.put("industry","jy");
 
         return mApiService.uploadLocation(params)
-                .map(new HttpResultListFunc<String>())
+                .map(new HttpResultFunc<String>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -200,7 +184,7 @@ public class HttpMethods {
         params.put("guideNote","");
 
         return mApiService.uploadGuideInfo(params)
-                .map(new HttpResultListFunc<String>())
+                .map(new HttpResultFunc<String>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -218,7 +202,7 @@ public class HttpMethods {
         params.put("guideId", userId);
 
         return mApiService.getGuideInfo(params)
-                .map(new HttpResultListFunc<String>())
+                .map(new HttpResultFunc<String>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -238,7 +222,7 @@ public class HttpMethods {
         params.put("ascriptionId",userId);
 
         return mApiService.getUserDevices(params)
-                .map(new HttpResultListFunc<DeviceResult>())
+                .map(new HttpResultFunc<DeviceResult>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -257,13 +241,55 @@ public class HttpMethods {
         params.put("bindState","0");
 
         return mApiService.getUserDevices(params)
-                .map(new HttpResultListFunc<DeviceResult>())
+                .map(new HttpResultFunc<DeviceResult>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
     }
 
+
+    /**
+     * 修改设备信息
+     * @return
+     */
+    public Observable<List<DeviceResult>> updateDevice(String imei, String bindingId, String deviceName, String sosPhone) {
+
+        String token = (String) SPUtils.get(appContext, Sp.SP_KEY_MEMBER_TOKEN, "-1");
+        LogUtils.d("token==>>"+token);
+        String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("deviceIMEIOne", imei);
+        params.put("deviceBindId", bindingId);
+        params.put("deviceName", deviceName);
+        //params.put("devicePhone", name);
+        params.put("ascriptionId", userId);
+        params.put("token", token);
+        params.put("sosPhone", sosPhone);
+        params.put("deviceType", "1");
+        params.put("industry", "jy");
+
+        return mApiService.updateDevice(params)
+                .map(new HttpResultFunc<DeviceResult>())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 解除绑定设备
+     * @return
+     */
+    public Observable<HttpResult> deleteDevice(String imei) {
+
+        String token = (String) SPUtils.get(appContext, Sp.SP_KEY_MEMBER_TOKEN, "-1");
+
+        return mApiService.deleteDevice(imei,"jy",token)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
 
     /**
@@ -273,7 +299,7 @@ public class HttpMethods {
      */
     public Observable<List<VersionInfo>> updateVersion(String versioncode) {
         return mApiService.updateVersion(versioncode, "jytourist", "jy")
-                .map(new HttpResultListFunc<VersionInfo>())
+                .map(new HttpResultFunc<VersionInfo>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

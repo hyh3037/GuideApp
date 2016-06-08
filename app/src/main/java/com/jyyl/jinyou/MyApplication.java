@@ -47,7 +47,7 @@ public class MyApplication extends Application {
         JPushInterface.init(this);
         JPushInterface.setSilenceTime(getApplicationContext(), 23, 30, 7, 30);
 
-        WriteLog.getInstance().init(); // 初始化日志
+        WriteLog.getInstance().init(); // 初始化百度地图日志
         locationService = new LocationService(getApplicationContext());
         mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
 

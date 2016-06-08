@@ -7,15 +7,12 @@ package com.jyyl.jinyou.entity;
  */
 public class DeviceInfo {
     private int number;
-    private String bindingId;
-    private String deviceId;
-    private boolean state;
+    private DeviceResult deviceResult;
     private boolean isCheck;
 
-    public DeviceInfo(int number, String deviceId) {
+    public DeviceInfo(int number, DeviceResult deviceResult) {
         this.number = number;
-        this.deviceId = deviceId;
-        this.state = false;
+        this.deviceResult = deviceResult;
     }
 
     public int getNumber() {
@@ -26,35 +23,19 @@ public class DeviceInfo {
         this.number = number;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public DeviceResult getDeviceResult() {
+        return deviceResult;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public boolean isState() {
-        return state;
-    }
-
-    public void setState(boolean state) {
-        this.state = state;
+    public void setDeviceResult(DeviceResult deviceResult) {
+        this.deviceResult = deviceResult;
     }
 
     public boolean isCheck() {
         return isCheck;
     }
 
-    public void setIsCheck(boolean isCheck) {
-        this.isCheck = isCheck;
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 }

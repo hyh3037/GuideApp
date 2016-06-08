@@ -1,6 +1,7 @@
 package com.jyyl.jinyou.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 
 import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abading.ABaDingMethod;
+import com.jyyl.jinyou.abardeen.ABaDingMethod;
 import com.jyyl.jinyou.entity.DeviceInfo;
 import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
@@ -65,11 +66,18 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         setContentView(R.layout.activity_device_management);
         initToolBar();
         initListview();
+
+        refreshDeviceDatas();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         refreshDeviceDatas();
     }
 
@@ -82,9 +90,9 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                     @Override
                     public void onNext(List<DeviceResult> deviceResults) {
                         LogUtils.d("deviceResults" + deviceResults.toString());
+                        mDatas.clear();
                         for (DeviceResult deviceResult : deviceResults){
-                            String imei = deviceResult.getDeviceIMEI();
-                            mDatas.add(new DeviceInfo(number, imei));
+                            mDatas.add(new DeviceInfo(number, deviceResult));
                         }
                         refreshUI();
                     }
@@ -122,15 +130,15 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         mToolbarRightIv = (ImageView) findViewById(R.id.toolbar_right_iv);
         mToolbarCheckBox = (CheckBox) findViewById(R.id.toolbar_checkbox);
         mToolbarRightTv = (TextView) findViewById(R.id.toolbar_right_tv);
-        mToolbarRightIv.setOnClickListener(this);
+//        mToolbarRightIv.setOnClickListener(this);
         mToolbarCheckBox.setOnClickListener(this);
         mToolbarRightTv.setOnClickListener(this);
         mToolbarRightIv.setImageResource(R.drawable.delete);
-        if (mDatas.size() > 0) {
-            mToolbarRightIv.setVisibility(View.VISIBLE);
-        } else {
-            mToolbarRightIv.setVisibility(View.GONE);
-        }
+//        if (mDatas.size() > 0) {
+//            mToolbarRightIv.setVisibility(View.VISIBLE);
+//        } else {
+//            mToolbarRightIv.setVisibility(View.GONE);
+//        }
         mToolbarCheckBox.setVisibility(View.GONE);
         mToolbarRightTv.setVisibility(View.GONE);
     }
@@ -171,14 +179,14 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                 if (isChecked) {
                     //全不选
                     for (DeviceInfo deviceInfo : mDatas) {
-                        deviceInfo.setIsCheck(false);
+                        deviceInfo.setCheck(false);
                     }
                     mToolbarCheckBox.setChecked(false);
                     isChecked = false;
                 } else {
                     //全选
                     for (DeviceInfo deviceInfo : mDatas) {
-                        deviceInfo.setIsCheck(true);
+                        deviceInfo.setCheck(true);
                     }
                     mToolbarCheckBox.setChecked(true);
                     isChecked = true;
@@ -190,7 +198,7 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                 if (isDelFinish) {
                     itemRemove(mDatas);
                     for (DeviceInfo DeviceInfo : mDatas) {
-                        DeviceInfo.setIsCheck(false);
+                        DeviceInfo.setCheck(false);
                     }
                 }
                 flage = false;
@@ -214,14 +222,14 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         while (it.hasNext()) {
             DeviceInfo deviceInfo = it.next();
             if (deviceInfo.isCheck()) {
-                final String bindingId = deviceInfo.getBindingId();
-                final String deviceId = deviceInfo.getDeviceId();
+                final String bindingId = deviceInfo.getDeviceResult().getDeviceBindId();
+                final String deviceId = deviceInfo.getDeviceResult().getDeviceIMEI();
                 if (bindingId!=null){
                     Observable.create(new Observable.OnSubscribe<Boolean>() {
                         @Override
                         public void call(Subscriber<? super Boolean> subscriber) {
                             boolean isRemove = ABaDingMethod.getInstance()
-                                    .removeDevice(bindingId);
+                                    .deleteDevice(bindingId);
                             subscriber.onNext(isRemove);
                             subscriber.onCompleted();
                         }
@@ -288,24 +296,11 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
      */
     private void refreshUI() {
         if (mDatas.size() > 0) {
-            mToolbarRightIv.setVisibility(View.VISIBLE);
+            mToolbarRightIv.setVisibility(View.GONE);
         } else {
             mToolbarRightIv.setVisibility(View.GONE);
         }
         mAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * 检查设备是否已存在
-     * @param deviceId
-     *
-     * @return
-     */
-    private boolean containsDeciveId(String deviceId) {
-        for (DeviceInfo deviceInfo : mDatas) {
-            if (deviceId.equals(deviceInfo.getDeviceId()))
-                return true;
-        }
-        return false;
-    }
 }

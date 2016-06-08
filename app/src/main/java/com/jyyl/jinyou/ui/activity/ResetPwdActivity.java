@@ -13,10 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.constans.It;
+import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
+import com.jyyl.jinyou.http.HttpResult;
+import com.jyyl.jinyou.http.ResultStatus;
 import com.jyyl.jinyou.ui.base.BaseActivity;
+import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.RegexUtils;
 import com.jyyl.jinyou.utils.T;
 
@@ -109,7 +112,7 @@ public class ResetPwdActivity extends BaseActivity {
                         || TextUtils.isEmpty(newPwd)
                         || TextUtils.isEmpty(rePwd)) {
                     T.showShortToast(this, getString(R.string.toast_submit_information_not_null));
-                } else if (!RegexUtils.checkPassword(newPwd)){
+                } else if (!RegexUtils.checkPassword(newPwd)) {
                     T.showShortToast(this, getString(R.string.toast_password_format_error));
                 } else if (!newPwd.equals(rePwd)) {
                     T.showShortToast(this, getString(R.string.toast_two_password_not_consistent));
@@ -126,20 +129,6 @@ public class ResetPwdActivity extends BaseActivity {
      * 重置密码
      */
     private void resetPassword() {
-        HttpMethods.getInstance().registerAccount(account, newPwd, securityCode)
-                .subscribe(new BaseSubscriber<Object>(mContext) {
-                    @Override
-                    public void onNext(Object o) {
-                        // 密码重置成功跳转到登录
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_RESET_PASSWORD);
-                        bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
-                        bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, newPwd);
-                        openActivity(mContext, LoginActivity.class, bundle);
-                        T.showShortToast(mContext, getString(R.string.toast_reset_success));
-                        finish();
-                    }
-                });
     }
 
     /**
@@ -147,17 +136,23 @@ public class ResetPwdActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account)
-                .subscribe(new BaseSubscriber<Object>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
                     @Override
                     public void onStart() {
-                        super.onStart();
-                        TimeCount timeCount = new TimeCount(30000, 1000);
-                        timeCount.start();
                     }
 
                     @Override
-                    public void onNext(Object o) {
-                        T.showShortToast(mContext,getString(R.string.toast_verification_code_has_been_sent));
+                    public void onNext(HttpResult httpResult) {
+                        if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+                            T.showShortToast(mContext, getString(R.string
+                                    .toast_verification_code_has_been_sent));
+                            TimeCount timeCount = new TimeCount(30000, 1000);
+                            timeCount.start();
+                            LogUtils.d("验证码发送成功");
+                        } else {
+                            throw new ApiException(httpResult.getDescritpion());
+                        }
+
                     }
                 });
     }

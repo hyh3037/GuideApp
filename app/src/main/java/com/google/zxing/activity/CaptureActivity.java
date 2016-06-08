@@ -44,11 +44,24 @@ import com.google.zxing.utils.BeepManager;
 import com.google.zxing.utils.CaptureActivityHandler;
 import com.google.zxing.utils.InactivityTimer;
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.abardeen.ABaDingMethod;
 import com.jyyl.jinyou.constans.It;
+import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.ui.activity.DeviceAddActivity;
+import com.jyyl.jinyou.ui.activity.DeviceInfoEditActivity;
+import com.jyyl.jinyou.utils.LogUtils;
+import com.jyyl.jinyou.utils.T;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * This activity opens the camera and does the actual scanning on a background
@@ -122,14 +135,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         toolbar.setTitle("二维码");
         toolbar.setTitleTextColor(Color.WHITE);
         mToolbarRightTv = (TextView) findViewById(R.id.toolbar_right_tv);
+//        mToolbarRightTv.setVisibility(View.VISIBLE);
         mToolbarRightTv.setText("手动添加");
         mToolbarRightTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext,DeviceAddActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt(It.BUNDLE_KEY_INTENT_CODE,0);
-                intent.putExtras(bundle);
                 startActivity(intent);
                 finish();
             }
@@ -225,14 +236,56 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         inactivityTimer.onActivity();
         beepManager.playBeepSoundAndVibrate();
 
-        Intent resultIntent = new Intent(mContext, DeviceAddActivity.class);
         bundle.putInt("width", mCropRect.width());
         bundle.putInt("height", mCropRect.height());
-        bundle.putInt(It.BUNDLE_KEY_INTENT_CODE,1);
-        bundle.putString(It.BUNDLE_KEY_SCAN_RESULT, rawResult.getText());
-        resultIntent.putExtras(bundle);
-        startActivity(resultIntent);
-        finish();
+
+        String result = rawResult.getText();
+        String bindingValidationCode = result.substring(result.indexOf("=")+1,result.length());
+        LogUtils.d(TAG, "绑定二维码"+bindingValidationCode);
+        addDeviceByScan(bindingValidationCode);
+    }
+
+    /**
+     * 扫描添加设备
+     * @param bindingValidationCode
+     *         扫描成功后的字符串后面的查询字段
+     */
+    private void addDeviceByScan(final String bindingValidationCode) {
+        Observable.create(new Observable.OnSubscribe<JSONObject>() {
+            @Override
+            public void call(Subscriber<? super JSONObject> subscriber) {
+                JSONObject jsonObject = ABaDingMethod.getInstance()
+                        .bindingDeviceByScan(bindingValidationCode);
+                subscriber.onNext(jsonObject);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
+                .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
+                .subscribe(new BaseSubscriber<JSONObject>(mContext) {
+                    @Override
+                    public void onNext(JSONObject jsonObject) {
+                        if (jsonObject != null) {
+
+                            Intent resultIntent = new Intent(mContext, DeviceInfoEditActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(It.START_INTENT_WITH,It.ACTIVITY_CAPTURE);
+                            try {
+                                String bindingId = (String) jsonObject.get("id");
+                                String deviceImei = (String) jsonObject.get("imei");
+                                bundle.putString("bindingId", bindingId);
+                                bundle.putString("deviceImei", deviceImei);
+                                resultIntent.putExtras(bundle);
+                                startActivity(resultIntent);
+                                T.showShortToast(mContext, "手表绑定成功");
+                                finish();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
