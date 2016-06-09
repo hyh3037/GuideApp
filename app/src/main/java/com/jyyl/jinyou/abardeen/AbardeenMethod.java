@@ -17,13 +17,13 @@ import org.json.JSONObject;
  * @Author: Shang
  * @Date: 2016/6/3  13:35
  */
-public class ABaDingMethod {
+public class AbardeenMethod {
 
-    private static String TAG = "ABaDingMethod";
-    private static volatile ABaDingMethod instance = null;
+    private static String TAG = "AbardeenMethod";
+    private static volatile AbardeenMethod instance = null;
     private Context appContext;
 
-    private ABaDingMethod() {
+    private AbardeenMethod() {
         appContext = MyApplication.getInstance().getApplicationContext();
     }
 
@@ -31,13 +31,13 @@ public class ABaDingMethod {
      * 获取单例
      * @return 实例
      */
-    public static ABaDingMethod getInstance() {
+    public static AbardeenMethod getInstance() {
 
         // if already inited, no need to get lock everytime
         if (instance == null) {
-            synchronized (ABaDingMethod.class) {
+            synchronized (AbardeenMethod.class) {
                 if (instance == null) {
-                    instance = new ABaDingMethod();
+                    instance = new AbardeenMethod();
                 }
             }
         }

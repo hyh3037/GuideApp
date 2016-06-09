@@ -44,7 +44,7 @@ import com.google.zxing.utils.BeepManager;
 import com.google.zxing.utils.CaptureActivityHandler;
 import com.google.zxing.utils.InactivityTimer;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abardeen.ABaDingMethod;
+import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.ui.activity.DeviceAddActivity;
@@ -254,7 +254,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         Observable.create(new Observable.OnSubscribe<JSONObject>() {
             @Override
             public void call(Subscriber<? super JSONObject> subscriber) {
-                JSONObject jsonObject = ABaDingMethod.getInstance()
+                JSONObject jsonObject = AbardeenMethod.getInstance()
                         .bindingDeviceByScan(bindingValidationCode);
                 subscriber.onNext(jsonObject);
                 subscriber.onCompleted();

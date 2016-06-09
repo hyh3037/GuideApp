@@ -4,6 +4,7 @@ package com.jyyl.jinyou.abardeen;
 import android.content.Context;
 import android.util.Log;
 
+import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.utils.LogUtils;
 
 import org.json.JSONException;
@@ -30,7 +31,6 @@ import javax.net.ssl.X509TrustManager;
 public class SocketOpenHelper {
     private static String TAG = "SocketOpenHelper";
     private static volatile SocketOpenHelper instance = null;
-    private Context mContext;
 
     private static final String HOST = "cwtcn-dl.6655.la";
     private static final int PORT = 9991;
@@ -46,7 +46,10 @@ public class SocketOpenHelper {
 
     public static final int CMD_LENGTH_BIT_LENGTH = 4;
 
+    private Context appContext;
+
     private SocketOpenHelper() {
+        appContext = MyApplication.getInstance().getApplicationContext();
     }
 
     /**
@@ -76,9 +79,8 @@ public class SocketOpenHelper {
 
     /**
      * 连接服务器（REQ）
-     *
-     * 连接成功返回值：
-     * {"cmd":"ARE","code":"0","id":"1463126051218",
+     * <p>
+     * 连接成功返回值： {"cmd":"ARE","code":"0","id":"1463126051218",
      * "params":{
      *      "sessionId":"1DefaultSession2",   //会话ID，服务端标识此次客户端和服务端的连接
      *      "userId":774672119496704,
@@ -91,39 +93,35 @@ public class SocketOpenHelper {
      *              {"fns":[    //亲情号码数组
      *                  {"mobile":"13533334444","name":"","no":1,"picId":0},
      *                  {"mobile":"13533335555","name":"","no":2,"picId":0},
-     *                  {"mobile":"13533335555","name":"","no":3,"picId":0},
+     *                  {"mobile":"13533335555","name":"", "no":3,"picId":0},
      *                  {"mobile":"13533335555","name":"","no":4,"picId":0},
-     *                  {"mobile":"13533335555","name":"","no":5,"picId":0},
-     *                  {"mobile":"13533335555","name":"","no":6,"picId":0},
+     *                  {"mobile":"13533335555","name":"", "no":5,"picId":0},
+     *                  {"mobile":"13533335555","name":"", "no":6,"picId":0},
      *                  {"mobile":"13533335555","name":"","no":7,"picId":0},
-     *                  {"mobile":"13533335555","name":"","no":8,"picId":0},
-     *                  {"mobile":"13533335555","name":"","no":9,"picId":0}],
+     *                  {"mobile":"13533335555","name":"", "no":8,"picId":0},
+     *                  {"mobile":"13533335555","name":"", "no":9,"picId":0}],
      *              "imei":"860860000030000",
      *              "lut":"20150710122140",     //最后修改时间的字符串
-     *              "userId":774672119496704,   //最后修改亲情号码的用户ID
+     *              "userId":774672119496704, //最后修改亲情号码的用户ID
      *              "userName":""},
      *          "functionStatus":{"all":true},  //功能状态对象
-     *          "imei":"860860000030000",   //手表的imei
+     *          "imei":"860860000030000", //手表的imei
      *          "mrStatus":{    //静音时段状态对象
      *              "imei":"860860000030000",
      *              "lut":"20160507165744",
-     *              "mrs":[],       //静音时段数组，每个元素都是静音时段对象
+     *              "mrs":[],//静音时段数组，每个元素都是静音时段对象
      *              "userId":123,   //最后修改静音时段的用户ID
-     *              "userName":""},
-     *          "online":false,     //是否在线
+     *              "userName":""}, "online":false, //是否在线
      *          "productId":"KT01W",    //手表型号
-     *          "sVer":"KT04_abr_60_hv01_sv90_cn_st20150424",   //手表的软件版本
-     *          "wifiMac":"200000000000",       //Wifi的mac地址，12位，无分隔符
-     *          "wmStatus":{"lut":"20150106151838"}     //工作模式状态对象
-     *          }
-     *        ]
-     *     }
-     *  }
+     *          "sVer":"KT04_abr_60_hv01_sv90_cn_st20150424", //手表的软件版本
+     *          "wifiMac":"200000000000", //Wifi的mac地址，12位，无分隔符
+     *          "wmStatus":{"lut":"20150106151838"}//工作模式状态对象 }
+     *          ] } }
      */
     public boolean connectServer(JSONObject jsonObject) {
         try {
 
-            socket = this.getSocket();
+            socket = getSocket();
             if (socket == null || socket.isClosed()) {
                 Log.d(TAG, "腕表服务器Socket连接失败");
                 return false;
@@ -133,29 +131,30 @@ public class SocketOpenHelper {
 
             this.loginJson = jsonObject;
             outputWrite(loginJson);
-            JSONObject resultJson = inputRead();
 
-            if (resultJson != null){
+            String datas = inputRead();
 
-                try {
-                    JSONObject params = resultJson.getJSONObject("params");
-                    Log.d(TAG, params.toString());
-                    String sessionId = (String) params.get("sessionId");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            if (datas != null) {
+
+                JSONObject resultJson = new JSONObject(datas);
+                String cmd = (String) resultJson.get("cmd");
+                String code = (String) resultJson.get("code");
+
+                if (code.equals("0")) {
+                    Log.d(TAG, "腕表服务器连接成功");
+                    if (hbThread == null) {
+                        hbThread = new HBThread(os, is);
+                    }
+                    Thread thread = new Thread(hbThread);
+                    thread.start();
+                    return true;
                 }
 
-                if (hbThread == null) {
-                    hbThread = new HBThread(os, is);
-                }
-                Thread thread = new Thread(hbThread);
-                thread.start();
-                return true;
-            }else {
+            } else {
                 Log.d(TAG, "腕表服务器登录失败");
             }
 
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         return false;
@@ -167,24 +166,57 @@ public class SocketOpenHelper {
     public JSONObject getResultDatas(JSONObject jsonObject) {
         try {
 
-            int i = 0;
             while (!socket.isConnected()) {
                 Log.d(TAG, "腕表服务器连接失败,重新连接");
                 this.connectServer(loginJson);
-                if (i == 5){
-                    Log.d(TAG, "腕表服务器连接失败,请稍后重试");
-                    return null;
-                }
-                i++;
+                Thread.sleep(60000);
             }
 
-            outputWrite(jsonObject);
-            JSONObject resultJson = inputRead();
-            if (resultJson != null) {
-                LogUtils.d(TAG, resultJson.toString());
-                return resultJson;
+            String datas;
+            do {
+                outputWrite(jsonObject);
+                datas = inputRead();
+            }while ("0".equals(datas));
+
+            if (datas != null) {
+                JSONObject resultJson = new JSONObject(datas);
+                String cmd = (String) resultJson.get("cmd");
+                String code = (String) resultJson.get("code");
+
+                if ("KTO".equals(cmd)) {
+                    Log.d(TAG, "异地登录");
+                    return null;
+                }
+                if ("0".equals(code)) {
+                    LogUtils.d(TAG, resultJson.toString());
+                    return resultJson;
+                } else {
+                    String message = (String) resultJson.get("message");
+                    Log.d(TAG, message);
+                }
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取返回数据
+     */
+    public String getResultDatas() {
+        try {
+
+            while (!socket.isConnected()) {
+                Log.d(TAG, "腕表服务器连接失败,重新连接");
+                this.connectServer(loginJson);
+                Thread.sleep(60000);
+            }
+
+            String datas = inputRead();
+            LogUtils.d(TAG, datas);
+            return datas;
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
@@ -196,7 +228,7 @@ public class SocketOpenHelper {
      *
      * @throws IOException
      */
-    private void outputWrite(JSONObject paramJson) throws IOException {
+    public void outputWrite(JSONObject paramJson) throws IOException {
 
         // 写入头部 CWT
         os.write(TITLE.getBytes());
@@ -229,7 +261,7 @@ public class SocketOpenHelper {
      * 读取服务器返回数据
      * @throws IOException
      */
-    private JSONObject inputRead() throws IOException {
+    public String inputRead() throws IOException {
         //协议头解析：cwt(3) + body长度(4)
         byte[] buf = new byte[7];
         int n = 0;
@@ -255,7 +287,7 @@ public class SocketOpenHelper {
             Log.d(TAG, "收到命令头：" + new String(buf, 0, 3));
             Log.d(TAG, "命令的长度：" + length);
             if (length == 0) {
-                return null;
+                return "0";
             }
             byte[] temp = new byte[length];
             n = 0;
@@ -272,37 +304,19 @@ public class SocketOpenHelper {
              * 然后剩下的数据就是附件数据了
              */
             int cmdBodyLength = getCount(temp[4], temp[5], temp[6], temp[7]);
+            Log.d(TAG, "命令体长度：" + cmdBodyLength);
 
-            String tempString = new String(temp, 0, temp.length);
-//            Log.d(TAG, "tempString：" + tempString);
-            if (tempString.contains("E105")){
-                Log.d(TAG, "无法找到用户");
+            //            String tempString = new String(temp, 0, temp.length);
+            //            Log.d(TAG, "tempString：" + tempString);
+
+            if (cmdBodyLength > 10000) { //未知错误,太长下面操作会OOM
                 return null;
             }
-
-            Log.d(TAG, "命令体长度：" + cmdBodyLength);
             byte[] cmdBody = new byte[cmdBodyLength];
             System.arraycopy(temp, JSON_FORMAT_B.length + 4, cmdBody, 0, cmdBodyLength);
             String datas = new String(cmdBody, 0, cmdBody.length);
             Log.d(TAG, "收到命令的文本：" + datas);
-
-            try {
-                JSONObject jsonObject = new JSONObject(datas);
-                String cmd = (String) jsonObject.get("cmd");
-                String code = (String) jsonObject.get("code");
-                if ("KTO".equals(cmd)){
-                    Log.d(TAG, "异地登录");
-                    return null;
-                }
-                if ("0".equals(code)){
-                    return jsonObject;
-                }else {
-                    String message = (String) jsonObject.get("message");
-                    Log.d(TAG, message);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            return datas;
         }
         return null;
     }
@@ -310,7 +324,7 @@ public class SocketOpenHelper {
     /**
      * =======================================公用方法START========================================
      */
-    private Socket getSocket() {
+    public static Socket getSocket() {
         try {
             //取得SSL的SSLContext实例
             SSLContext mSSLContext = SSLContext.getInstance("SSL");

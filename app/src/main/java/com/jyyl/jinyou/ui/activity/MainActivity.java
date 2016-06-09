@@ -41,7 +41,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abardeen.ABaDingMethod;
+import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.MemberInfo;
@@ -190,7 +190,7 @@ public class MainActivity extends BaseActivity
 
                 for ( int i = 0;!isConnect; i++){
                     if ( i < 5 ){
-                        isConnect = ABaDingMethod.getInstance().connectServer();
+                        isConnect = AbardeenMethod.getInstance().connectServer();
                     }else {
                         T.showShortToast(mContext, "腕表服务器登录失败，请稍后重试");
                         return;
@@ -390,7 +390,7 @@ public class MainActivity extends BaseActivity
             public void call(Subscriber<? super LinkedList<MemberInfo>> subscriber) {
                 for (MemberInfo memberInfo : mMemberList){
                     String deviceImei = memberInfo.getDeciveImei();
-                    JSONObject jsonObject = ABaDingMethod.getInstance()
+                    JSONObject jsonObject = AbardeenMethod.getInstance()
                             .getDeviceDatas(deviceImei);
                     try {
                         JSONObject lct = (JSONObject) jsonObject.get("lct");

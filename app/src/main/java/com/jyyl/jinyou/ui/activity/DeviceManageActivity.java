@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abardeen.ABaDingMethod;
+import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.entity.DeviceInfo;
 import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
@@ -229,7 +229,7 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                     Observable.create(new Observable.OnSubscribe<Boolean>() {
                         @Override
                         public void call(Subscriber<? super Boolean> subscriber) {
-                            boolean isRemove = ABaDingMethod.getInstance()
+                            boolean isRemove = AbardeenMethod.getInstance()
                                     .deleteDevice(bindingId);
                             subscriber.onNext(isRemove);
                             subscriber.onCompleted();

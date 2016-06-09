@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.abardeen.ABaDingMethod;
+import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.entity.DeviceResult;
 import com.jyyl.jinyou.http.ApiException;
@@ -121,7 +121,7 @@ public class DeviceInfoActivity extends BaseActivity {
                     @Override
                     public void call(Subscriber<? super Boolean> subscriber) {
                         String bindingId = deviceInfo.getDeviceBindId();
-                        boolean isRemove = ABaDingMethod.getInstance()
+                        boolean isRemove = AbardeenMethod.getInstance()
                                 .deleteDevice(bindingId);
                         subscriber.onNext(isRemove);
                         subscriber.onCompleted();
