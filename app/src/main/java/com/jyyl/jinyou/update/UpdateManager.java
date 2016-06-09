@@ -1,4 +1,4 @@
-package com.jyyl.jinyou.service.update;
+package com.jyyl.jinyou.update;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;

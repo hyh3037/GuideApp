@@ -71,7 +71,6 @@ public class SocketOpenHelper {
     }
 
     private Socket socket;
-    private HBThread hbThread;
     private OutputStream os;
     private InputStream is;
     private JSONObject loginJson;
@@ -140,16 +139,10 @@ public class SocketOpenHelper {
                 String cmd = (String) resultJson.get("cmd");
                 String code = (String) resultJson.get("code");
 
-                if (code.equals("0")) {
+                if ("ARE".equals(cmd) && "0".equals(code)) {
                     Log.d(TAG, "腕表服务器连接成功");
-                    if (hbThread == null) {
-                        hbThread = new HBThread(os, is);
-                    }
-                    Thread thread = new Thread(hbThread);
-                    thread.start();
                     return true;
                 }
-
             } else {
                 Log.d(TAG, "腕表服务器登录失败");
             }
@@ -324,12 +317,12 @@ public class SocketOpenHelper {
     /**
      * =======================================公用方法START========================================
      */
-    public static Socket getSocket() {
+    private Socket getSocket() {
         try {
             //取得SSL的SSLContext实例
             SSLContext mSSLContext = SSLContext.getInstance("SSL");
-            mSSLContext.init(null, new TrustManager[]{new MyX509TrustManager()}, new SecureRandom
-                    ());
+            mSSLContext.init(null, new TrustManager[]{new MyX509TrustManager()},
+                    new SecureRandom());
             SSLSocketFactory factory = mSSLContext.getSocketFactory();
             Socket socket = factory.createSocket(HOST, PORT);
             Log.d("Socket", socket.toString());
@@ -338,6 +331,10 @@ public class SocketOpenHelper {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Socket getConectSocket(){
+        return socket;
     }
 
     public static String nextCommandId() {

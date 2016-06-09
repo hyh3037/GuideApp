@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.constans.Sp;
-import com.jyyl.jinyou.service.update.UpdateManager;
+import com.jyyl.jinyou.update.UpdateManager;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.SPUtils;
 

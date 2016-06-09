@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
-import com.jyyl.jinyou.service.update.UpdateManager;
+import com.jyyl.jinyou.update.UpdateManager;
 import com.jyyl.jinyou.ui.activity.DeviceManageActivity;
 import com.jyyl.jinyou.ui.activity.LoginActivity;
 import com.jyyl.jinyou.ui.activity.MemberManageActivity;

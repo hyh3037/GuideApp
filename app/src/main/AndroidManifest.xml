@@ -101,6 +101,20 @@
             android:name="com.jyyl.jinyou.ui.activity.MainActivity"
             android:screenOrientation="portrait"/>
 
+        <service android:name=".abardeen.heartbeat.HeartService" />
+
+        <receiver
+            android:name=".abardeen.heartbeat.HeartReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.intasect.heart.intent.STARTPUSH" />
+                <action android:name="ccom.intasect.heart.intent.HEARTBEAT" />
+                <action android:name="com.intasect.heart.intent.STOPPUSH" />
+
+                <category android:name="com.intasect.push" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="com.jyyl.jinyou.ui.activity.DeviceManageActivity"
             android:launchMode="singleTask"
@@ -162,7 +176,7 @@
 
         <activity android:name="com.google.zxing.activity.CaptureActivity"/>
 
-        <service android:name="com.jyyl.jinyou.service.update.UpdateService"/>
+        <service android:name=".update.UpdateService"/>
 
         <receiver
             android:name="com.jyyl.jinyou.receive.AlarmReceiver">

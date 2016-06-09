@@ -42,6 +42,7 @@ import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.AbardeenMethod;
+import com.jyyl.jinyou.abardeen.heartbeat.HeartService;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.MemberInfo;
@@ -111,12 +112,12 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, HeartService.class));
         mContext = this;
         setContentView(R.layout.activity_main);
         setSwipeBackEnable(false);  //禁用SwipeBackLayout
 
         initBaiduMap();
-        connectABaDing();
     }
 
     @Override
@@ -177,28 +178,6 @@ public class MainActivity extends BaseActivity
                 setMusterVisibility(false);
                 break;
         }
-    }
-
-    /**
-     * 连接阿巴町腕表服务器
-     */
-    private void connectABaDing() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean isConnect = false;
-
-                for ( int i = 0;!isConnect; i++){
-                    if ( i < 5 ){
-                        isConnect = AbardeenMethod.getInstance().connectServer();
-                    }else {
-                        T.showShortToast(mContext, "腕表服务器登录失败，请稍后重试");
-                        return;
-                    }
-                }
-                LogUtils.d(TAG, "腕表服务器登录成功");
-            }
-        }).start();
     }
 
     /**
