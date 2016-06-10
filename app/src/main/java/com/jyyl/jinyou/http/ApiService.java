@@ -2,6 +2,7 @@ package com.jyyl.jinyou.http;
 
 
 import com.jyyl.jinyou.entity.DeviceResult;
+import com.jyyl.jinyou.entity.HeadImage;
 import com.jyyl.jinyou.entity.LoginResult;
 import com.jyyl.jinyou.entity.MemberInfoResult;
 import com.jyyl.jinyou.entity.TeamInfo;
@@ -33,12 +34,20 @@ public interface ApiService {
     @POST(Api.REGISTER_URL)
     Observable<HttpResult> registerAccount(@Body Map<String, String> params);
 
+    //重置密码
+    @POST(Api.RESET_URL)
+    Observable<HttpResult> resetAccount(@Body Map<String, String> params);
+
     //登录
     @GET(Api.LOGIN_URL + "/{loginTime}&{memberAccount}&{memberPassword}&{industry}")
     Observable<HttpResult<LoginResult>> loginAccount(@Path("loginTime") String loginTime,
                                                      @Path("memberAccount") String memberAccount,
                                                      @Path("memberPassword") String memberPassword,
                                                      @Path("industry") String industry);
+
+    //上传头像
+    @POST(Api.UPLOAD_IMAGE_URL)
+    Observable<HttpResult<HeadImage>> uploadeImage(@Body Map<String, String> params);
 
 
     //上传导游位置
@@ -47,11 +56,11 @@ public interface ApiService {
 
     //上传导游信息
     @POST(Api.UPLOAD_GUIDEINFO_URL)
-    Observable<HttpResult<String>> uploadGuideInfo(@Body Map<String, String> params);
+    Observable<HttpResult> uploadGuideInfo(@Body Map<String, String> params);
 
     //获取导游信息
     @POST(Api.GET_GUIDEINFO_URL)
-    Observable<HttpResult<String>> getGuideInfo(@Body Map<String, String> params);
+    Observable<HttpResult<LoginResult>> getGuideInfo(@Body Map<String, String> params);
 
 
     //获取导游设备信息
@@ -88,7 +97,7 @@ public interface ApiService {
     Observable<HttpResult> addMember(@Body Map<String, String> params);
 
     //获取游客信息
-    @POST(Api.TEAM_INFO_URL)
+    @POST(Api.MEMBER_INFO_URL)
     Observable<HttpResult<MemberInfoResult>> getMemberInfo(@Body Map<String, String> params);
 
 

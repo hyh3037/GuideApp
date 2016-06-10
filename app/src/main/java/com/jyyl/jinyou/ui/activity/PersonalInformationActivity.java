@@ -13,10 +13,14 @@ import android.widget.TextView;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
+import com.jyyl.jinyou.entity.HeadImage;
+import com.jyyl.jinyou.entity.LoginResult;
+import com.jyyl.jinyou.http.BaseSubscriber;
+import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.ui.dialog.SelectPhotoDialog;
-import com.jyyl.jinyou.utils.ImageUtils;
 import com.jyyl.jinyou.utils.FileUtils;
+import com.jyyl.jinyou.utils.ImageUtils;
 import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.QiNiuUploadUtils;
 import com.jyyl.jinyou.utils.SPUtils;
@@ -25,6 +29,7 @@ import com.jyyl.jinyou.utils.T;
 import com.jyyl.jinyou.widget.CircleImageView;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Fuction: 导游个人信息
@@ -38,6 +43,7 @@ public class PersonalInformationActivity extends BaseActivity
     private TextView mEditBtn;
     private Context mContext;
 
+    private QiNiuUploadUtils qiNiuUploadUtils;
     private CircleImageView mPhotoView;
 
     private SelectPhotoDialog dialog;
@@ -52,7 +58,15 @@ public class PersonalInformationActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_personal_information);
+        qiNiuUploadUtils = new QiNiuUploadUtils();
         initToolBar();
+        HttpMethods.getInstance().getGuideInfo()
+                .subscribe(new BaseSubscriber<List<LoginResult>>(mContext) {
+                    @Override
+                    public void onNext(List<LoginResult> loginResults) {
+
+                    }
+                });
         initUri();
     }
 
@@ -175,10 +189,29 @@ public class PersonalInformationActivity extends BaseActivity
                 mPhotoView.setImageBitmap(bit);*/
                 setPhotoView();
 
+                qiNiuUploadUtils.setCompleteListener(new QiNiuUploadUtils.QiniuCompleteListener() {
+                            @Override
+                            public void callbackImageUrl(String keyUrl) {
+                                //上传图片七牛地址到服务器
+                                String memberId = (String) SPUtils.get(mContext, Sp
+                                        .SP_KEY_USER_ID, "-1");
+                                HttpMethods.getInstance().uploadeImage(memberId, keyUrl, "1")
+                                        .subscribe(new BaseSubscriber<List<HeadImage>>
+                                                (mContext) {
+                                            @Override
+                                            public void onNext(List<HeadImage> headImages) {
+
+                                            }
+                                        });
+                            }
+                        });
+
                 //上传图片到七牛云
-                String key = "guide_"+ SPUtils.get(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT,null);
-                if (cropBitmap != null)
-                    QiNiuUploadUtils.getInstance().upload(cropBitmap,key);
+                String key = FileUtils.getUuidName();
+                if (cropBitmap != null) {
+                    qiNiuUploadUtils.upload(cropBitmap, key);
+                }
+
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,7 +227,7 @@ public class PersonalInformationActivity extends BaseActivity
             if (cropBitmap != null) {
                 String path = FileUtils.getFileByUri(this, cutUri).getAbsolutePath();
                 int degree = ImageUtils.getBitmapDegree(path);//检查是否有被旋转，并进行纠正
-                LogUtils.d("path:"+path+"\ndegree"+degree);
+                LogUtils.d("path:" + path + "\ndegree" + degree);
                 if (degree != 0) {
                     cropBitmap = ImageUtils.rotateBitmapByDegree(cropBitmap, degree);
                 }

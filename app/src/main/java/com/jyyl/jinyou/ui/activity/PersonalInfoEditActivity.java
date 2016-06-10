@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.http.BaseSubscriber;
+import com.jyyl.jinyou.http.HttpMethods;
+import com.jyyl.jinyou.http.HttpResult;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.T;
 
@@ -64,6 +67,13 @@ public class PersonalInfoEditActivity extends BaseActivity{
         super.onViewClick(v);
         switch (v.getId()) {
             case R.id.toolbar_right_tv:
+                HttpMethods.getInstance().uploadGuideInfo()
+                        .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                            @Override
+                            public void onNext(HttpResult httpResult) {
+
+                            }
+                        });
                 T.showShortToast(mContext, "保存成功");
                 finish();
                 break;

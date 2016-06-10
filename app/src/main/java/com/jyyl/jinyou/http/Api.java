@@ -7,26 +7,31 @@ package com.jyyl.jinyou.http;
  */
 public class Api {
 
-    public static final String BASE_URL = "http://1y5a133877.iask.in:19425/";
+    public static final String BASE_URL = "http://123.56.87.81:8080/";
 
     //七牛上传图片
-    public static final String QINIU_TOKEN_URL = "http://101.200.142.90:8080/opera/opera/uploadtoken";
+    public static final String QINIU_TOKEN_URL = "http://123.56.87.81:8080/tourism/uploadtoken";
 
     //注册
     public static final String REGISTER_URL = "tourism/register";
+    //重置密码
+    public static final String RESET_URL = "tourism/register/reset";
     //登录
     public static final String LOGIN_URL = "tourism/register";
     //验证码
     public static final String SEURITYCODE_URL = "tourism/messageauth";
 
+    //上传头像
+    public static final String UPLOAD_IMAGE_URL = "tourism/memberimg/updateimg";
+
 
     //上传导游位置
     public static final String UPLOAD_LOCATION_URL = "tourism/position/realtime/addposition";
 
-    //上传导游信息
-    public static final String UPLOAD_GUIDEINFO_URL = "tourism/guideinfo/addguideinfo";
+    //导游信息修改
+    public static final String UPLOAD_GUIDEINFO_URL = "tourism/memberinfo/updatememberinfo";
     //获取导游信息
-    public static final String GET_GUIDEINFO_URL = "tourism/guideinfo/getguideinfo";
+    public static final String GET_GUIDEINFO_URL = "tourism/memberinfo/getmemberinfo";
 
     //获取设备列表
     public static final String USER_DEVICES_URL = "tourism/equipment/serach";
@@ -50,7 +55,7 @@ public class Api {
     public static final String MEMBER_ADD_URL = "tourism/tourist/addtourist";
 
     //获取游客信息
-    public static final String MEMBER_INFO_URL = "tourism/tourist/addtourist";
+    public static final String MEMBER_INFO_URL = "tourism/tourist/gettourist";
 
     //版本更新
     public static final String UPDATE_URL = "tourism/version/appversion";

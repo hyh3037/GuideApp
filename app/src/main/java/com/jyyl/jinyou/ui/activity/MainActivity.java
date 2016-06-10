@@ -42,7 +42,6 @@ import com.baidu.mapapi.utils.DistanceUtil;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.AbardeenMethod;
-import com.jyyl.jinyou.abardeen.heartbeat.HeartService;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.MemberInfo;
@@ -60,6 +59,7 @@ import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.SPUtils;
 import com.jyyl.jinyou.utils.T;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,8 +82,8 @@ import rx.schedulers.Schedulers;
  */
 public class MainActivity extends BaseActivity
         implements MusterNowDialog.MusterNowListener, MusterTimeDialog.MusterTimeListener,
-                   MusterSingleDialog.MusterSingleListener,BaiduMap.OnMarkerClickListener,
-                   NavLeftFragment.NavCallback{
+                   MusterSingleDialog.MusterSingleListener, BaiduMap.OnMarkerClickListener,
+                   NavLeftFragment.NavCallback {
 
     private static String TAG = "MainActivity";
 
@@ -112,7 +112,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startService(new Intent(this, HeartService.class));
         mContext = this;
         setContentView(R.layout.activity_main);
         setSwipeBackEnable(false);  //禁用SwipeBackLayout
@@ -319,8 +318,9 @@ public class MainActivity extends BaseActivity
                 location = msg.getData().getParcelable("loc");
                 if (location != null) {
                     //上传导游位置
-                    HttpMethods.getInstance().uploadLocation(String.valueOf(location.getLongitude()),
-                            String.valueOf(location.getLatitude()),location.getTime())
+                    HttpMethods.getInstance().uploadLocation(String.valueOf(location.getLongitude
+                            ()),
+                            String.valueOf(location.getLatitude()), location.getTime())
                             .subscribe(new BaseSubscriber<List<String>>(mContext) {
                                 @Override
                                 public void onStart() {
@@ -335,7 +335,7 @@ public class MainActivity extends BaseActivity
                     addMarkers();
                 }
             } catch (Exception e) {
-                LogUtils.d(TAG,"定位失败");
+                LogUtils.d(TAG, "定位失败");
                 e.printStackTrace();
             }
         }
@@ -353,8 +353,8 @@ public class MainActivity extends BaseActivity
         // 在地图上添加Marker，并显示
         if (mMarkerSelf == null) {
             mMarkerSelf = (Marker) mBaiduMap.addOverlay(option);
-            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(point , 13));
-            refreshMembersLct();
+            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(point, 13));
+//            refreshMembersLct();
         } else {
             mMarkerSelf.setPosition(point);
         }
@@ -367,15 +367,16 @@ public class MainActivity extends BaseActivity
         Observable.create(new Observable.OnSubscribe<LinkedList<MemberInfo>>() {
             @Override
             public void call(Subscriber<? super LinkedList<MemberInfo>> subscriber) {
-                for (MemberInfo memberInfo : mMemberList){
+                for (MemberInfo memberInfo : mMemberList) {
                     String deviceImei = memberInfo.getDeciveImei();
-                    JSONObject jsonObject = AbardeenMethod.getInstance()
+                    JSONArray jsonArray = AbardeenMethod.getInstance()
                             .getDeviceDatas(deviceImei);
                     try {
+                        JSONObject jsonObject = (JSONObject) jsonArray.get(0);
                         JSONObject lct = (JSONObject) jsonObject.get("lct");
                         double lat = lct.getDouble("u");
                         double lng = lct.getDouble("o");
-                        memberInfo.setLatLng(new LatLng(lat,lng));
+                        memberInfo.setLatLng(new LatLng(lat, lng));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -402,7 +403,7 @@ public class MainActivity extends BaseActivity
         for (int i = 0; i < memberList.size(); i++) {
             MemberInfo memberInfo = memberList.get(i);
             LatLng point = memberInfo.getLatLng();
-            if (point != null){
+            if (point != null) {
                 // 构建MarkerOption，用于在地图上添加Marker
                 OverlayOptions option = new MarkerOptions().position(point).icon(markerBitmap);
                 // 在地图上添加Marker，并显示
@@ -459,7 +460,7 @@ public class MainActivity extends BaseActivity
         cropBitmap = ImageUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
         if (cropBitmap != null) {
             holder.mPhotoIv.setImageBitmap(cropBitmap);
-        }else {
+        } else {
             holder.mPhotoIv.setImageResource(R.drawable.default_photo);
         }
 
@@ -494,12 +495,12 @@ public class MainActivity extends BaseActivity
         //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
         mMapView.onPause();
         JPushInterface.onPause(this);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mDrawerLayout.closeDrawers();
-//            }
-//        }, 500);
+        //        new Handler().postDelayed(new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                mDrawerLayout.closeDrawers();
+        //            }
+        //        }, 500);
     }
 
     @Override
@@ -553,7 +554,9 @@ public class MainActivity extends BaseActivity
     }
 
 
-    /**=====================================Dialog响应================================*/
+    /**
+     * =====================================Dialog响应================================
+     */
     @Override
     public void sendSingleMsg(String msg) {
         T.showShortToast(this, "集合信息已发送");

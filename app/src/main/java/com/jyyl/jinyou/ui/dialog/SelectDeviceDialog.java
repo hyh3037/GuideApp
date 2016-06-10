@@ -76,7 +76,7 @@ public class SelectDeviceDialog extends DialogFragment {
 
     private void initData() {
 
-        HttpMethods.getInstance().getUserDevices()
+        HttpMethods.getInstance().getUserNotBoundDevices()
                 .subscribe(new BaseSubscriber<List<DeviceResult>>(this.getActivity()) {
                     @Override
                     public void onNext(List<DeviceResult> deviceResults) {

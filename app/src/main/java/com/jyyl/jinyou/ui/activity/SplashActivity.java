@@ -1,10 +1,12 @@
 package com.jyyl.jinyou.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.abardeen.heartbeat.HeartService;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.AppUtils;
@@ -62,6 +64,7 @@ public class SplashActivity extends BaseActivity {
                     return;
                 }
                 if (isLogin) {
+                    startService(new Intent(mContext, HeartService.class));
                     openActivity(mContext, MainActivity.class);
                 } else {
                     openActivity(mContext, LoginActivity.class);

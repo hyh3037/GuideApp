@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.abardeen.heartbeat.HeartService;
 import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.LoginResult;
@@ -163,7 +164,7 @@ public class LoginActivity extends BaseActivity {
                             SPUtils.put(mContext, Sp.SP_KEY_ABARDEEN_PASSWORD, abdPassword);
                             SPUtils.put(mContext, Sp.SP_KEY_MEMBER_TOKEN, token);
                             SPUtils.put(mContext, Sp.SP_KEY_LOGIN_STATE, true);
-
+                            startService(new Intent(mContext, HeartService.class));
                             openActivity(mContext, MainActivity.class);
                             finish();
                         }

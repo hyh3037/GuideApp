@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.entity.MemberInfo;
+import com.jyyl.jinyou.entity.MemberInfoResult;
 import com.jyyl.jinyou.entity.TeamInfo;
 import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
@@ -204,7 +205,16 @@ public class MemberManageActivity extends BaseActivity
      * 获取游客信息
      */
     private void initDatas() {
+        HttpMethods.getInstance().getMemberInfo(mTeamId)
+                .subscribe(new BaseSubscriber<List<MemberInfoResult>>(mContext) {
+                    @Override
+                    public void onNext(List<MemberInfoResult> memberInfoResults) {
+                        for (MemberInfoResult memberInfo : memberInfoResults){
 
+                            LogUtils.d(memberInfo.toString());
+                        }
+                    }
+                });
         MemberInfo msg = null;
         for (int i = 1; i < 10; i++) {
             msg = new MemberInfo("游客" + i);

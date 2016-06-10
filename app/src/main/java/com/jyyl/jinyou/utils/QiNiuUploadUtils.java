@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.jyyl.jinyou.http.Api;
-import com.jyyl.jinyou.http.HttpMethods;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -25,28 +24,10 @@ import java.net.URL;
 public class QiNiuUploadUtils {
 
     private String TAG = "QiNiuUploadUtils";
-    private static volatile QiNiuUploadUtils instance = null;
     private UploadManager uploadManager;
 
-    private QiNiuUploadUtils() {
+    public QiNiuUploadUtils() {
         uploadManager = new UploadManager();
-    }
-
-    /**
-     * 获取单例
-     * @return 实例
-     */
-    public static QiNiuUploadUtils getInstance() {
-
-        // if already inited, no need to get lock everytime
-        if (instance == null) {
-            synchronized (HttpMethods.class) {
-                if (instance == null) {
-                    instance = new QiNiuUploadUtils();
-                }
-            }
-        }
-        return instance;
     }
 
     /**
@@ -84,7 +65,8 @@ public class QiNiuUploadUtils {
                 Log.e(TAG, "上传是否成功:" + info.isOK());
                 if (info.isOK()) {
                     Log.e(TAG, key);
-                    String keyUrl = "http://7xsw56.com2.z0.glb.qiniucdn.com/" + key;
+                    String keyUrl = "http://7xv8gk.com2.z0.glb.qiniucdn.com/" + key;
+                    Log.e(TAG, keyUrl);
                     mCompleteListener.callbackImageUrl(keyUrl);
                 }
                 if (response != null) {

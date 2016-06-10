@@ -290,7 +290,7 @@ public class AbardeenMethod {
      * "t":"1", "ts":"150618143820", "u":22.547382600000000, "wt":0}, "p":58, "ring_mode":"0",
      * "sms_location":"0", "st":"1506100001390581291111001", "ts":"1463627533168"}]}
      */
-    public JSONObject getDeviceDatas(String imei) {
+    public JSONArray getDeviceDatas(String imei) {
 
         JSONObject params = new JSONObject();
         JSONObject jsonObject = new JSONObject();
@@ -304,9 +304,9 @@ public class AbardeenMethod {
 
             JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
             if (resultJson != null) {
-                JSONObject paramsJson = resultJson.getJSONObject("params");
-                Log.d(TAG, paramsJson.toString());
-                return paramsJson;
+                JSONArray paramsArray = resultJson.getJSONArray("params");
+                Log.d(TAG, paramsArray.toString());
+                return paramsArray;
             }
         } catch (JSONException e) {
             e.printStackTrace();

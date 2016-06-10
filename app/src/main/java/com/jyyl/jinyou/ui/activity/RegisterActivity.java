@@ -128,7 +128,7 @@ public class RegisterActivity extends BaseActivity {
      * 获取验证码
      */
     private void getSecurityCode() {
-        HttpMethods.getInstance().getSecurityCode(account)
+        HttpMethods.getInstance().getSecurityCode(account, "0")
                 .subscribe(new BaseSubscriber<HttpResult>(mContext) {
                     @Override
                     public void onStart() {

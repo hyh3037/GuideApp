@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
@@ -43,7 +44,7 @@ public class ResetPwdActivity extends BaseActivity {
     private EditText mRePwdEt;
     private Button mResetPwdBtn;
 
-    private String account, securityCode, newPwd, rePwd;
+    private String account, securityCode, newPassword, reNewPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class ResetPwdActivity extends BaseActivity {
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //        toolbar.setBackgroundColor(Color.TRANSPARENT);
-        toolbar.setTitle("手机验证");
+        toolbar.setTitle("重置密码");
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -106,17 +107,17 @@ public class ResetPwdActivity extends BaseActivity {
             case R.id.btn_reset_pwd:
                 account = mAccountEt.getText().toString().trim();
                 securityCode = mSecurityCodeEt.getText().toString().trim();
-                newPwd = mNewPwdEt.getText().toString().trim();
-                rePwd = mRePwdEt.getText().toString().trim();
+                newPassword = mNewPwdEt.getText().toString().trim();
+                reNewPassword = mRePwdEt.getText().toString().trim();
                 if (TextUtils.isEmpty(account) || TextUtils.isEmpty(securityCode)
-                        || TextUtils.isEmpty(newPwd)
-                        || TextUtils.isEmpty(rePwd)) {
+                        || TextUtils.isEmpty(newPassword)
+                        || TextUtils.isEmpty(reNewPassword)) {
                     T.showShortToast(this, getString(R.string.toast_submit_information_not_null));
-                } else if (!RegexUtils.checkPassword(newPwd)) {
+                } else if (!RegexUtils.checkPassword(newPassword)) {
                     T.showShortToast(this, getString(R.string.toast_password_format_error));
-                } else if (!newPwd.equals(rePwd)) {
+                } else if (!newPassword.equals(reNewPassword)) {
                     T.showShortToast(this, getString(R.string.toast_two_password_not_consistent));
-                } else if (newPwd.equals(rePwd)) {
+                } else if (newPassword.equals(reNewPassword)) {
                     resetPassword();
                 }
                 break;
@@ -129,13 +130,31 @@ public class ResetPwdActivity extends BaseActivity {
      * 重置密码
      */
     private void resetPassword() {
+        HttpMethods.getInstance().resetAccount(account, newPassword, securityCode)
+                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                    @Override
+                    public void onNext(HttpResult httpResult) {
+                        if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(It.START_INTENT_WITH, It.ACTIVITY_REGISTER);
+                            bundle.putString(It.BUNDLE_KEY_LOGIN_ACCOUNT, account);
+                            bundle.putString(It.BUNDLE_KEY_LOGIN_PASSWOED, newPassword);
+                            openActivity(mContext, LoginActivity.class, bundle);
+                            T.showShortToast(mContext, getString(R.string.toast_reset_success));
+                            finish();
+                        } else {
+                            throw new ApiException(httpResult.getDescritpion());
+                        }
+                    }
+                });
     }
 
     /**
      * 获取验证码
      */
     private void getSecurityCode() {
-        HttpMethods.getInstance().getSecurityCode(account)
+        HttpMethods.getInstance().getSecurityCode(account, "1")
                 .subscribe(new BaseSubscriber<HttpResult>(mContext) {
                     @Override
                     public void onStart() {
