@@ -4,8 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,10 +37,10 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.bumptech.glide.Glide;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.AbardeenMethod;
-import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.MemberInfo;
 import com.jyyl.jinyou.entity.MemberInfoResult;
@@ -58,17 +56,16 @@ import com.jyyl.jinyou.ui.dialog.MusterNowDialog;
 import com.jyyl.jinyou.ui.dialog.MusterSingleDialog;
 import com.jyyl.jinyou.ui.dialog.MusterTimeDialog;
 import com.jyyl.jinyou.ui.fragment.NavLeftFragment;
-import com.jyyl.jinyou.utils.FileUtils;
-import com.jyyl.jinyou.utils.ImageUtils;
 import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.SPUtils;
 import com.jyyl.jinyou.utils.T;
+import com.jyyl.jinyou.voice.VoiceActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -110,7 +107,8 @@ public class MainActivity extends BaseActivity
     private Marker mMarkerSelf = null;  //导游位置marker
     private BitmapDescriptor bitmap; //导游位置marker图标
     private BitmapDescriptor markerBitmap;
-    private LinkedList<MemberInfo> mMemberList = new LinkedList<>();//游客信息集合
+    private ArrayList<MemberInfo> mMemberList = new ArrayList<>();//游客信息集合
+    private ArrayList<String> imeiList = new ArrayList<>();
     private LinearLayout infowindow;
     private InfoWindow mInfoWindow;
 
@@ -157,11 +155,18 @@ public class MainActivity extends BaseActivity
                 locService.request();//重新请求定位
                 break;
             case R.id.fab_remind:
-                if (!isMusterShow) {
-                    setMusterVisibility(true);
-                } else {
-                    setMusterVisibility(false);
+                imeiList.clear();
+                for (MemberInfo memberInfo : mMemberList) {
+                    imeiList.add(memberInfo.getMemberInfoResult().getDeviceId());
                 }
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("imeiList", imeiList);
+                openActivity(mContext, VoiceActivity.class, bundle);
+                //                if (!isMusterShow) {
+                //                    setMusterVisibility(true);
+                //                } else {
+                //                    setMusterVisibility(false);
+                //                }
                 break;
             case R.id.btn_now_muster:
                 MusterNowDialog musterNowDialog = new MusterNowDialog();
@@ -404,15 +409,15 @@ public class MainActivity extends BaseActivity
      * 获取启用的腕表当前位置
      */
     private void refreshMembersLct() {
-        Observable.create(new Observable.OnSubscribe<LinkedList<MemberInfo>>() {
+        Observable.create(new Observable.OnSubscribe<ArrayList<MemberInfo>>() {
             @Override
-            public void call(Subscriber<? super LinkedList<MemberInfo>> subscriber) {
+            public void call(Subscriber<? super ArrayList<MemberInfo>> subscriber) {
                 for (MemberInfo memberInfo : mMemberList) {
                     String deviceImei = memberInfo.getMemberInfoResult().getDeviceId();
                     JSONArray jsonArray = AbardeenMethod.getInstance()
                             .getDeviceDatas(deviceImei);
                     try {
-                        if (jsonArray.length() > 0){
+                        if (jsonArray.length() > 0) {
                             JSONObject jsonObject = (JSONObject) jsonArray.get(0);
                             JSONObject lct = (JSONObject) jsonObject.get("lct");
                             double lat = lct.getDouble("u");
@@ -429,9 +434,9 @@ public class MainActivity extends BaseActivity
         })
                 .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
-                .subscribe(new BaseSubscriber<LinkedList<MemberInfo>>() {
+                .subscribe(new BaseSubscriber<ArrayList<MemberInfo>>() {
                     @Override
-                    public void onNext(LinkedList<MemberInfo> memberInfos) {
+                    public void onNext(ArrayList<MemberInfo> memberInfos) {
                         addMarkerMember(memberInfos);
                     }
                 });
@@ -440,7 +445,7 @@ public class MainActivity extends BaseActivity
     /**
      * 添加游客marker
      */
-    private void addMarkerMember(LinkedList<MemberInfo> memberList) {
+    private void addMarkerMember(ArrayList<MemberInfo> memberList) {
         LogUtils.d(TAG, "添加游客的marker");
         for (int i = 0; i < memberList.size(); i++) {
             MemberInfo memberInfo = memberList.get(i);
@@ -477,7 +482,7 @@ public class MainActivity extends BaseActivity
     /**
      * 创建 弹出窗口
      */
-    private void createInfoWindow(LinearLayout infowindow, MemberInfo memberInfo) {
+    private void createInfoWindow(LinearLayout infowindow, final MemberInfo memberInfo) {
 
         InfoWindowHolder holder = null;
         if (infowindow.getTag() == null) {
@@ -491,28 +496,22 @@ public class MainActivity extends BaseActivity
 
         holder = (InfoWindowHolder) infowindow.getTag();
 
-        Bitmap cropBitmap = null;
-        Uri cutUri = null;
-        try {
-            cutUri = FileUtils.getUriByFileDirAndFileName(BaseConstans.SystemPicture
-                    .SAVE_DIRECTORY, BaseConstans.SystemPicture.SAVE_CUT_PIC_NAME);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cropBitmap = ImageUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
-        if (cropBitmap != null) {
-            holder.mPhotoIv.setImageBitmap(cropBitmap);
-        } else {
-            holder.mPhotoIv.setImageResource(R.drawable.default_photo);
-        }
+        Glide.with(mContext).load(memberInfo.getMemberInfoResult().getHeadAddress())
+                .error(R.drawable.default_photo)
+                .into(holder.mPhotoIv);
 
         holder.mNameTv.setText(memberInfo.getMemberInfoResult().getTouristName());
 
         holder.mNoticeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MusterSingleDialog musterSingleDialog = new MusterSingleDialog();
-                musterSingleDialog.show(getFragmentManager(), "MusterSingle");
+                //                MusterSingleDialog musterSingleDialog = new MusterSingleDialog();
+                //                musterSingleDialog.show(getFragmentManager(), "MusterSingle");
+                imeiList.clear();
+                imeiList.add(memberInfo.getMemberInfoResult().getDeviceId());
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("imeiList", imeiList);
+                openActivity(mContext, VoiceActivity.class, bundle);
                 //隐藏InfoWindow
                 mBaiduMap.hideInfoWindow();
             }

@@ -31,6 +31,8 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
@@ -101,17 +103,22 @@
             android:name="com.jyyl.jinyou.ui.activity.MainActivity"
             android:screenOrientation="portrait"/>
 
-        <service android:name=".abardeen.heartbeat.HeartService" />
+        <activity
+            android:name=".voice.VoiceActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
+
+        <service android:name=".abardeen.heartbeat.HeartService"/>
 
         <receiver
             android:name=".abardeen.heartbeat.HeartReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
-                <action android:name="com.intasect.heart.intent.STARTPUSH" />
-                <action android:name="ccom.intasect.heart.intent.HEARTBEAT" />
-                <action android:name="com.intasect.heart.intent.STOPPUSH" />
+                <action android:name="com.intasect.heart.intent.STARTPUSH"/>
+                <action android:name="ccom.intasect.heart.intent.HEARTBEAT"/>
+                <action android:name="com.intasect.heart.intent.STOPPUSH"/>
 
-                <category android:name="com.intasect.push" />
+                <category android:name="com.intasect.push"/>
             </intent-filter>
         </receiver>
 

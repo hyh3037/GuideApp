@@ -129,7 +129,7 @@ public class SocketOpenHelper {
             is = socket.getInputStream();
 
             this.loginJson = jsonObject;
-            outputWrite(loginJson);
+            outputWrite(loginJson, null);
 
             String datas = inputRead();
 
@@ -167,7 +167,7 @@ public class SocketOpenHelper {
 
             String datas;
             do {
-                outputWrite(jsonObject);
+                outputWrite(jsonObject, null);
                 datas = inputRead();
             }while ("0".equals(datas));
 
@@ -220,12 +220,12 @@ public class SocketOpenHelper {
     }
 
     /**
-     * 写入数据
-     * @param paramJson
      *
+     * @param paramJson 命令体
+     * @param annex 附件
      * @throws IOException
      */
-    public void outputWrite(JSONObject paramJson) throws IOException {
+    public void outputWrite(JSONObject paramJson, byte[] annex) throws IOException {
 
         // 写入头部 CWT
         os.write(TITLE.getBytes());
@@ -251,6 +251,12 @@ public class SocketOpenHelper {
 
         // 写入命令体
         os.write(content);
+
+        //写入附件
+        if (annex != null){
+            os.write(annex);
+        }
+
         os.flush();
     }
 

@@ -12,6 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  * @Fuction: 腕表接口相关调用方法
  * @Author: Shang
@@ -324,5 +327,115 @@ public class AbardeenMethod {
         return null;
     }
 
+
+
+    /**
+     * 请求传输数据
+     *
+     * 参数:{"cmd":"RAU","id":"1312","params":{
+     *      "dataId":"1",
+     *      "targets":["T860860000030000","M19124662399549440"],
+     *      "length":2048,
+     *      "parts":2,
+     *      "playLength":2,
+     *      "type":"DF"}}
+     * @return
+     *
+     * {"cmd":"ARA","code":"0","id":"12",
+     *      "params":{"dataId":"2","offlines":["T860860000030000"]}}
+     *
+     * {"cmd":"ARA","code":"E500","id":"18","message":"服务器内部错误!"}
+     */
+    public JSONObject requestTransferVoice(String dataId, ArrayList<String> targets, int length,
+                                           int parts, int playLength, String type) {
+
+        JSONObject params = new JSONObject();
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            params.put("dataId", dataId);
+            params.put("targets", targets);
+            params.put("length", length);
+            params.put("parts", parts);
+            params.put("playLength", playLength);
+            params.put("type", type);
+
+            jsonObject.put("cmd", "RAU");
+            jsonObject.put("id", SocketOpenHelper.nextCommandId());
+            jsonObject.put("params", params);
+
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            return resultJson;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 客户端传输语音(SAU)
+     * {"cmd":"SAU","params":{"dataId":"264216204515102720","part":0},
+     *              "attachments":[{"from":0,"to":8924}]}
+     * @return
+     */
+    public void startTransferVoice(String dataId, byte[] annex) {
+
+        JSONObject params = new JSONObject();
+        JSONObject attachment = new JSONObject();
+        JSONArray  attachments = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            params.put("dataId", dataId);
+            params.put("part", 0);
+
+            attachment.put("from", 0);
+            attachment.put("from", annex.length);
+
+            attachments.put(attachment);
+
+            jsonObject.put("cmd", "SAU");
+            jsonObject.put("id", SocketOpenHelper.nextCommandId());
+            jsonObject.put("params", params);
+            jsonObject.put("attachments", attachments);
+
+            SocketOpenHelper.getInstance().outputWrite(jsonObject, annex);
+
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 客户端结束传输语音(SAE)
+     *
+     * {"cmd":"SAE","id":"11","params":{"dataId":"1"}}
+     * @return
+     *
+     * {"cmd":"ASA","code":"0","id":"11","params":{"dataId":"1"}}
+     * {"cmd":"ASA","code":"0","id":"11","params":{"dataId":"1"},"missing":[2,4,7]}
+     */
+    public boolean endTransferVoice(String dataId) {
+
+        JSONObject params = new JSONObject();
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            params.put("dataId", dataId);
+
+            jsonObject.put("cmd", "SAE");
+            jsonObject.put("id", SocketOpenHelper.nextCommandId());
+            jsonObject.put("params", params);
+
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            if ("0".equals(resultJson.get("code"))){
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

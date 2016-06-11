@@ -7,9 +7,12 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 public class FileUtils {
@@ -94,7 +97,7 @@ public class FileUtils {
                 if (index == 0) {
                 } else {
                     Uri u = Uri.parse("content://media/external/images/media/" + index);
-                    System.out.println("temp uri is :" + u);
+                    Log.e("FileUtils","temp uri is :" + u);
                 }
             }
             if (path != null) {
@@ -133,5 +136,41 @@ public class FileUtils {
             file.createNewFile();    //如果不存在则先创建文件
         }
         return file;
+    }
+
+    /**
+     * 把一个文件转化为字节
+     * @param file
+     * @return   byte[]
+     * @throws Exception
+     */
+    public static byte[] getByte(File file) throws Exception
+    {
+        byte[] bytes = null;
+        if(file!=null)
+        {
+            InputStream is = new FileInputStream(file);
+            int length = (int) file.length();
+            if(length>Integer.MAX_VALUE)   //当文件的长度超过了int的最大值
+            {
+                Log.e("FileUtils","this file is max ");
+                return null;
+            }
+            bytes = new byte[length];
+            int offset = 0;
+            int numRead = 0;
+            while(offset<bytes.length&&(numRead=is.read(bytes,offset,bytes.length-offset))>=0)
+            {
+                offset+=numRead;
+            }
+            //如果得到的字节长度和file实际的长度不一致就可能出错了
+            if(offset<bytes.length)
+            {
+                Log.e("FileUtils","file length is error ");
+                return null;
+            }
+            is.close();
+        }
+        return bytes;
     }
 }
