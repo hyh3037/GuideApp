@@ -7,12 +7,12 @@ package com.jyyl.jinyou.entity;
  */
 public class DeviceInfo {
     private int number;
-    private DeviceResult deviceResult;
+    private DeviceInfoResult mDeviceInfoResult;
     private boolean isCheck;
 
-    public DeviceInfo(int number, DeviceResult deviceResult) {
+    public DeviceInfo(int number, DeviceInfoResult deviceInfoResult) {
         this.number = number;
-        this.deviceResult = deviceResult;
+        this.mDeviceInfoResult = deviceInfoResult;
     }
 
     public int getNumber() {
@@ -23,12 +23,12 @@ public class DeviceInfo {
         this.number = number;
     }
 
-    public DeviceResult getDeviceResult() {
-        return deviceResult;
+    public DeviceInfoResult getDeviceInfoResult() {
+        return mDeviceInfoResult;
     }
 
-    public void setDeviceResult(DeviceResult deviceResult) {
-        this.deviceResult = deviceResult;
+    public void setDeviceInfoResult(DeviceInfoResult deviceInfoResult) {
+        this.mDeviceInfoResult = deviceInfoResult;
     }
 
     public boolean isCheck() {

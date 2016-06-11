@@ -1,11 +1,11 @@
 package com.jyyl.jinyou.entity;
 
 /**
- * @Fuction:
+ * @Fuction: 服务器返回的导游信息
  * @Author: Shang
  * @Date: 2016/5/31  11:27
  */
-public class LoginResult {
+public class GuideInfoResult {
 
 
     /**

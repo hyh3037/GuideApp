@@ -3,8 +3,6 @@ package com.jyyl.jinyou.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -13,18 +11,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
-import com.jyyl.jinyou.update.UpdateManager;
+import com.jyyl.jinyou.entity.GuideInfoResult;
 import com.jyyl.jinyou.ui.activity.DeviceManageActivity;
 import com.jyyl.jinyou.ui.activity.LoginActivity;
 import com.jyyl.jinyou.ui.activity.MemberManageActivity;
 import com.jyyl.jinyou.ui.activity.NoticesActivity;
 import com.jyyl.jinyou.ui.activity.PersonalInformationActivity;
 import com.jyyl.jinyou.ui.base.BaseFragment;
-import com.jyyl.jinyou.utils.FileUtils;
-import com.jyyl.jinyou.utils.ImageUtils;
+import com.jyyl.jinyou.update.UpdateManager;
 import com.jyyl.jinyou.utils.SPUtils;
 
 /**
@@ -37,6 +35,7 @@ public class NavLeftFragment extends BaseFragment implements View.OnClickListene
     private Context mContext;
 
     private ImageView photoView;
+    private TextView guideName;
 
     private NavCallback mNavCallback;
 
@@ -62,12 +61,22 @@ public class NavLeftFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        setPhotoView();
+        String guideInfoString = (String) SPUtils.get(mContext, Sp.SP_KEY_USER_OBJECT, "-1");
+        if (!"-1".equals(guideInfoString)){
+            GuideInfoResult guideInfoResult = new Gson()
+                    .fromJson(guideInfoString, GuideInfoResult.class);
+
+            Glide.with(this).load(guideInfoResult.getHeadAddrdss())
+                    .error(R.drawable.default_photo)
+                    .into(photoView);
+            guideName.setText(guideInfoResult.getMemberName());
+        }
     }
 
     //初始化控件
     private void initView() {
         photoView = (ImageView) view.findViewById(R.id.iv_nav_photoview);
+        guideName = (TextView) view.findViewById(R.id.tv_guide_name);
 
         ImageView noticeIv = (ImageView) view.findViewById(R.id.iv_nav_notice);
         TextView deviceTv = (TextView) view.findViewById(R.id.tv_nav_device);
@@ -131,26 +140,5 @@ public class NavLeftFragment extends BaseFragment implements View.OnClickListene
 
     public interface NavCallback{
         void closeLeftMenu();
-    }
-
-    /**
-     * 通过URI设置头像
-     */
-    private void setPhotoView() {
-        try {
-            Bitmap cropBitmap = null;
-            Uri cutUri = FileUtils.getUriByFileDirAndFileName(BaseConstans.SystemPicture
-                    .SAVE_DIRECTORY, BaseConstans.SystemPicture.SAVE_CUT_PIC_NAME);
-
-            cropBitmap = ImageUtils.getBitmapFromUri(cutUri, mContext); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
-
-            if (cropBitmap != null) {
-                photoView.setImageBitmap(cropBitmap);
-            }else {
-                photoView.setImageResource(R.mipmap.ic_launcher);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

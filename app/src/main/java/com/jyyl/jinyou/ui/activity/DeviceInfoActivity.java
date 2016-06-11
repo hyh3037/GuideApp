@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.constans.It;
-import com.jyyl.jinyou.entity.DeviceResult;
+import com.jyyl.jinyou.entity.DeviceInfoResult;
 import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
@@ -46,7 +46,7 @@ public class DeviceInfoActivity extends BaseActivity {
     private TextView mDeviceUseState;
     private Button mDeleteButton;
 
-    private DeviceResult deviceInfo;
+    private DeviceInfoResult deviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,7 @@ public class DeviceInfoActivity extends BaseActivity {
         mDeleteButton.setOnClickListener(this);
 
         Intent intent = getIntent();
-        deviceInfo = (DeviceResult) intent.getSerializableExtra("deviceInfo");
+        deviceInfo = (DeviceInfoResult) intent.getSerializableExtra("deviceInfo");
 
         mDeviceName.setText(getString(R.string.device_info_name,deviceInfo.getDeviceName()));
         mDeviceImei.setText(getString(R.string.device_info_imei,deviceInfo.getDeviceIMEI()));
@@ -129,7 +129,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 })
                         .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
                         .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
-                        .subscribe(new BaseSubscriber<Boolean>(mContext) {
+                        .subscribe(new BaseSubscriber<Boolean>() {
                             @Override
                             public void onNext(Boolean b) {
                                 if (b){
@@ -149,7 +149,7 @@ public class DeviceInfoActivity extends BaseActivity {
     private void deleteDevice() {
         String imei = deviceInfo.getDeviceIMEI();
         HttpMethods.getInstance().deleteDevice(imei)
-                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>() {
 
                     @Override
                     public void onNext(HttpResult httpResult) {

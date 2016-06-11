@@ -262,7 +262,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         })
                 .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
-                .subscribe(new BaseSubscriber<JSONObject>(mContext) {
+                .subscribe(new BaseSubscriber<JSONObject>() {
                     @Override
                     public void onNext(JSONObject jsonObject) {
                         if (jsonObject != null) {

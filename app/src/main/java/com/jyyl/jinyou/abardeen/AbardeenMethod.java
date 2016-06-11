@@ -156,12 +156,21 @@ public class AbardeenMethod {
 
 
     /**
-     * 设置SOS号码（亲情号码） 参数： {"cmd":"S_FN","id":"1","params":{"imei":"860860000030000",
-     * "fns":[{"no":1,"mobile":"13533334444","familyMobile":"123"},{"no":7,
-     * "mobile":"13533335555","familyMobile":"123"}]}}
-     * @return {"cmd":"R_S_FN","code":"0","id":"1","params":{"lut":"20160518134020"}}
+     * 设置SOS号码（亲情号码 KT04）
+     * 参数： {"cmd":"S_FN_EX","id":"1","params":
+     *      {"imei":"867327020000856",
+     *      "fns":[
+     *          {"familyMobile":"","mobile":"112233","name":"GMA","no":1,"picId":5},
+     *          {"familyMobile":"","mobile":"15898127566","name":"爸爸","no":2,"picId":0},
+     *          {"familyMobile":"","mobile":"25555","name":"QWW","no":3,"picId":8},
+     *          {"familyMobile":"","mobile":"1555","name":"QWWr","no":4,"picId":8},
+     *          {"familyMobile":"","mobile":"122233","name":"GFS","no":5,"picId":4},
+     *          {"familyMobile":"","mobile":"15840523536","name":"爷爷","no":6,"picId":2},
+     *          {"familyMobile":"","mobile":"13700086848","name":"妈妈","no":7,"picId":1}]}}
      * <p/>
-     * lut: 亲情号码最后更新时间
+     *
+     * 成功:
+     {"cmd":"R_S_FN_EX","code":"0","id":"1","params":"20160607092431"}
      */
     public JSONObject setSosNumber(String imei, String mobile) {
 
@@ -192,12 +201,13 @@ public class AbardeenMethod {
             params.put("imei", imei);
             params.put("fns", fns);
 
-            jsonObject.put("cmd", "S_FN");
+            jsonObject.put("cmd", "S_FN_EX");
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
             JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
             LogUtils.d(TAG, resultJson.toString());
+
             return resultJson;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -313,4 +323,6 @@ public class AbardeenMethod {
         }
         return null;
     }
+
+
 }

@@ -13,7 +13,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.entity.MemberInfo;
+import com.jyyl.jinyou.entity.MemberInfoResult;
 import com.jyyl.jinyou.ui.adapter.SelectMemvberAdapter;
 
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ import java.util.List;
 public class MusterNowDialog extends DialogFragment {
     private TextView mSelectMemberTv;
     private GridView mGridView;
-    private List<MemberInfo> tvMemberList = new ArrayList<>();
-    private List<MemberInfo> tvSelectedList = new ArrayList<>();
+    private List<MemberInfoResult> mTvMemberInfoResultList = new ArrayList<>();
+    private List<MemberInfoResult> tvSelectedList = new ArrayList<>();
     private EditText mMusterMsg;
 
     private boolean flag = false;
@@ -61,7 +61,7 @@ public class MusterNowDialog extends DialogFragment {
         });
 
         initDatas();
-        SelectMemvberAdapter adapter = new SelectMemvberAdapter(tvMemberList, getActivity(),
+        SelectMemvberAdapter adapter = new SelectMemvberAdapter(mTvMemberInfoResultList, getActivity(),
                 onItemClickClass);
         mGridView.setAdapter(adapter);
 
@@ -88,7 +88,7 @@ public class MusterNowDialog extends DialogFragment {
                 textView.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
                 textView.setTextColor(getActivity().getResources().getColor(R.color.black));
                 for (int i = 0; i < tvSelectedList.size(); i++) {
-                    if (textView.getText().toString().equals(tvSelectedList.get(i).getName())) {
+                    if (textView.getText().toString().equals(tvSelectedList.get(i).getTouristName())) {
                         tvSelectedList.remove(i);
                     }
                 }
@@ -96,27 +96,22 @@ public class MusterNowDialog extends DialogFragment {
                 checkBox.setChecked(true);
                 textView.setBackgroundColor(getActivity().getResources().getColor(R.color.skyblue));
                 textView.setTextColor(getActivity().getResources().getColor(R.color.white));
-                tvSelectedList.add(tvMemberList.get(position));
+                tvSelectedList.add(mTvMemberInfoResultList.get(position));
             }
 
-            if (tvSelectedList.size() == 0 || tvSelectedList.size() == tvMemberList.size()){
+            if (tvSelectedList.size() == 0 || tvSelectedList.size() == mTvMemberInfoResultList.size()){
                 mSelectMemberTv.setText("发送给所有人");
             }else {
-                mSelectMemberTv.setText("发送给"+tvSelectedList.get(0).getName()
+                mSelectMemberTv.setText("发送给"+tvSelectedList.get(0).getTouristName()
                         +"等"+tvSelectedList.size()+"位游客");
             }
         }
     };
 
     /**
-     * 测试数据
+     * 初始化数据
      */
     private void initDatas() {
-        MemberInfo msg = null;
-        for (int i = 1; i < 12; i++) {
-            msg = new MemberInfo("游客" + i);
-            tvMemberList.add(msg);
-        }
     }
 
 }

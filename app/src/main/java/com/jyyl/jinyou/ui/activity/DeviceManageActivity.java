@@ -16,7 +16,7 @@ import com.google.zxing.activity.CaptureActivity;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.entity.DeviceInfo;
-import com.jyyl.jinyou.entity.DeviceResult;
+import com.jyyl.jinyou.entity.DeviceInfoResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.adapter.DeviceManageAdapter;
@@ -85,14 +85,14 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
      */
     private void refreshDeviceDatas() {
         HttpMethods.getInstance().getUserDevices()
-                .subscribe(new BaseSubscriber<List<DeviceResult>>(mContext) {
+                .subscribe(new BaseSubscriber<List<DeviceInfoResult>>() {
                     @Override
-                    public void onNext(List<DeviceResult> deviceResults) {
-                        LogUtils.d("deviceResults" + deviceResults.toString());
+                    public void onNext(List<DeviceInfoResult> deviceInfoResults) {
+                        LogUtils.d("deviceInfoResults" + deviceInfoResults.toString());
                         mDatas.clear();
                         int number = 1;
-                        for (DeviceResult deviceResult : deviceResults){
-                            mDatas.add(new DeviceInfo(number, deviceResult));
+                        for (DeviceInfoResult deviceInfoResult : deviceInfoResults){
+                            mDatas.add(new DeviceInfo(number, deviceInfoResult));
                             number++;
                         }
                         refreshUI();
@@ -223,8 +223,8 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         while (it.hasNext()) {
             DeviceInfo deviceInfo = it.next();
             if (deviceInfo.isCheck()) {
-                final String bindingId = deviceInfo.getDeviceResult().getDeviceBindId();
-                final String deviceId = deviceInfo.getDeviceResult().getDeviceIMEI();
+                final String bindingId = deviceInfo.getDeviceInfoResult().getDeviceBindId();
+                final String deviceId = deviceInfo.getDeviceInfoResult().getDeviceIMEI();
                 if (bindingId!=null){
                     Observable.create(new Observable.OnSubscribe<Boolean>() {
                         @Override
@@ -237,7 +237,7 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                     })
                             .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
                             .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
-                            .subscribe(new BaseSubscriber<Boolean>(mContext) {
+                            .subscribe(new BaseSubscriber<Boolean>() {
                                 @Override
                                 public void onNext(Boolean b) {
                                     if (b){

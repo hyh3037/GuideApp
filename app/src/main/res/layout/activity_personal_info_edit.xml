@@ -39,18 +39,6 @@
                 android:layout_marginTop="5dp">
 
                 <com.jyyl.jinyou.widget.CleanEditText
-                    android:id="@+id/et_personal_phone"
-                    style="@style/edittext_info_style"
-                    android:hint="@string/personal_et_phone"
-                    android:inputType="text"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
-
-                <com.jyyl.jinyou.widget.CleanEditText
                     android:id="@+id/et_personal_guide_card"
                     style="@style/edittext_info_style"
                     android:hint="@string/personal_et_guide_card"

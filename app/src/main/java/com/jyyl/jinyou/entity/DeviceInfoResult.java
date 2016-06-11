@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @Author: Shang
  * @Date: 2016/6/1  15:40
  */
-public class DeviceResult implements Serializable{
+public class DeviceInfoResult implements Serializable{
 
     private String deviceId;//设备id
     private String deviceType;//设备类型

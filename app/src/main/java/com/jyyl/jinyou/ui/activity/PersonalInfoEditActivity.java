@@ -7,12 +7,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.constans.Sp;
+import com.jyyl.jinyou.entity.GuideInfoResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.http.HttpResult;
 import com.jyyl.jinyou.ui.base.BaseActivity;
+import com.jyyl.jinyou.utils.SPUtils;
 import com.jyyl.jinyou.utils.T;
+import com.jyyl.jinyou.widget.CleanEditText;
 
 /**
  * @Fuction: 个人信息编辑
@@ -24,12 +29,16 @@ public class PersonalInfoEditActivity extends BaseActivity{
     private TextView mSaveBtn;
     private Context mContext;
 
+    private CleanEditText mNameTv;
+    private CleanEditText mGuideCardIdTv;
+    private CleanEditText mCompanyTv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_info_edit);
         mContext = this;
+        setContentView(R.layout.activity_personal_info_edit);
         initToolBar();
     }
 
@@ -54,6 +63,20 @@ public class PersonalInfoEditActivity extends BaseActivity{
         mSaveBtn = (TextView) findViewById(R.id.toolbar_right_tv);
         mSaveBtn.setText("保存");
         mSaveBtn.setVisibility(View.VISIBLE);
+
+        mNameTv = (CleanEditText) findViewById(R.id.et_personal_name);
+        mGuideCardIdTv = (CleanEditText) findViewById(R.id.et_personal_guide_card);
+        mCompanyTv = (CleanEditText) findViewById(R.id.et_personal_company);
+
+        String guideInfoString = (String) SPUtils.get(mContext, Sp.SP_KEY_USER_OBJECT, "-1");
+        if (!"-1".equals(guideInfoString)){
+            GuideInfoResult guideInfoResult = new Gson()
+                    .fromJson(guideInfoString, GuideInfoResult.class);
+
+            mNameTv.setText(guideInfoResult.getMemberName());
+            mGuideCardIdTv.setText(guideInfoResult.getGuideCard());
+            mCompanyTv.setText(guideInfoResult.getCompanyName());
+        }
     }
 
     @Override
@@ -67,8 +90,11 @@ public class PersonalInfoEditActivity extends BaseActivity{
         super.onViewClick(v);
         switch (v.getId()) {
             case R.id.toolbar_right_tv:
-                HttpMethods.getInstance().uploadGuideInfo()
-                        .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                String name = mNameTv.getText().toString();
+                String cardId = mGuideCardIdTv.getText().toString();
+                String company = mCompanyTv.getText().toString();
+                HttpMethods.getInstance().uploadGuideInfo(name, cardId, company)
+                        .subscribe(new BaseSubscriber<HttpResult>() {
                             @Override
                             public void onNext(HttpResult httpResult) {
 

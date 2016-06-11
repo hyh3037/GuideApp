@@ -1,7 +1,7 @@
 package com.jyyl.jinyou.entity;
 
 /**
- * @Fuction:
+ * @Fuction: 团队信息
  * @Author: Shang
  * @Date: 2016/6/8  11:04
  */

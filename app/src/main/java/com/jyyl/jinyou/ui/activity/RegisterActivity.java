@@ -129,7 +129,7 @@ public class RegisterActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account, "0")
-                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>() {
                     @Override
                     public void onStart() {
                     }
@@ -152,7 +152,7 @@ public class RegisterActivity extends BaseActivity {
 
     private void register() {
         HttpMethods.getInstance().registerAccount(account, password, securityCode)
-                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>() {
                     @Override
                     public void onNext(HttpResult httpResult) {
                         if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {

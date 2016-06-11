@@ -174,16 +174,20 @@ public class SocketOpenHelper {
             if (datas != null) {
                 JSONObject resultJson = new JSONObject(datas);
                 String cmd = (String) resultJson.get("cmd");
-                String code = (String) resultJson.get("code");
-
                 if ("KTO".equals(cmd)) {
                     Log.d(TAG, "异地登录");
                     return null;
                 }
-                if ("0".equals(code)) {
-                    LogUtils.d(TAG, resultJson.toString());
-                    return resultJson;
-                } else {
+
+                if (datas.contains("code")){
+                    String code = (String) resultJson.get("code");
+                    if ("0".equals(code)) {
+                        LogUtils.d(TAG, resultJson.toString());
+                        return resultJson;
+                    }
+                }
+
+                if (datas.contains("message")){
                     String message = (String) resultJson.get("message");
                     Log.d(TAG, message);
                 }

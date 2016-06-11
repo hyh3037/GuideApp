@@ -7,11 +7,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.entity.MemberInfo;
 import com.jyyl.jinyou.entity.MemberInfoResult;
 import com.jyyl.jinyou.entity.TeamInfo;
 import com.jyyl.jinyou.http.ApiException;
@@ -51,7 +52,7 @@ public class MemberManageActivity extends BaseActivity
 
     private ListView mListView;
     private BaseAdapterHelper mAdapter;
-    private ArrayList<MemberInfo> mDatas = new ArrayList<>();
+    private List<MemberInfoResult> mMemberInfoResults = new ArrayList<>();
     private int longClickIndex = -1;
 
     @Override
@@ -60,8 +61,13 @@ public class MemberManageActivity extends BaseActivity
         mContext = this;
         setContentView(R.layout.activity_member_management);
         initToolBar();
-        initTeam();
         initListview();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initTeam();
     }
 
     @Override
@@ -126,7 +132,7 @@ public class MemberManageActivity extends BaseActivity
      */
     private void initTeam() {
         HttpMethods.getInstance().getTeamInfo()
-                .subscribe(new BaseSubscriber<List<TeamInfo>>(mContext) {
+                .subscribe(new BaseSubscriber<List<TeamInfo>>() {
                     @Override
                     public void onNext(List<TeamInfo> teamInfos) {
 
@@ -135,8 +141,8 @@ public class MemberManageActivity extends BaseActivity
                             mTeamName = teamInfo.getTeamName();
                             mTeamId = teamInfo.getTeamId();
                             toolbar.setTitle(mTeamName);
-                            initDatas();
                             showMemberView();
+                            initMembers();
                         }
                     }
 
@@ -150,6 +156,25 @@ public class MemberManageActivity extends BaseActivity
                         super.onError(e);
                     }
                 });
+    }
+
+    /**
+     * 获取游客信息
+     */
+    private void initMembers() {
+        HttpMethods.getInstance().getMemberInfo(mTeamId)
+                .subscribe(new BaseSubscriber<List<MemberInfoResult>>() {
+                    @Override
+                    public void onNext(List<MemberInfoResult> memberInfoResultInfos) {
+                        mMemberInfoResults.clear();
+                        for (MemberInfoResult memberInfoResult : memberInfoResultInfos){
+                            mMemberInfoResults.add(memberInfoResult);
+                        }
+                        LogUtils.d("mMemberInfoResults==>>"+mMemberInfoResults.size());
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+
     }
 
     //无旅行团
@@ -168,12 +193,18 @@ public class MemberManageActivity extends BaseActivity
 
     private void initListview() {
         mListView = (ListView) findViewById(R.id.member_listview);
-        mAdapter = new BaseAdapterHelper<MemberInfo>(mContext, mDatas, R.layout
+        mAdapter = new BaseAdapterHelper<MemberInfoResult>(mContext, mMemberInfoResults, R.layout
                 .item_member_listview) {
 
             @Override
-            public void convert(ViewHolder holder, MemberInfo memberInfo) {
-                holder.setText(R.id.member_name, memberInfo.getName());
+            public void convert(ViewHolder holder, MemberInfoResult memberInfoResultInfo) {
+                holder.setText(R.id.member_name, memberInfoResultInfo.getTouristName());
+                ImageView imageView = holder.getView(R.id.member_photo);
+                Glide.with(mContext)
+                        .load(memberInfoResultInfo.getHeadAddress())
+                        .error(R.drawable.default_photo)
+                        .thumbnail(0.2f)
+                        .into(imageView);
             }
         };
         mListView.setAdapter(mAdapter);
@@ -182,7 +213,7 @@ public class MemberManageActivity extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
-                bundle.putString("name", mDatas.get(position).getName());
+                bundle.putSerializable("memberInfo", mMemberInfoResults.get(position));
                 openActivity(mContext, MemberInfoActivity.class, bundle);
             }
         });
@@ -192,7 +223,7 @@ public class MemberManageActivity extends BaseActivity
             public boolean onItemLongClick(AdapterView<?> parent,
                                            View view, final int position, long id) {
                 MemberLongClickDialog longClickDialog = new MemberLongClickDialog();
-                longClickDialog.setMemberName(mDatas.get(position).getName());
+                longClickDialog.setMemberName(mMemberInfoResults.get(position).getTouristName());
                 longClickDialog.show(getFragmentManager(), "MemberLongClick");
                 longClickIndex = position;
                 return true;
@@ -200,28 +231,6 @@ public class MemberManageActivity extends BaseActivity
         });
     }
 
-
-    /**
-     * 获取游客信息
-     */
-    private void initDatas() {
-        HttpMethods.getInstance().getMemberInfo(mTeamId)
-                .subscribe(new BaseSubscriber<List<MemberInfoResult>>(mContext) {
-                    @Override
-                    public void onNext(List<MemberInfoResult> memberInfoResults) {
-                        for (MemberInfoResult memberInfo : memberInfoResults){
-
-                            LogUtils.d(memberInfo.toString());
-                        }
-                    }
-                });
-        MemberInfo msg = null;
-        for (int i = 1; i < 10; i++) {
-            msg = new MemberInfo("游客" + i);
-            mDatas.add(msg);
-        }
-
-    }
 
     @Override
     public void setTeamInfo(final String teamName) {
@@ -231,14 +240,14 @@ public class MemberManageActivity extends BaseActivity
         } else {
 
             HttpMethods.getInstance().createTeam(teamName)
-                    .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                    .subscribe(new BaseSubscriber<HttpResult>() {
 
                         @Override
                         public void onNext(HttpResult httpResult) {
                             if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
                                 mTeamId = (String) httpResult.getValues().get(0);
                                 toolbar.setTitle(teamName);
-                                mDatas.clear();
+                                mMemberInfoResults.clear();
                                 mAdapter.notifyDataSetChanged();
                                 showMemberView();
                                 T.showShortToast(mContext, "团队创建成功");
@@ -255,12 +264,12 @@ public class MemberManageActivity extends BaseActivity
     public void deleteTeme() {
 
         HttpMethods.getInstance().deleteTeam(mTeamId)
-                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>() {
 
                     @Override
                     public void onNext(HttpResult httpResult) {
                         if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
-                            mDatas.clear();
+                            mMemberInfoResults.clear();
                             mAdapter.notifyDataSetChanged();
                             toolbar.setTitle("游客管理");
                             T.showShortToast(mContext, "团队已解散");
@@ -275,7 +284,7 @@ public class MemberManageActivity extends BaseActivity
 
     @Override
     public void onDeleteBinding() {
-        mDatas.remove(longClickIndex);
+        mMemberInfoResults.remove(longClickIndex);
         mAdapter.notifyDataSetChanged();
     }
 }

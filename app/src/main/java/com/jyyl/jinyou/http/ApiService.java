@@ -1,9 +1,9 @@
 package com.jyyl.jinyou.http;
 
 
-import com.jyyl.jinyou.entity.DeviceResult;
+import com.jyyl.jinyou.entity.DeviceInfoResult;
 import com.jyyl.jinyou.entity.HeadImage;
-import com.jyyl.jinyou.entity.LoginResult;
+import com.jyyl.jinyou.entity.GuideInfoResult;
 import com.jyyl.jinyou.entity.MemberInfoResult;
 import com.jyyl.jinyou.entity.TeamInfo;
 import com.jyyl.jinyou.entity.VersionInfo;
@@ -40,10 +40,10 @@ public interface ApiService {
 
     //登录
     @GET(Api.LOGIN_URL + "/{loginTime}&{memberAccount}&{memberPassword}&{industry}")
-    Observable<HttpResult<LoginResult>> loginAccount(@Path("loginTime") String loginTime,
-                                                     @Path("memberAccount") String memberAccount,
-                                                     @Path("memberPassword") String memberPassword,
-                                                     @Path("industry") String industry);
+    Observable<HttpResult<GuideInfoResult>> loginAccount(@Path("loginTime") String loginTime,
+                                                         @Path("memberAccount") String memberAccount,
+                                                         @Path("memberPassword") String memberPassword,
+                                                         @Path("industry") String industry);
 
     //上传头像
     @POST(Api.UPLOAD_IMAGE_URL)
@@ -52,7 +52,7 @@ public interface ApiService {
 
     //上传导游位置
     @POST(Api.UPLOAD_LOCATION_URL)
-    Observable<HttpResult<String>> uploadLocation(@Body Map<String, String> params);
+    Observable<HttpResult> uploadLocation(@Body Map<String, String> params);
 
     //上传导游信息
     @POST(Api.UPLOAD_GUIDEINFO_URL)
@@ -60,16 +60,16 @@ public interface ApiService {
 
     //获取导游信息
     @POST(Api.GET_GUIDEINFO_URL)
-    Observable<HttpResult<LoginResult>> getGuideInfo(@Body Map<String, String> params);
+    Observable<HttpResult<GuideInfoResult>> getGuideInfo(@Body Map<String, String> params);
 
 
     //获取导游设备信息
     @POST(Api.USER_DEVICES_URL)
-    Observable<HttpResult<DeviceResult>> getUserDevices(@Body Map<String, String> params);
+    Observable<HttpResult<DeviceInfoResult>> getUserDevices(@Body Map<String, String> params);
 
     //修改设备信息
     @POST(Api.DEVICE_INFO_EDIT_URL)
-    Observable<HttpResult<DeviceResult>> updateDevice(@Body Map<String, String> params);
+    Observable<HttpResult<DeviceInfoResult>> updateDevice(@Body Map<String, String> params);
 
     //解除设备绑定
     @GET(Api.DEVICE_DELETE_URL + "/{deviceIEMI}&{industry}&{token}")

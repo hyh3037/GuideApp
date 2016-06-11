@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
-import com.jyyl.jinyou.entity.MemberInfo;
+import com.jyyl.jinyou.entity.MemberInfoResult;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ import java.util.List;
  */
 public class SelectMemvberAdapter extends BaseAdapter {
 
-    private List<MemberInfo> tagList;
+    private List<MemberInfoResult> tagList;
     private Context context;
     private TagHolder mHolder = null;
     private int clickTemp = -1;
     OnItemClickClass onItemClickClass;
 
-    public SelectMemvberAdapter(List<MemberInfo> tagList, Context context, OnItemClickClass onItemClickClass) {
+    public SelectMemvberAdapter(List<MemberInfoResult> tagList, Context context, OnItemClickClass onItemClickClass) {
         this.tagList = tagList;
         this.context = context;
         this.onItemClickClass = onItemClickClass;
@@ -62,7 +62,7 @@ public class SelectMemvberAdapter extends BaseAdapter {
         } else {
             mHolder = (TagHolder) convertView.getTag();
         }
-        mHolder.textView.setText(tagList.get(position).getName());
+        mHolder.textView.setText(tagList.get(position).getTouristName());
         mHolder.checkBox.setVisibility(View.GONE);
 
         //设置被选中和取消选中条目的状态

@@ -1,11 +1,13 @@
 package com.jyyl.jinyou.entity;
 
+import java.io.Serializable;
+
 /**
  * @Fuction:  服务器返回的游客信息
  * @Author: Shang
  * @Date: 2016/6/8  17:09
  */
-public class MemberInfoResult {
+public class MemberInfoResult implements Serializable{
     private String touristId;//游客id
     private String touristName;//游客名称
     private String touristPhone;//游客电话

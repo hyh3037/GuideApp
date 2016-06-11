@@ -11,12 +11,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.heartbeat.HeartService;
 import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.constans.Sp;
-import com.jyyl.jinyou.entity.LoginResult;
+import com.jyyl.jinyou.entity.GuideInfoResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.jpush.JpushManager;
@@ -140,23 +141,24 @@ public class LoginActivity extends BaseActivity {
 
     private void login() {
         HttpMethods.getInstance().loginAccount(account, password)
-                .subscribe(new BaseSubscriber<List<LoginResult>>(mContext) {
+                .subscribe(new BaseSubscriber<List<GuideInfoResult>>() {
                     @Override
-                    public void onNext(List<LoginResult> loginResults) {
-                        final LoginResult loginResult = loginResults.get(0);
-                        if (loginResult != null) {
+                    public void onNext(List<GuideInfoResult> guideInfoResults) {
+                        final GuideInfoResult guideInfoResult = guideInfoResults.get(0);
+                        if (guideInfoResult != null) {
                             // 登录成功
                             T.showShortToast(mContext, getString(R.string.toast_login_success));
 
-                            String userId = loginResult.getMemberId();
+                            String userId = guideInfoResult.getMemberId();
                             JpushManager.getInstance().setAlias(mContext, userId);
-                            String abdAccount = loginResult.getAbardeenAccount();
-                            String abdPassword = loginResult.getAbardeenPassword();
-                            String token = loginResult.getMemberToken();
-
-                            LogUtils.d("token==>>"+token);
+                            String abdAccount = guideInfoResult.getAbardeenAccount();
+                            String abdPassword = guideInfoResult.getAbardeenPassword();
+                            String token = guideInfoResult.getMemberToken();
+                            String guideInfoString = new Gson().toJson(guideInfoResult);
+                            LogUtils.d("guideInfoString==>>" + guideInfoString);
 
                             //保存账号信息到SP
+                            SPUtils.put(mContext, Sp.SP_KEY_USER_OBJECT, guideInfoString);
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_ACCOUNT, account);
                             SPUtils.put(mContext, Sp.SP_KEY_LAST_LOGIN_PASSWORD, password);
                             SPUtils.put(mContext, Sp.SP_KEY_USER_ID, userId);

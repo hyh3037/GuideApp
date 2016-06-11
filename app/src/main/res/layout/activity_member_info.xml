@@ -32,27 +32,32 @@
             <TextView
                 android:id="@+id/tv_member_name"
                 style="@style/textview_info"
-                android:text="姓名：唐僧"/>
+                android:text="@string/member_info_name"/>
 
-            <TextView
-                android:id="@+id/tv_member_card_id"
-                style="@style/textview_info"
-                android:text="身份证：666666666666666666"/>
+            <!--<TextView-->
+                <!--android:id="@+id/tv_member_card_id"-->
+                <!--style="@style/textview_info"-->
+                <!--android:text="@string/member_info_card_id"/>-->
 
             <TextView
                 android:id="@+id/tv_linkman_name"
                 style="@style/textview_info"
-                android:text="监护人：孙猴子"/>
+                android:text="@string/member_info_linkman_name"/>
 
             <TextView
                 android:id="@+id/tv_linkman_phone"
                 style="@style/textview_info"
-                android:text="监护人电话：88888888888"/>
+                android:text="@string/member_info_linkman_phone"/>
 
             <TextView
-                android:id="@+id/tv_binding_deviceid"
+                android:id="@+id/tv_binding_device_imei"
                 style="@style/textview_info"
-                android:text="绑定设备编号：1"/>
+                android:text="@string/member_info_device_imei"/>
+
+            <TextView
+                android:id="@+id/tv_binding_device_phone"
+                style="@style/textview_info"
+                android:text="@string/member_info_device_phone"/>
 
         </LinearLayout>
 
@@ -60,7 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/btn_call_phone"

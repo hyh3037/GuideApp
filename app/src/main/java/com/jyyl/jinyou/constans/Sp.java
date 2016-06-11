@@ -34,9 +34,15 @@ public class Sp {
      * 用户登录信息
      */
     public static final String SP_KEY_USER_ID = "user_id";
+    public static final String SP_KEY_USER_OBJECT = "user_object";
     public static final String SP_KEY_ABARDEEN_ACCOUNT = "abardeenAccount";
     public static final String SP_KEY_ABARDEEN_PASSWORD = "abardeenPassword";
     public static final String SP_KEY_MEMBER_TOKEN = "memberToken";
+
+    /**
+     * 团队id
+     */
+    public static final String SP_KEY_TEAM_ID = "team_id";
 
     /**
      * 当前账号是否有绑定设备

@@ -23,6 +23,7 @@ import com.jyyl.jinyou.ui.dialog.SelectDeviceDialog;
 import com.jyyl.jinyou.utils.FileUtils;
 import com.jyyl.jinyou.utils.ImageUtils;
 import com.jyyl.jinyou.utils.LogUtils;
+import com.jyyl.jinyou.utils.QiNiuUploadUtils;
 import com.jyyl.jinyou.utils.SelectPictureUtils;
 import com.jyyl.jinyou.utils.T;
 import com.jyyl.jinyou.widget.CircleImageView;
@@ -47,14 +48,13 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
     private CleanEditText mMemberNameEt;
     private CleanEditText mLinkmanNameEt;
     private CleanEditText mLinkmanTelEt;
-    private CleanEditText mMemberCardEt;
+//    private CleanEditText mMemberCardEt;
     private String mMemberName, mLinkmanName, mLinkmanTel, mMemberCard,
             headAddress, teamId, deviceId, mDeviceImei;
 
     private Uri photoUri = null;
     private Bitmap cropBitmap = null;
-
-
+    private QiNiuUploadUtils qiNiuUploadUtils;
 
 
     @Override
@@ -88,7 +88,7 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
         teamId = getIntent().getExtras().getString("mTeamId");
         LogUtils.d("mTeamId==>>"+ teamId );
 
-        mMemberCardEt = (CleanEditText) findViewById(R.id.et_member_id_card);
+//        mMemberCardEt = (CleanEditText) findViewById(R.id.et_member_id_card);
         mLinkmanTelEt = (CleanEditText) findViewById(R.id.et_linkman_tel);
         mLinkmanNameEt = (CleanEditText) findViewById(R.id.et_linkman_name);
         mMemberNameEt = (CleanEditText) findViewById(R.id.et_member_name);
@@ -109,6 +109,8 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
         mPhotoView.setOnClickListener(this);
         mDeviceImeiTv.setOnClickListener(this);
         mBindingBtn.setOnClickListener(this);
+
+        initQiniuListener();
     }
 
     @Override
@@ -126,7 +128,7 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
                 mMemberName = mMemberNameEt.getText().toString();
                 mLinkmanName = mLinkmanNameEt.getText().toString();
                 mLinkmanTel = mLinkmanTelEt.getText().toString();
-                mMemberCard = mMemberCardEt.getText().toString();
+//                mMemberCard = mMemberCardEt.getText().toString();
                 mDeviceImei = mDeviceImeiTv.getText().toString();
                 if (mMemberName.isEmpty()){
                     T.showShortToast(mContext, "游客姓名不能为空");
@@ -135,24 +137,40 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
                 } else if (mDeviceImei.isEmpty()) {
                     T.showShortToast(mContext, "请先选择绑定设备");
                 } else {
-                    HttpMethods.getInstance().addMember(mMemberName,mLinkmanName,mLinkmanTel,
-                            mMemberCard,headAddress,teamId,deviceId)
-                            .subscribe(new BaseSubscriber<HttpResult>(mContext) {
-                                @Override
-                                public void onNext(HttpResult httpResult) {
-                                    if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
-                                        T.showShortToast(mContext, "添加游客成功");
-                                        openActivity(mContext, MemberManageActivity.class);
-                                        finish();
-                                    } else {
-                                        throw new ApiException(httpResult.getDescritpion());
-                                    }
-                                }
-                            });
+                    //上传图片到七牛云
+                    String key = FileUtils.getUuidName();
+                    if (cropBitmap != null) {
+                        qiNiuUploadUtils.upload(cropBitmap, key);
+                    }
                 }
 
                 break;
         }
+    }
+
+    private void initQiniuListener() {
+        qiNiuUploadUtils = new QiNiuUploadUtils();
+        qiNiuUploadUtils.setCompleteListener(new QiNiuUploadUtils.QiniuCompleteListener() {
+            @Override
+            public void callbackImageUrl(String keyUrl) {
+                headAddress = keyUrl;
+                //上传游客信息到服务器
+                HttpMethods.getInstance().addMember(mMemberName,mLinkmanName,mLinkmanTel,
+                        null,headAddress,teamId,deviceId)
+                        .subscribe(new BaseSubscriber<HttpResult>() {
+                            @Override
+                            public void onNext(HttpResult httpResult) {
+                                if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+                                    T.showShortToast(mContext, "添加游客成功");
+                                    openActivity(mContext, MemberManageActivity.class);
+                                    finish();
+                                } else {
+                                    throw new ApiException(httpResult.getDescritpion());
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     private void initUri() {
@@ -210,9 +228,9 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
         if (deviceInfo != null) {
             mDeviceNumberTv.setVisibility(View.VISIBLE);
             mDeviceNumberTv.setText(String.valueOf(deviceInfo.getNumber()));
-            mDeviceImeiTv.setText(deviceInfo.getDeviceResult().getDeviceIMEI());
+            mDeviceImeiTv.setText(deviceInfo.getDeviceInfoResult().getDeviceIMEI());
 
-            deviceId = deviceInfo.getDeviceResult().getDeviceId();
+            deviceId = deviceInfo.getDeviceInfoResult().getDeviceId();
         }
     }
 }

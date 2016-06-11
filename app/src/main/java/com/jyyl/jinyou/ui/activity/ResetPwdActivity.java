@@ -131,7 +131,7 @@ public class ResetPwdActivity extends BaseActivity {
      */
     private void resetPassword() {
         HttpMethods.getInstance().resetAccount(account, newPassword, securityCode)
-                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>() {
                     @Override
                     public void onNext(HttpResult httpResult) {
                         if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
@@ -155,7 +155,7 @@ public class ResetPwdActivity extends BaseActivity {
      */
     private void getSecurityCode() {
         HttpMethods.getInstance().getSecurityCode(account, "1")
-                .subscribe(new BaseSubscriber<HttpResult>(mContext) {
+                .subscribe(new BaseSubscriber<HttpResult>() {
                     @Override
                     public void onStart() {
                     }

@@ -10,11 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
+import com.jyyl.jinyou.entity.GuideInfoResult;
 import com.jyyl.jinyou.entity.HeadImage;
-import com.jyyl.jinyou.entity.LoginResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.base.BaseActivity;
@@ -44,7 +46,11 @@ public class PersonalInformationActivity extends BaseActivity
     private Context mContext;
 
     private QiNiuUploadUtils qiNiuUploadUtils;
+
     private CircleImageView mPhotoView;
+    private TextView mNameTv;
+    private TextView mGuideCardIdTv;
+    private TextView mCompanyTv;
 
     private SelectPhotoDialog dialog;
 
@@ -58,22 +64,44 @@ public class PersonalInformationActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_personal_information);
-        qiNiuUploadUtils = new QiNiuUploadUtils();
         initToolBar();
-        HttpMethods.getInstance().getGuideInfo()
-                .subscribe(new BaseSubscriber<List<LoginResult>>(mContext) {
-                    @Override
-                    public void onNext(List<LoginResult> loginResults) {
-
-                    }
-                });
+//        HttpMethods.getInstance().getGuideInfo()
+//                .subscribe(new BaseSubscriber<List<GuideInfoResult>>() {
+//                    @Override
+//                    public void onNext(List<GuideInfoResult> guideInfoResults) {
+//                        if (guideInfoResults.size() > 0){
+//                            GuideInfoResult guideInfoResult = guideInfoResults.get(0);
+//                            String guideInfoString = new Gson().toJson(guideInfoResult);
+//                            //保存账号信息到SP
+//                            SPUtils.put(mContext, Sp.SP_KEY_USER_OBJECT, guideInfoString);
+//
+//                            Glide.with(mContext).load(guideInfoResult.getHeadAddrdss())
+//                                    .error(R.drawable.default_photo)
+//                                    .into(mPhotoView);
+//                            mNameTv.setText(getString(R.string.personal_name, guideInfoResult.getMemberName()));
+//                            mGuideCardIdTv.setText(getString(R.string.personal_guide_card, guideInfoResult.getGuideCard()));
+//                            mCompanyTv.setText(getString(R.string.personal_company, guideInfoResult.getCompanyName()));
+//                        }
+//                    }
+//                });
         initUri();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setPhotoView();
+        String guideInfoString = (String) SPUtils.get(mContext, Sp.SP_KEY_USER_OBJECT, "-1");
+        if (!"-1".equals(guideInfoString)){
+            GuideInfoResult guideInfoResult = new Gson()
+                    .fromJson(guideInfoString, GuideInfoResult.class);
+
+            Glide.with(this).load(guideInfoResult.getHeadAddrdss())
+                    .error(R.drawable.default_photo)
+                    .into(mPhotoView);
+            mNameTv.setText(getString(R.string.personal_name, guideInfoResult.getMemberName()));
+            mGuideCardIdTv.setText(getString(R.string.personal_name, guideInfoResult.getGuideCard()));
+            mCompanyTv.setText(getString(R.string.personal_name, guideInfoResult.getCompanyName()));
+        }
     }
 
     private void initToolBar() {
@@ -98,6 +126,10 @@ public class PersonalInformationActivity extends BaseActivity
         mEditBtn.setText("编辑");
         mEditBtn.setVisibility(View.VISIBLE);
         mPhotoView = (CircleImageView) findViewById(R.id.iv_personal_photoview);
+        mNameTv = (TextView) findViewById(R.id.personal_nickname);
+        mGuideCardIdTv = (TextView) findViewById(R.id.personal_guide_card);
+        mCompanyTv = (TextView) findViewById(R.id.personal_company);
+
         dialog = new SelectPhotoDialog(this);
         dialog.setOnButtonClickListener(this);
 
@@ -108,6 +140,29 @@ public class PersonalInformationActivity extends BaseActivity
         super.initListener();
         mEditBtn.setOnClickListener(this);
         mPhotoView.setOnClickListener(this);
+        initQiniuListener();
+    }
+
+    private void initQiniuListener() {
+        qiNiuUploadUtils = new QiNiuUploadUtils();
+        qiNiuUploadUtils.setCompleteListener(new QiNiuUploadUtils.QiniuCompleteListener() {
+            @Override
+            public void callbackImageUrl(String keyUrl) {
+                //上传图片七牛地址到服务器
+                String memberId = (String) SPUtils.get(mContext, Sp
+                        .SP_KEY_USER_ID, "-1");
+                HttpMethods.getInstance().uploadeImage(memberId, keyUrl, "1")
+                        .subscribe(new BaseSubscriber<List<HeadImage>>() {
+                            @Override
+                            public void onNext(List<HeadImage> headImages) {
+                                HeadImage headImage = headImages.get(0);
+                                Glide.with(mContext).load(headImage.getHeadAddrdss())
+                                        .error(R.drawable.default_photo)
+                                        .into(mPhotoView);
+                            }
+                        });
+            }
+        });
     }
 
     @Override
@@ -187,24 +242,21 @@ public class PersonalInformationActivity extends BaseActivity
                 /*Bitmap bit = data.getExtras().getParcelable("data");
                 //不要再用data的方式了，会出现activity result 的时候data == null的空的情况
                 mPhotoView.setImageBitmap(bit);*/
-                setPhotoView();
+                //setPhotoView();
 
-                qiNiuUploadUtils.setCompleteListener(new QiNiuUploadUtils.QiniuCompleteListener() {
-                            @Override
-                            public void callbackImageUrl(String keyUrl) {
-                                //上传图片七牛地址到服务器
-                                String memberId = (String) SPUtils.get(mContext, Sp
-                                        .SP_KEY_USER_ID, "-1");
-                                HttpMethods.getInstance().uploadeImage(memberId, keyUrl, "1")
-                                        .subscribe(new BaseSubscriber<List<HeadImage>>
-                                                (mContext) {
-                                            @Override
-                                            public void onNext(List<HeadImage> headImages) {
-
-                                            }
-                                        });
-                            }
-                        });
+                try {
+                    cropBitmap = ImageUtils.getBitmapFromUri(cutUri, this); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
+                    if (cropBitmap != null) {
+                        String path = FileUtils.getFileByUri(this, cutUri).getAbsolutePath();
+                        int degree = ImageUtils.getBitmapDegree(path);//检查是否有被旋转，并进行纠正
+                        LogUtils.d("path:" + path + "\ndegree" + degree);
+                        if (degree != 0) {
+                            cropBitmap = ImageUtils.rotateBitmapByDegree(cropBitmap, degree);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 //上传图片到七牛云
                 String key = FileUtils.getUuidName();
@@ -220,23 +272,23 @@ public class PersonalInformationActivity extends BaseActivity
     /**
      * 通过URI设置头像
      */
-    private void setPhotoView() {
-        try {
-            cropBitmap = ImageUtils.getBitmapFromUri(cutUri, this); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
-
-            if (cropBitmap != null) {
-                String path = FileUtils.getFileByUri(this, cutUri).getAbsolutePath();
-                int degree = ImageUtils.getBitmapDegree(path);//检查是否有被旋转，并进行纠正
-                LogUtils.d("path:" + path + "\ndegree" + degree);
-                if (degree != 0) {
-                    cropBitmap = ImageUtils.rotateBitmapByDegree(cropBitmap, degree);
-                }
-                mPhotoView.setImageBitmap(cropBitmap);
-            } else {
-                mPhotoView.setImageResource(R.mipmap.ic_launcher);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void setPhotoView() {
+//        try {
+//            cropBitmap = ImageUtils.getBitmapFromUri(cutUri, this); //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
+//
+//            if (cropBitmap != null) {
+//                String path = FileUtils.getFileByUri(this, cutUri).getAbsolutePath();
+//                int degree = ImageUtils.getBitmapDegree(path);//检查是否有被旋转，并进行纠正
+//                LogUtils.d("path:" + path + "\ndegree" + degree);
+//                if (degree != 0) {
+//                    cropBitmap = ImageUtils.rotateBitmapByDegree(cropBitmap, degree);
+//                }
+//                mPhotoView.setImageBitmap(cropBitmap);
+//            } else {
+//                mPhotoView.setImageResource(R.mipmap.ic_launcher);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

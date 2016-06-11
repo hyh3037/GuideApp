@@ -45,8 +45,13 @@ import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.constans.BaseConstans;
 import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.MemberInfo;
+import com.jyyl.jinyou.entity.MemberInfoResult;
+import com.jyyl.jinyou.entity.TeamInfo;
+import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
+import com.jyyl.jinyou.http.HttpResult;
+import com.jyyl.jinyou.http.ResultStatus;
 import com.jyyl.jinyou.receive.AlarmReceiver;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.ui.dialog.MusterNowDialog;
@@ -117,15 +122,7 @@ public class MainActivity extends BaseActivity
         setSwipeBackEnable(false);  //禁用SwipeBackLayout
 
         initBaiduMap();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //测试数据
-        for (int i = 0; i < 5; i++) {
-            mMemberList.add(new MemberInfo("游客" + i));
-        }
+        initTeamInfo();
     }
 
     @Override
@@ -178,6 +175,46 @@ public class MainActivity extends BaseActivity
                 break;
         }
     }
+
+    /**
+     * 初始化旅游团队信息
+     */
+    private void initTeamInfo() {
+        HttpMethods.getInstance().getTeamInfo()
+                .subscribe(new BaseSubscriber<List<TeamInfo>>() {
+                    @Override
+                    public void onNext(List<TeamInfo> teamInfos) {
+
+                        if (teamInfos.size() > 0) {
+                            TeamInfo teamInfo = teamInfos.get(0);
+                            String mTeamId = teamInfo.getTeamId();
+                            initMembers(mTeamId);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ApiException) {
+                            return;
+                        }
+                        super.onError(e);
+                    }
+                });
+    }
+
+    private void initMembers(String mTeamId) {
+        HttpMethods.getInstance().getMemberInfo(mTeamId)
+                .subscribe(new BaseSubscriber<List<MemberInfoResult>>() {
+                    @Override
+                    public void onNext(List<MemberInfoResult> memberInfoResults) {
+                        for (MemberInfoResult memberInfoResultInfo : memberInfoResults) {
+                            mMemberList.add(new MemberInfo(memberInfoResultInfo));
+                            LogUtils.d(memberInfoResultInfo.toString());
+                        }
+                    }
+                });
+    }
+
 
     /**
      * 重置marker
@@ -317,22 +354,25 @@ public class MainActivity extends BaseActivity
             try {
                 location = msg.getData().getParcelable("loc");
                 if (location != null) {
+                    addMarkers();
+
                     //上传导游位置
                     HttpMethods.getInstance().uploadLocation(String.valueOf(location.getLongitude
-                            ()),
+                                    ()),
                             String.valueOf(location.getLatitude()), location.getTime())
-                            .subscribe(new BaseSubscriber<List<String>>(mContext) {
+                            .subscribe(new BaseSubscriber<HttpResult>() {
                                 @Override
                                 public void onStart() {
                                     LogUtils.d(TAG, "导游位置上传......");
                                 }
 
                                 @Override
-                                public void onNext(List<String> strings) {
-                                    LogUtils.d(TAG, "导游位置上传成功");
+                                public void onNext(HttpResult result) {
+                                    if (ResultStatus.HTTP_SUCCESS.equals(result.getStatus())) {
+                                        LogUtils.d(TAG, "导游位置上传成功");
+                                    }
                                 }
                             });
-                    addMarkers();
                 }
             } catch (Exception e) {
                 LogUtils.d(TAG, "定位失败");
@@ -354,7 +394,7 @@ public class MainActivity extends BaseActivity
         if (mMarkerSelf == null) {
             mMarkerSelf = (Marker) mBaiduMap.addOverlay(option);
             mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(point, 13));
-//            refreshMembersLct();
+            refreshMembersLct();
         } else {
             mMarkerSelf.setPosition(point);
         }
@@ -368,15 +408,17 @@ public class MainActivity extends BaseActivity
             @Override
             public void call(Subscriber<? super LinkedList<MemberInfo>> subscriber) {
                 for (MemberInfo memberInfo : mMemberList) {
-                    String deviceImei = memberInfo.getDeciveImei();
+                    String deviceImei = memberInfo.getMemberInfoResult().getDeviceId();
                     JSONArray jsonArray = AbardeenMethod.getInstance()
                             .getDeviceDatas(deviceImei);
                     try {
-                        JSONObject jsonObject = (JSONObject) jsonArray.get(0);
-                        JSONObject lct = (JSONObject) jsonObject.get("lct");
-                        double lat = lct.getDouble("u");
-                        double lng = lct.getDouble("o");
-                        memberInfo.setLatLng(new LatLng(lat, lng));
+                        if (jsonArray.length() > 0){
+                            JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+                            JSONObject lct = (JSONObject) jsonObject.get("lct");
+                            double lat = lct.getDouble("u");
+                            double lng = lct.getDouble("o");
+                            memberInfo.setLatLng(new LatLng(lat, lng));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -387,10 +429,10 @@ public class MainActivity extends BaseActivity
         })
                 .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
-                .subscribe(new BaseSubscriber<LinkedList<MemberInfo>>(mContext) {
+                .subscribe(new BaseSubscriber<LinkedList<MemberInfo>>() {
                     @Override
                     public void onNext(LinkedList<MemberInfo> memberInfos) {
-                        addMarkerMember(mMemberList);
+                        addMarkerMember(memberInfos);
                     }
                 });
     }
@@ -464,7 +506,7 @@ public class MainActivity extends BaseActivity
             holder.mPhotoIv.setImageResource(R.drawable.default_photo);
         }
 
-        holder.mNameTv.setText(memberInfo.getName());
+        holder.mNameTv.setText(memberInfo.getMemberInfoResult().getTouristName());
 
         holder.mNoticeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

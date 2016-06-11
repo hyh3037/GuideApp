@@ -39,7 +39,7 @@ public class UpdateManager {
         final String versionCode = String.valueOf(getVersionCode(mContext));
 
         HttpMethods.getInstance().updateVersion(versionCode)
-                .subscribe(new BaseSubscriber<List<VersionInfo>>(mContext) {
+                .subscribe(new BaseSubscriber<List<VersionInfo>>() {
                     @Override
                     public void onNext(List<VersionInfo> versionInfos) {
                         UpdateManager.versionInfo = versionInfos.get(0);

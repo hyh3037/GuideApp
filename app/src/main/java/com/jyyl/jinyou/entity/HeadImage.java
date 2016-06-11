@@ -1,7 +1,7 @@
 package com.jyyl.jinyou.entity;
 
 /**
- * @Fuction:
+ * @Fuction: 服务器返回的图片信息
  * @Author: Shang
  * @Date: 2016/6/10  14:37
  */

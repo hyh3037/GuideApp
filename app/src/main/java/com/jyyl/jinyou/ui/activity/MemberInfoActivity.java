@@ -1,17 +1,18 @@
 package com.jyyl.jinyou.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.jyyl.jinyou.R;
+import com.jyyl.jinyou.entity.MemberInfoResult;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 
 /**
- * @Fuction: 体征数据
+ * @Fuction: 游客详情
  * @Author: Shang
  * @Date: 2016/4/28  15:17
  */
@@ -19,7 +20,9 @@ public class MemberInfoActivity extends BaseActivity{
     private Toolbar toolbar;
     private Context mContext;
 
-//    private View mBloodPressure;
+    private MemberInfoResult mMemberInfo;
+
+    //    private View mBloodPressure;
 //    private View mBloodsugar;
 //    private View mHeartRate;
 //    private View mStepCounter;
@@ -27,16 +30,15 @@ public class MemberInfoActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member_info);
         mContext = this;
+        setContentView(R.layout.activity_member_info);
         initToolBar();
     }
+
     private void initToolBar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //        toolbar.setBackgroundColor(Color.TRANSPARENT);
-        Intent intent = getIntent();
-        String toolBarTitle = intent.getStringExtra("name");
-        toolbar.setTitle(toolBarTitle);
+        toolbar.setTitle("游客信息");
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -51,7 +53,25 @@ public class MemberInfoActivity extends BaseActivity{
     @Override
     protected void initViews() {
         super.initViews();
-//        mBloodPressure = findViewById(R.id.blood_pressure);
+        mMemberInfo = (MemberInfoResult) getIntent().getSerializableExtra("memberInfo");
+
+        TextView nameTv = (TextView) findViewById(R.id.tv_member_name);
+        TextView linkmanNameTv = (TextView) findViewById(R.id.tv_linkman_name);
+        TextView linkmanPhoneTv = (TextView) findViewById(R.id.tv_linkman_phone);
+        TextView deviceImeiTv = (TextView) findViewById(R.id.tv_binding_device_imei);
+        TextView devicePhoneTv = (TextView) findViewById(R.id.tv_binding_device_phone);
+
+        nameTv.setText(getString(R.string.member_info_name,
+                mMemberInfo.getTouristName()));
+        linkmanNameTv.setText(getString(R.string.member_info_linkman_name,
+                mMemberInfo.getTouristContentName()));
+        linkmanPhoneTv.setText(getString(R.string.member_info_linkman_phone,
+                mMemberInfo.getTouristContentPhone()));
+        deviceImeiTv.setText(getString(R.string.member_info_device_imei,
+                mMemberInfo.getDeviceId()));
+        devicePhoneTv.setText(getString(R.string.member_info_device_phone,
+                mMemberInfo.getDevicePhone()));
+        //        mBloodPressure = findViewById(R.id.blood_pressure);
 //        mBloodsugar = findViewById(R.id.blood_sugar);
 //        mHeartRate = findViewById(R.id.heart_rate);
 //        mStepCounter = findViewById(R.id.step_counter);

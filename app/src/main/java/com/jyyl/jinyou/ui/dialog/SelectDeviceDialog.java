@@ -11,12 +11,14 @@ import android.widget.ListView;
 
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.entity.DeviceInfo;
-import com.jyyl.jinyou.entity.DeviceResult;
+import com.jyyl.jinyou.entity.DeviceInfoResult;
+import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.base.BaseAdapterHelper;
 import com.jyyl.jinyou.ui.base.ViewHolder;
 import com.jyyl.jinyou.utils.LogUtils;
+import com.jyyl.jinyou.utils.T;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,7 @@ public class SelectDeviceDialog extends DialogFragment {
             @Override
             public void convert(ViewHolder holder, DeviceInfo deviceInfo) {
                 holder.setText(R.id.tv_number, String.valueOf(deviceInfo.getNumber()));
-                holder.setText(R.id.tv_device_id, deviceInfo.getDeviceResult().getDeviceIMEI());
+                holder.setText(R.id.tv_device_id, deviceInfo.getDeviceInfoResult().getDeviceIMEI());
             }
         };
         mListView.setAdapter(mAdapter);
@@ -77,17 +79,27 @@ public class SelectDeviceDialog extends DialogFragment {
     private void initData() {
 
         HttpMethods.getInstance().getUserNotBoundDevices()
-                .subscribe(new BaseSubscriber<List<DeviceResult>>(this.getActivity()) {
+                .subscribe(new BaseSubscriber<List<DeviceInfoResult>>() {
                     @Override
-                    public void onNext(List<DeviceResult> deviceResults) {
-                        LogUtils.d("deviceResults" + deviceResults.toString());
+                    public void onNext(List<DeviceInfoResult> deviceInfoResults) {
+                        LogUtils.d("deviceInfoResults" + deviceInfoResults.toString());
                         mDatas.clear();
                         int number = 1;
-                        for (DeviceResult deviceResult : deviceResults){
-                            mDatas.add(new DeviceInfo(number, deviceResult));
+                        for (DeviceInfoResult deviceInfoResult : deviceInfoResults){
+                            mDatas.add(new DeviceInfo(number, deviceInfoResult));
                             number++;
                         }
                         mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ApiException){
+                            T.showShortToast("无可用设备,请添加新设备");
+                            dismiss();
+                            return;
+                        }
+                        super.onError(e);
                     }
                 });
     }
