@@ -15,8 +15,8 @@
  */
 package com.google.zxing.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +49,7 @@ import com.jyyl.jinyou.constans.It;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.ui.activity.DeviceAddActivity;
 import com.jyyl.jinyou.ui.activity.DeviceInfoEditActivity;
+import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.LogUtils;
 import com.jyyl.jinyou.utils.T;
 
@@ -72,12 +73,13 @@ import rx.schedulers.Schedulers;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
+public final class CaptureActivity extends BaseActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
     private Toolbar toolbar;
     private TextView mToolbarRightTv;
     private Context mContext;
+    private Dialog loadingDialog;
 
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
@@ -240,7 +242,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         bundle.putInt("height", mCropRect.height());
 
         String result = rawResult.getText();
-        String bindingValidationCode = result.substring(result.indexOf("=")+1,result.length());
+        String bindingValidationCode = result.substring(result.lastIndexOf("=")+1,result.length());
         LogUtils.d(TAG, "绑定二维码"+bindingValidationCode);
         addDeviceByScan(bindingValidationCode);
     }
@@ -251,12 +253,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
      *         扫描成功后的字符串后面的查询字段
      */
     private void addDeviceByScan(final String bindingValidationCode) {
+        loadingDialog = createLoadingDialog(mContext);
         Observable.create(new Observable.OnSubscribe<JSONObject>() {
             @Override
             public void call(Subscriber<? super JSONObject> subscriber) {
-                JSONObject jsonObject = AbardeenMethod.getInstance()
+                JSONObject resultJson = AbardeenMethod.getInstance()
                         .bindingDeviceByScan(bindingValidationCode);
-                subscriber.onNext(jsonObject);
+                subscriber.onNext(resultJson);
                 subscriber.onCompleted();
             }
         })
@@ -264,25 +267,45 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
                 .subscribe(new BaseSubscriber<JSONObject>() {
                     @Override
-                    public void onNext(JSONObject jsonObject) {
-                        if (jsonObject != null) {
-
-                            Intent resultIntent = new Intent(mContext, DeviceInfoEditActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(It.START_INTENT_WITH,It.ACTIVITY_CAPTURE);
+                    public void onNext(JSONObject resultJson) {
+                        if (resultJson != null) {
                             try {
-                                String bindingId = (String) jsonObject.get("id");
-                                String deviceImei = (String) jsonObject.get("imei");
-                                bundle.putString("bindingId", bindingId);
-                                bundle.putString("deviceImei", deviceImei);
-                                resultIntent.putExtras(bundle);
-                                startActivity(resultIntent);
-                                T.showShortToast(mContext, "手表绑定成功");
-                                finish();
+                                String code = (String) resultJson.get("code");
+                                if ("0".equals(code)){
+                                    JSONObject paramsJson = resultJson.getJSONObject("params");
+                                    Intent resultIntent = new Intent(mContext, DeviceInfoEditActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt(It.START_INTENT_WITH,It.ACTIVITY_CAPTURE);
+                                    String bindingId = (String) paramsJson.get("id");
+                                    String deviceImei = (String) paramsJson.get("imei");
+                                    bundle.putString("bindingId", bindingId);
+                                    bundle.putString("deviceImei", deviceImei);
+                                    resultIntent.putExtras(bundle);
+                                    startActivity(resultIntent);
+                                    T.showShortToast(mContext, "手表绑定成功");
+                                }else {
+                                    String message = (String) resultJson.get("message");
+                                    LogUtils.d(message);
+                                    T.showLongToast(mContext,message);
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
+                        loadingDialog.dismiss();
+                        finish();
+                    }
+
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        loadingDialog.show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        loadingDialog.dismiss();
                     }
                 });
 

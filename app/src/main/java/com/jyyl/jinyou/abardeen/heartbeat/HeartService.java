@@ -58,7 +58,7 @@ public class HeartService extends Service {
                 while (!isConnect) {
                     isConnect = AbardeenMethod.getInstance().connectServer();
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(60000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

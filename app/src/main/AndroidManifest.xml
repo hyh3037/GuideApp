@@ -284,7 +284,7 @@
             android:value="developer-default"/>
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="7474f03f41acd4283f1b57f2"/> <!-- </>值来自开发者平台取得的AppKey-->
+            android:value="236696302746f2299a889c20"/> <!-- </>值来自开发者平台取得的AppKey-->
 
         <!--======================================极光推送END====================================-->
 

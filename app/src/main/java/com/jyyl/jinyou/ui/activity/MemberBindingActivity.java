@@ -137,11 +137,21 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
                 } else if (mDeviceImei.isEmpty()) {
                     T.showShortToast(mContext, "请先选择绑定设备");
                 } else {
-                    //上传图片到七牛云
-                    String key = FileUtils.getUuidName();
-                    if (cropBitmap != null) {
-                        qiNiuUploadUtils.upload(cropBitmap, key);
-                    }
+                    //上传游客信息到服务器
+                    HttpMethods.getInstance().addMember(mMemberName,mLinkmanName,mLinkmanTel,
+                            null,headAddress,teamId,deviceId)
+                            .subscribe(new BaseSubscriber<HttpResult>() {
+                                @Override
+                                public void onNext(HttpResult httpResult) {
+                                    if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
+                                        T.showShortToast(mContext, "添加游客成功");
+                                        openActivity(mContext, MemberManageActivity.class);
+                                        finish();
+                                    } else {
+                                        throw new ApiException(httpResult.getDescritpion());
+                                    }
+                                }
+                            });
                 }
 
                 break;
@@ -154,21 +164,6 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
             @Override
             public void callbackImageUrl(String keyUrl) {
                 headAddress = keyUrl;
-                //上传游客信息到服务器
-                HttpMethods.getInstance().addMember(mMemberName,mLinkmanName,mLinkmanTel,
-                        null,headAddress,teamId,deviceId)
-                        .subscribe(new BaseSubscriber<HttpResult>() {
-                            @Override
-                            public void onNext(HttpResult httpResult) {
-                                if ((ResultStatus.HTTP_SUCCESS).equals(httpResult.getStatus())) {
-                                    T.showShortToast(mContext, "添加游客成功");
-                                    openActivity(mContext, MemberManageActivity.class);
-                                    finish();
-                                } else {
-                                    throw new ApiException(httpResult.getDescritpion());
-                                }
-                            }
-                        });
             }
         });
     }
@@ -211,8 +206,12 @@ public class MemberBindingActivity extends BaseActivity implements SelectDeviceD
     private void setPhotoView() {
         try {
             cropBitmap = ImageUtils.getBitmapFromUri(photoUri, this);
+            //上传图片到七牛云
+            String key = FileUtils.getUuidName();
+            if (cropBitmap != null) {
+                qiNiuUploadUtils.upload(cropBitmap, key);
+            }
             //通过获取uri的方式，直接解决了报空和图片像素高的oom问题
-
             if (cropBitmap != null) {
                 mPhotoView.setImageBitmap(cropBitmap);
             } else {

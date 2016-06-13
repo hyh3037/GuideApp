@@ -13,11 +13,12 @@ import com.jyyl.jinyou.constans.Sp;
 import com.jyyl.jinyou.entity.GuideInfoResult;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
-import com.jyyl.jinyou.http.HttpResult;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.SPUtils;
 import com.jyyl.jinyou.utils.T;
 import com.jyyl.jinyou.widget.CleanEditText;
+
+import java.util.List;
 
 /**
  * @Fuction: 个人信息编辑
@@ -94,10 +95,16 @@ public class PersonalInfoEditActivity extends BaseActivity{
                 String cardId = mGuideCardIdTv.getText().toString();
                 String company = mCompanyTv.getText().toString();
                 HttpMethods.getInstance().uploadGuideInfo(name, cardId, company)
-                        .subscribe(new BaseSubscriber<HttpResult>() {
+                        .subscribe(new BaseSubscriber<List<GuideInfoResult>>() {
                             @Override
-                            public void onNext(HttpResult httpResult) {
-
+                            public void onNext(List<GuideInfoResult> guideInfoResults) {
+                                if (guideInfoResults.size() > 0) {
+                                    GuideInfoResult guideInfoResult = guideInfoResults.get(0);
+                                    String guideInfoString = new Gson().toJson(guideInfoResult);
+                                    //保存账号信息到SP
+                                    SPUtils.put(mContext, Sp.SP_KEY_USER_OBJECT,
+                                            guideInfoString);
+                                }
                             }
                         });
                 T.showShortToast(mContext, "保存成功");

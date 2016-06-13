@@ -19,6 +19,7 @@ public class MemberInfoResult implements Serializable{
     private String industry;//行业标识
     private String teamId;//团id
     private String deviceId;//设备id
+    private String deviceIMEI;//设备IMEI
     private String devicePhone;//设备电话
     private String bindStartTime;//绑定开始时间
     private String bindEndTime;//绑定结束时间
@@ -112,6 +113,14 @@ public class MemberInfoResult implements Serializable{
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getDeviceIMEI() {
+        return deviceIMEI;
+    }
+
+    public void setDeviceIMEI(String deviceIMEI) {
+        this.deviceIMEI = deviceIMEI;
     }
 
     public String getDevicePhone() {

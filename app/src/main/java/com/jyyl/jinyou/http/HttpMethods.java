@@ -247,10 +247,10 @@ public class HttpMethods {
     }
 
     /**
-     * 上传导游信息
+     * 修改导游信息
      * @return
      */
-    public Observable<HttpResult> uploadGuideInfo(String memberName, String guideCard, String companyName) {
+    public Observable<List<GuideInfoResult>> uploadGuideInfo(String memberName, String guideCard, String companyName) {
 
         Map<String, String> params = new HashMap<>();
         String userId = (String) SPUtils.get(appContext, Sp.SP_KEY_USER_ID,"-1");
@@ -263,6 +263,7 @@ public class HttpMethods {
         params.put("industry", "jy");
 
         return mApiService.uploadGuideInfo(params)
+                .map(new HttpResultFunc<GuideInfoResult>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

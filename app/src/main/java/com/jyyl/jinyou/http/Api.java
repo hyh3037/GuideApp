@@ -33,6 +33,9 @@ public class Api {
     //获取导游信息
     public static final String GET_GUIDEINFO_URL = "tourism/memberinfo/getmemberinfo";
 
+    //获取导游公司信息
+    public static final String GET_COMPANY_URL = "tourism/company/getcompanyinfo";
+
     //获取设备列表
     public static final String USER_DEVICES_URL = "tourism/equipment/serach";
 

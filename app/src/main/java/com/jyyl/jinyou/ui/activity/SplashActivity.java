@@ -5,12 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.google.gson.Gson;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.heartbeat.HeartService;
 import com.jyyl.jinyou.constans.Sp;
+import com.jyyl.jinyou.entity.GuideInfoResult;
+import com.jyyl.jinyou.http.BaseSubscriber;
+import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.base.BaseActivity;
 import com.jyyl.jinyou.utils.AppUtils;
 import com.jyyl.jinyou.utils.SPUtils;
+
+import java.util.List;
 
 /**
  * @author ShangBB
@@ -58,6 +64,9 @@ public class SplashActivity extends BaseActivity {
 
         //设定时间之后跳转
         new Handler().postDelayed(new Runnable() {
+            /**
+             *
+             */
             @Override
             public void run() {
                 if (mContext == null){
@@ -65,6 +74,7 @@ public class SplashActivity extends BaseActivity {
                 }
                 if (isLogin) {
                     startService(new Intent(mContext, HeartService.class));
+                    initGuideInfo();
                     openActivity(mContext, MainActivity.class);
                 } else {
                     openActivity(mContext, LoginActivity.class);
@@ -73,6 +83,26 @@ public class SplashActivity extends BaseActivity {
             }
         }, 2000);
 
+    }
+
+
+    /**
+     * 初始化导游信息
+     */
+    private void initGuideInfo() {
+        HttpMethods.getInstance().getGuideInfo()
+                .subscribe(new BaseSubscriber<List<GuideInfoResult>>() {
+                    @Override
+                    public void onNext(List<GuideInfoResult> guideInfoResults) {
+                        if (guideInfoResults.size() > 0) {
+                            GuideInfoResult guideInfoResult = guideInfoResults.get(0);
+                            String guideInfoString = new Gson().toJson(guideInfoResult);
+                            //保存账号信息到SP
+                            SPUtils.put(mContext, Sp.SP_KEY_USER_OBJECT,
+                                    guideInfoString);
+                        }
+                    }
+                });
     }
 
 

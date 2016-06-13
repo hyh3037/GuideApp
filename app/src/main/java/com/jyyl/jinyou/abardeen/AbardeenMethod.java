@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * @Fuction: 腕表接口相关调用方法
@@ -65,7 +64,7 @@ public class AbardeenMethod {
                     "account");
             String abdPassword = (String) SPUtils.get(appContext, Sp.SP_KEY_ABARDEEN_PASSWORD,
                     "password");
-            String clientInfo = "Android " + android.os.Build.VERSION.RELEASE + "|1|kt01w";
+            String clientInfo = "Android " + android.os.Build.VERSION.RELEASE + "|1|kt04w";
             params.put("username", abdAccount);
             params.put("password", abdPassword);
             params.put("clientInfo", clientInfo);
@@ -113,10 +112,8 @@ public class AbardeenMethod {
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
-            JSONObject paramsJson = resultJson.getJSONObject("params");
-            Log.d(TAG, paramsJson.toString());
-            return paramsJson;
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject, "R_C_WEARER");
+            return resultJson;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -143,7 +140,7 @@ public class AbardeenMethod {
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject,"R_D_WEARER");
             if (resultJson.toString().contains("code")){
                 String code = (String) resultJson.get("code");
                 if (code != null && "0".equals(code)) {
@@ -208,7 +205,7 @@ public class AbardeenMethod {
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject, "R_S_FN_EX");
             LogUtils.d(TAG, resultJson.toString());
 
             return resultJson;
@@ -256,7 +253,7 @@ public class AbardeenMethod {
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            SocketOpenHelper.getInstance().getResultDatas(jsonObject,"R_U_WEARER");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -286,7 +283,7 @@ public class AbardeenMethod {
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            SocketOpenHelper.getInstance().getResultDatas(jsonObject,"R_Q_WEARER");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -315,10 +312,9 @@ public class AbardeenMethod {
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject,"R_Q_TLD");
             if (resultJson != null) {
                 JSONArray paramsArray = resultJson.getJSONArray("params");
-                Log.d(TAG, paramsArray.toString());
                 return paramsArray;
             }
         } catch (JSONException e) {
@@ -334,7 +330,7 @@ public class AbardeenMethod {
      *
      * 参数:{"cmd":"RAU","id":"1312","params":{
      *      "dataId":"1",
-     *      "targets":["T860860000030000","M19124662399549440"],
+     *      "targets":["T867293023112009"],
      *      "length":2048,
      *      "parts":2,
      *      "playLength":2,
@@ -342,11 +338,11 @@ public class AbardeenMethod {
      * @return
      *
      * {"cmd":"ARA","code":"0","id":"12",
-     *      "params":{"dataId":"2","offlines":["T860860000030000"]}}
+     *      "params":{"dataId":"2","offlines":["T867293023112009"]}}
      *
      * {"cmd":"ARA","code":"E500","id":"18","message":"服务器内部错误!"}
      */
-    public JSONObject requestTransferVoice(String dataId, ArrayList<String> targets, int length,
+    public JSONObject requestTransferVoice(String dataId, JSONArray targets, int length,
                                            int parts, int playLength, String type) {
 
         JSONObject params = new JSONObject();
@@ -354,17 +350,17 @@ public class AbardeenMethod {
 
         try {
             params.put("dataId", dataId);
-            params.put("targets", targets);
             params.put("length", length);
             params.put("parts", parts);
             params.put("playLength", playLength);
+            params.put("targets", targets);
             params.put("type", type);
 
             jsonObject.put("cmd", "RAU");
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject,"ARA");
             return resultJson;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -375,8 +371,11 @@ public class AbardeenMethod {
 
     /**
      * 客户端传输语音(SAU)
-     * {"cmd":"SAU","params":{"dataId":"264216204515102720","part":0},
-     *              "attachments":[{"from":0,"to":8924}]}
+     *
+     * {"attachments":[{"from":0,"to":2405}],
+     * "cmd":"SAU",
+     * "id":"22",
+     * "params":{"dataId":"4","part":0}}二进制字节流
      * @return
      */
     public void startTransferVoice(String dataId, byte[] annex) {
@@ -390,9 +389,16 @@ public class AbardeenMethod {
             params.put("dataId", dataId);
             params.put("part", 0);
 
+            int parts = annex.length/(1024*20) + 1;
+            int i = 1;
+            boolean b = true;
+            while (b){
+                if (i == parts){
+                    b = false;
+                }
+            }
             attachment.put("from", 0);
-            attachment.put("from", annex.length);
-
+            attachment.put("to", annex.length - 1);
             attachments.put(attachment);
 
             jsonObject.put("cmd", "SAU");
@@ -410,10 +416,10 @@ public class AbardeenMethod {
     /**
      * 客户端结束传输语音(SAE)
      *
-     * {"cmd":"SAE","id":"11","params":{"dataId":"1"}}
+     * {"cmd":"SAE","id":"23","params":{"dataId":"4"}}
      * @return
      *
-     * {"cmd":"ASA","code":"0","id":"11","params":{"dataId":"1"}}
+     * {"cmd":"ASA","code":"0","id":"23","params":{"dataId":"4"}}
      * {"cmd":"ASA","code":"0","id":"11","params":{"dataId":"1"},"missing":[2,4,7]}
      */
     public boolean endTransferVoice(String dataId) {
@@ -428,7 +434,7 @@ public class AbardeenMethod {
             jsonObject.put("id", SocketOpenHelper.nextCommandId());
             jsonObject.put("params", params);
 
-            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject);
+            JSONObject resultJson = SocketOpenHelper.getInstance().getResultDatas(jsonObject,"ASA");
             if ("0".equals(resultJson.get("code"))){
                 return true;
             }

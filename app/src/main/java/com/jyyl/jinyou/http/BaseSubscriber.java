@@ -27,20 +27,14 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> {
     }
 
 
-
-    /**
-     * 订阅开始时调用 显示ProgressDialog
-     */
     @Override
     public void onStart() {
-
+        super.onStart();
     }
 
-    /**
-     * 完成，隐藏ProgressDialog
-     */
     @Override
     public void onCompleted() {
+
     }
 
     /**

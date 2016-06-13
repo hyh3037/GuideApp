@@ -56,7 +56,7 @@ public interface ApiService {
 
     //上传导游信息
     @POST(Api.UPLOAD_GUIDEINFO_URL)
-    Observable<HttpResult> uploadGuideInfo(@Body Map<String, String> params);
+    Observable<HttpResult<GuideInfoResult>> uploadGuideInfo(@Body Map<String, String> params);
 
     //获取导游信息
     @POST(Api.GET_GUIDEINFO_URL)

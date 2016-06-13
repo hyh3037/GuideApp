@@ -65,25 +65,7 @@ public class PersonalInformationActivity extends BaseActivity
         mContext = this;
         setContentView(R.layout.activity_personal_information);
         initToolBar();
-//        HttpMethods.getInstance().getGuideInfo()
-//                .subscribe(new BaseSubscriber<List<GuideInfoResult>>() {
-//                    @Override
-//                    public void onNext(List<GuideInfoResult> guideInfoResults) {
-//                        if (guideInfoResults.size() > 0){
-//                            GuideInfoResult guideInfoResult = guideInfoResults.get(0);
-//                            String guideInfoString = new Gson().toJson(guideInfoResult);
-//                            //保存账号信息到SP
-//                            SPUtils.put(mContext, Sp.SP_KEY_USER_OBJECT, guideInfoString);
-//
-//                            Glide.with(mContext).load(guideInfoResult.getHeadAddrdss())
-//                                    .error(R.drawable.default_photo)
-//                                    .into(mPhotoView);
-//                            mNameTv.setText(getString(R.string.personal_name, guideInfoResult.getMemberName()));
-//                            mGuideCardIdTv.setText(getString(R.string.personal_guide_card, guideInfoResult.getGuideCard()));
-//                            mCompanyTv.setText(getString(R.string.personal_company, guideInfoResult.getCompanyName()));
-//                        }
-//                    }
-//                });
+
         initUri();
     }
 
@@ -99,8 +81,8 @@ public class PersonalInformationActivity extends BaseActivity
                     .error(R.drawable.default_photo)
                     .into(mPhotoView);
             mNameTv.setText(getString(R.string.personal_name, guideInfoResult.getMemberName()));
-            mGuideCardIdTv.setText(getString(R.string.personal_name, guideInfoResult.getGuideCard()));
-            mCompanyTv.setText(getString(R.string.personal_name, guideInfoResult.getCompanyName()));
+            mGuideCardIdTv.setText(getString(R.string.personal_guide_card, guideInfoResult.getGuideCard()));
+            mCompanyTv.setText(getString(R.string.personal_company, guideInfoResult.getCompanyName()));
         }
     }
 

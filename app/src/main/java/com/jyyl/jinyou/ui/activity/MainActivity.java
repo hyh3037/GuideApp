@@ -124,6 +124,11 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void initViews() {
         super.initViews();
         mLocNormalButton = (ImageButton) findViewById(R.id.ib_loc_normal);
@@ -157,7 +162,7 @@ public class MainActivity extends BaseActivity
             case R.id.fab_remind:
                 imeiList.clear();
                 for (MemberInfo memberInfo : mMemberList) {
-                    imeiList.add(memberInfo.getMemberInfoResult().getDeviceId());
+                    imeiList.add(memberInfo.getMemberInfoResult().getDeviceIMEI());
                 }
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("imeiList", imeiList);
@@ -212,6 +217,7 @@ public class MainActivity extends BaseActivity
                 .subscribe(new BaseSubscriber<List<MemberInfoResult>>() {
                     @Override
                     public void onNext(List<MemberInfoResult> memberInfoResults) {
+                        mMemberList.clear();
                         for (MemberInfoResult memberInfoResultInfo : memberInfoResults) {
                             mMemberList.add(new MemberInfo(memberInfoResultInfo));
                             LogUtils.d(memberInfoResultInfo.toString());
@@ -413,7 +419,8 @@ public class MainActivity extends BaseActivity
             @Override
             public void call(Subscriber<? super ArrayList<MemberInfo>> subscriber) {
                 for (MemberInfo memberInfo : mMemberList) {
-                    String deviceImei = memberInfo.getMemberInfoResult().getDeviceId();
+                    String deviceImei = memberInfo.getMemberInfoResult().getDeviceIMEI();
+                    LogUtils.d("查询位置 imei == >>" + deviceImei);
                     JSONArray jsonArray = AbardeenMethod.getInstance()
                             .getDeviceDatas(deviceImei);
                     try {
@@ -508,7 +515,7 @@ public class MainActivity extends BaseActivity
                 //                MusterSingleDialog musterSingleDialog = new MusterSingleDialog();
                 //                musterSingleDialog.show(getFragmentManager(), "MusterSingle");
                 imeiList.clear();
-                imeiList.add(memberInfo.getMemberInfoResult().getDeviceId());
+                imeiList.add(memberInfo.getMemberInfoResult().getDeviceIMEI());
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("imeiList", imeiList);
                 openActivity(mContext, VoiceActivity.class, bundle);

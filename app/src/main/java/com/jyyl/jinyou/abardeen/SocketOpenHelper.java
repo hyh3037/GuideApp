@@ -4,6 +4,7 @@ package com.jyyl.jinyou.abardeen;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.jyyl.jinyou.MyApplication;
 import com.jyyl.jinyou.utils.LogUtils;
 
@@ -32,11 +33,13 @@ public class SocketOpenHelper {
     private static String TAG = "SocketOpenHelper";
     private static volatile SocketOpenHelper instance = null;
 
-    private static final String HOST = "cwtcn-dl.6655.la";
-    private static final int PORT = 9991;
+    //测试
+//    private static final String HOST = "cwtcn-dl.6655.la";
+//    private static final int PORT = 9991;
 
-    //	private static final String HOST = "192.168.1.11";
-    //	private static final int PORT = 9998;
+    //正式
+    private static final String HOST = "tr.abardeen.com";
+    private static final int PORT = 8080;
 
     public static final String TITLE = "CWT";
 
@@ -156,7 +159,7 @@ public class SocketOpenHelper {
     /**
      * 获取返回数据
      */
-    public JSONObject getResultDatas(JSONObject jsonObject) {
+    public JSONObject getResultDatas(JSONObject jsonObject , String resultCmd) {
         try {
 
             while (!socket.isConnected()) {
@@ -164,34 +167,26 @@ public class SocketOpenHelper {
                 this.connectServer(loginJson);
                 Thread.sleep(60000);
             }
-
+            outputWrite(jsonObject, null);
             String datas;
+            int i = 0;
             do {
-                outputWrite(jsonObject, null);
+                i++;
                 datas = inputRead();
-            }while ("0".equals(datas));
-
-            if (datas != null) {
-                JSONObject resultJson = new JSONObject(datas);
-                String cmd = (String) resultJson.get("cmd");
-                if ("KTO".equals(cmd)) {
-                    Log.d(TAG, "异地登录");
-                    return null;
-                }
-
-                if (datas.contains("code")){
-                    String code = (String) resultJson.get("code");
-                    if ("0".equals(code)) {
-                        LogUtils.d(TAG, resultJson.toString());
+                if (datas != null && !"0".equals(datas)) {
+                    JSONObject resultJson = new JSONObject(datas);
+                    String cmd = (String) resultJson.get("cmd");
+                    if (resultCmd.equals(cmd)){
+                        return resultJson;
+                    }
+                    if ("KTO".equals(cmd)) {
+                        Log.d(TAG, "异地登录");
                         return resultJson;
                     }
                 }
+            }while (i<10);
 
-                if (datas.contains("message")){
-                    String message = (String) resultJson.get("message");
-                    Log.d(TAG, message);
-                }
-            }
+
         } catch (IOException | InterruptedException | JSONException e) {
             e.printStackTrace();
         }
@@ -227,12 +222,20 @@ public class SocketOpenHelper {
      */
     public void outputWrite(JSONObject paramJson, byte[] annex) throws IOException {
 
+        LogUtils.d("jsonObject==>", new Gson().toJson(paramJson));
+
         // 写入头部 CWT
         os.write(TITLE.getBytes());
 
         String json = paramJson.toString();
         byte[] content = json.getBytes(Charset.forName("UTF-8"));
-        int totalLength = JSON_FORMAT_B.length + CMD_LENGTH_BIT_LENGTH + content.length;
+        int totalLength;
+        if (annex == null){
+            totalLength = JSON_FORMAT_B.length + CMD_LENGTH_BIT_LENGTH + content.length;
+        }else {
+            LogUtils.d("annex==>>"+ annex.length);
+            totalLength = JSON_FORMAT_B.length + CMD_LENGTH_BIT_LENGTH + content.length + annex.length;
+        }
 
         // 写入数据包长度
         os.write(int0(totalLength));

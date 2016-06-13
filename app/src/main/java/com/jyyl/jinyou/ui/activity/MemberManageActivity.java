@@ -62,11 +62,6 @@ public class MemberManageActivity extends BaseActivity
         setContentView(R.layout.activity_member_management);
         initToolBar();
         initListview();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         initTeam();
     }
 
@@ -172,6 +167,14 @@ public class MemberManageActivity extends BaseActivity
                         }
                         LogUtils.d("mMemberInfoResults==>>"+mMemberInfoResults.size());
                         mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ApiException ){
+                            return;
+                        }
+                        super.onError(e);
                     }
                 });
 

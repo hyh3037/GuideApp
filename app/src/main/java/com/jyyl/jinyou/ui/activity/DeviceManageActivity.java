@@ -17,6 +17,7 @@ import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.entity.DeviceInfo;
 import com.jyyl.jinyou.entity.DeviceInfoResult;
+import com.jyyl.jinyou.http.ApiException;
 import com.jyyl.jinyou.http.BaseSubscriber;
 import com.jyyl.jinyou.http.HttpMethods;
 import com.jyyl.jinyou.ui.adapter.DeviceManageAdapter;
@@ -66,12 +67,12 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
         initToolBar();
         initListview();
 
-        refreshDeviceDatas();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        refreshDeviceDatas();
     }
 
     @Override
@@ -96,6 +97,16 @@ public class DeviceManageActivity extends BaseActivity implements RefreshToolbar
                             number++;
                         }
                         refreshUI();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ApiException){
+                            mDatas.clear();
+                            refreshUI();
+                            return;
+                        }
+                        super.onError(e);
                     }
                 });
     }

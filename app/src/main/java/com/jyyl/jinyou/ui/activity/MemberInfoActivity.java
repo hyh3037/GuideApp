@@ -68,7 +68,7 @@ public class MemberInfoActivity extends BaseActivity{
         linkmanPhoneTv.setText(getString(R.string.member_info_linkman_phone,
                 mMemberInfo.getTouristContentPhone()));
         deviceImeiTv.setText(getString(R.string.member_info_device_imei,
-                mMemberInfo.getDeviceId()));
+                mMemberInfo.getDeviceIMEI()));
         devicePhoneTv.setText(getString(R.string.member_info_device_phone,
                 mMemberInfo.getDevicePhone()));
         //        mBloodPressure = findViewById(R.id.blood_pressure);

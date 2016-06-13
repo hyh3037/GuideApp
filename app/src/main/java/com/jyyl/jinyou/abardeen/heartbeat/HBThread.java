@@ -42,7 +42,7 @@ public class HBThread implements Runnable {
                 boolean isConnect = false;
                 while (!isConnect) {
                     isConnect = AbardeenMethod.getInstance().connectServer();
-                    Thread.sleep(5000);
+                    Thread.sleep(60000);
                 }
             } catch (IOException | InterruptedException e1) {
                 e1.printStackTrace();

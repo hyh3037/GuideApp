@@ -2,6 +2,7 @@ package com.jyyl.jinyou.voice;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
@@ -14,6 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.jyyl.jinyou.R;
 import com.jyyl.jinyou.abardeen.AbardeenMethod;
 import com.jyyl.jinyou.constans.Sp;
@@ -28,11 +32,13 @@ import com.nickming.view.AudioRecordButton;
 import com.nickming.view.AudioRecordButton.AudioFinishRecorderListener;
 import com.nickming.view.Recorder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import rx.Observable;
@@ -52,6 +58,9 @@ public class VoiceActivity extends BaseActivity {
     private View viewanim;
     private List<Recorder> mDatas = new ArrayList<>();
 
+    private SharedPreferences sp ;
+    private SharedPreferences.Editor editor;
+
     private Dialog loadingDialog;
 
     @Override
@@ -59,6 +68,12 @@ public class VoiceActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_voice);
+
+        sp = getPreferences(Context.MODE_PRIVATE);
+        String mDataStr = sp.getString("mDatastr","");
+        if(!mDataStr.equals("")){
+            mDatas =  jsonToList(mDataStr,Recorder.class);
+        }
 
         initviews();
         initToolBar();
@@ -83,7 +98,7 @@ public class VoiceActivity extends BaseActivity {
         loadingDialog = createLoadingDialog(this);
 
         Bundle bundle = getIntent().getExtras();
-        ArrayList<String> imeiList = bundle.getStringArrayList("imeiList");
+        final ArrayList<String> imeiList = bundle.getStringArrayList("imeiList");
 
         button = (AudioRecordButton) findViewById(R.id.recordButton);
         button.setAudioFinishRecorderListener(new AudioFinishRecorderListener() {
@@ -92,13 +107,20 @@ public class VoiceActivity extends BaseActivity {
             public void onFinished(final float seconds, final String filePath) {
                 Recorder recorder = new Recorder(seconds, filePath);
                 mDatas.add(recorder);
+
+                editor = sp.edit();
+                Gson gson = new Gson();
+                String mDatastr = gson.toJson(mDatas);
+                editor.putString("mDatastr",mDatastr);
+                editor.commit();
+
                 mAdapter.notifyDataSetChanged();
                 mlistview.setSelection(mDatas.size() - 1);
 
                 Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
-                        String message = "";
+                        String message = "语音发送失败";
                         File file = new File(filePath);
                         byte[] fileByte = new byte[0];
                         try {
@@ -107,33 +129,33 @@ public class VoiceActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                         String dataId = TimeUtils.getTimestamp();
-                        ArrayList<String> targets = new ArrayList<>();
-                        targets.add("T" + "867293023112009");
+                        JSONArray targets = new JSONArray();
+                        for (String imei : imeiList){
+                            targets.put("T" + imei);
+                        }
                         int length = 0;
                         if (fileByte != null) {
                             length = fileByte.length;
                         }
-                        int parts = 1;
-                        int playLength = (int) seconds + 1;
+                        int parts = length/(1024*20) + 1;
+                        int playLength = (int) seconds;
                         String type = "DF";
                         JSONObject requestResult = AbardeenMethod.getInstance()
                                 .requestTransferVoice(dataId,targets,length,parts,playLength,type);
                         try {
+                            String cmd = (String) requestResult.get("cmd");
                             String code = (String) requestResult.get("code");
-                            if ("0".equals(code)){
+                            if ("ARA".equals(cmd) && "0".equals(code)){
                                 AbardeenMethod.getInstance().startTransferVoice(dataId, fileByte);
                                 boolean b = AbardeenMethod.getInstance().endTransferVoice(dataId);
                                 if (b){
                                     message = "语音发送成功";
-                                }else {
-                                    message = "语音发送失败";
                                 }
-                            }else {
-                                message = "语音发送失败";
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                         subscriber.onNext(message);
                         subscriber.onCompleted();
                     }
@@ -144,28 +166,50 @@ public class VoiceActivity extends BaseActivity {
                             @Override
                             public void onNext(String s) {
                                 LogUtils.d(s);
+//                                loadingDialog.dismiss();
                             }
 
                             @Override
                             public void onStart() {
                                 super.onStart();
-                                loadingDialog.show();
-                            }
-
-                            @Override
-                            public void onCompleted() {
-                                super.onCompleted();
-                                loadingDialog.dismiss();
+//                                loadingDialog.show();
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 super.onError(e);
-                                loadingDialog.dismiss();
+//                                loadingDialog.dismiss();
                             }
                         });
             }
         });
+    }
+
+    public static <T> ArrayList<T> jsonToList(String result,Class<T> tClass){
+        Gson gson = new Gson();
+        //创建知识库对象的ArrayList
+        ArrayList list = new ArrayList();
+        //创建一个JsonElement元素 将result从String转换成JsonElement
+        JsonElement el = new JsonParser().parse(result);
+        //新建JsonArray
+        JsonArray jsonArray = null;
+        //判断是否是一个JsonArray
+        if(el.isJsonArray()){
+            //如果是 则将其转换成JsonArray
+            jsonArray = el.getAsJsonArray();
+        }
+        //新建一个迭代器 获取JsonArray的迭代
+        Iterator it = jsonArray.iterator();
+        //判断jsonArray中有没有下一个元素
+        while(it.hasNext()){
+            //存在则获取该元素
+            JsonElement e = (JsonElement) it.next();
+            //将该元素从JSON转换成bean对象
+            Object oValue = gson.fromJson(e,tClass);
+            //将该bean对象塞到ArrayList里面去
+            list.add(oValue);
+        }
+        return list;
     }
 
     private void initListview() {
